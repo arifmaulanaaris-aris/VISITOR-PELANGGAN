@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counter & Dashboard Pengunjung Toko</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { background-color: #fcfbefe0; margin: 0; padding: 20px; display: flex; justify-content: center; }
+    .app-container { width: 100%; max-width: 480px; }
+
+    /* Header Statistik Atas */
+    .monthly-header { text-align: right; font-size: 13px; font-weight: bold; color: #1a1a1a; margin-bottom: 8px; }
+
+    /* Card Dashboard Utama */
+    .dashboard-card {
+      border: 2px dashed #1a1a1a;
+      border-radius: 20px;
+      padding: 20px 15px;
+      background: #ffffff;
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .main-stats { display: flex; justify-content: space-between; align-items: flex-start; }
+    .big-number-box { text-align: left; }
+    .big-number { font-size: 80px; font-weight: 900; color: #a80000; line-height: 0.9; }
+    .big-label { font-size: 13px; font-weight: 600; color: #333; margin-top: 6px; }
+
+    .side-stats { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+    .stat-pill {
+      background-color: #a80000; color: white; padding: 6px 16px;
+      border-radius: 20px; font-weight: bold; font-size: 13px; text-align: center; min-width: 90px;
+    }
+    .stat-sublabel { font-size: 11px; color: #555; text-align: center; margin-top: 2px; }
+
+    /* Breakdown Kategori */
+    .breakdown-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+      margin-top: 20px; text-align: center;
+    }
+    .breakdown-title { font-size: 11px; font-weight: 600; color: #333; margin-bottom: 5px; }
+
+    /* Form Container */
+    .form-container {
+      background: #ffffff; padding: 20px; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px;
+    }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { font-weight: bold; font-size: 14px; display: block; margin-bottom: 6px; color: #222; }
+    .form-control {
+      width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px;
+      font-size: 14px; background-color: #fff;
+    }
+
+    /* Tombol Eksekusi Merah */
+    .btn-submit {
+      width: 100%; background-color: #a80000; color: white; border: 2px dashed #1a1a1a;
+      padding: 15px; font-size: 18px; font-weight: bold; border-radius: 30px;
+      cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: opacity 0.2s;
+    }
+    .btn-submit:active { opacity: 0.85; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <div class="monthly-header">
+    Total Pelanggan keseluruhan dalam<br>satu bulan ⤵
+  </div>
+
+  <!-- DASHBOARD CARD -->
+  <div class="dashboard-card">
+    <div class="main-stats">
+      <div class="big-number-box">
+        <div class="big-number" id="statHariIni">0</div>
+        <div class="big-label">Jumlah Pengunjung hari ini</div>
+      </div>
+      
+      <div class="side-stats">
+        <div>
+          <div class="stat-pill" id="statBulanIni">0 Orang</div>
+          <div class="stat-sublabel">Total Pelanggan</div>
+        </div>
+        <div>
+          <div class="stat-pill" id="statTransaksi">0 Orang</div>
+          <div class="stat-sublabel">Berhasil Transaksi</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="breakdown-grid">
+      <div>
+        <div class="breakdown-title">Hanya lihat-lihat</div>
+        <div class="stat-pill" id="statLihat">0 Orang</div>
+      </div>
+      <div>
+        <div class="breakdown-title">Cek Harga</div>
+        <div class="stat-pill" id="statCekHarga">0 Orang</div>
+      </div>
+      <div>
+        <div class="breakdown-title">Cari barang (Kosong)</div>
+        <div class="stat-pill" id="statCariBarang">0 Orang</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT FORM -->
+  <form id="visitorForm">
+    <div class="form-container">
+      <div class="form-group">
+        <label>Kategori Kunjungan:</label>
+        <select id="kategori" class="form-control" required onchange="toggleBarangInput()">
+          <option value="Berhasil Transaksi">Berhasil Transaksi</option>
+          <option value="Hanya Lihat-lihat">Hanya Lihat-lihat</option>
+          <option value="Cek Harga">Cek Harga</option>
+          <option value="Cari Barang (Stok Kosong)">Cari Barang (Kosong)</option>
+        </select>
+      </div>
+
+      <div class="form-group hidden" id="barangGroup">
+        <label>Nama Barang yang Dicari:</label>
+        <input type="text" id="namaBarang" class="form-control" placeholder="Contoh: Laptop Asus TUF A15">
+      </div>
+
+      <div class="form-group">
+        <label>Info Toko Dari Mana?</label>
+        <select id="sumber" class="form-control" required>
+          <option value="TikTok">TikTok</option>
+          <option value="Instagram">Instagram</option>
+          <option value="Rekan / Teman">Rekan / Teman</option>
+          <option value="Google Maps">Google Maps</option>
+          <option value="Lewat Depan Toko">Lewat Depan Toko</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 0;">
+        <label>Catatan Opsional:</label>
+        <input type="text" id="catatan" class="form-control" placeholder="Catatan singkat...">
+      </div>
+    </div>
+
+    <button type="submit" class="btn-submit" id="btnSubmit">Tambahkan Pengunjung hari ini</button>
+  </form>
+
+</div>
+
+<script>
+  // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
+
+  window.addEventListener("DOMContentLoaded", fetchStats);
+
+  function fetchStats() {
+    if (SCRIPT_URL === "URL_WEB_APP_APPS_SCRIPT_ANDA") return;
+    const script = document.createElement('script');
+    script.src = `${SCRIPT_URL}?callback=updateDashboard&ts=${new Date().getTime()}`;
+    document.body.appendChild(script);
+    document.body.removeChild(script);
+  }
+
+  function updateDashboard(stats) {
+    if (!stats) return;
+    document.getElementById("statHariIni").innerText = stats.hariIni || 0;
+    document.getElementById("statBulanIni").innerText = (stats.bulanIni || 0) + " Orang";
+    document.getElementById("statTransaksi").innerText = (stats.berhasilTransaksi || 0) + " Orang";
+    document.getElementById("statLihat").innerText = (stats.lihatLihat || 0) + " Orang";
+    document.getElementById("statCekHarga").innerText = (stats.cekHarga || 0) + " Orang";
+    document.getElementById("statCariBarang").innerText = (stats.cariBarang || 0) + " Orang";
+  }
+
+  function toggleBarangInput() {
+    const kategori = document.getElementById("kategori").value;
+    const barangGroup = document.getElementById("barangGroup");
+    barangGroup.classList.toggle("hidden", kategori !== "Cari Barang (Stok Kosong)");
+  }
+
+  document.getElementById("visitorForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const btn = document.getElementById("btnSubmit");
+    btn.disabled = true;
+    btn.innerText = "Menyimpan...";
+
+    const payload = {
+      kategori: document.getElementById("kategori").value,
+      sumber: document.getElementById("sumber").value,
+      namaBarang: document.getElementById("namaBarang").value || "-",
+      catatan: document.getElementById("catatan").value || "-"
+    };
+
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload)
+    })
+    .then(() => {
+      alert("Data berhasil disimpan!");
+      document.getElementById("visitorForm").reset();
+      toggleBarangInput();
+      setTimeout(fetchStats, 1000);
+    })
+    .catch(err => alert("Gagal menyimpan data: " + err))
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerText = "Tambahkan Pengunjung hari ini";
+    });
+  });
+</script>
+
+</body>
+</html>
