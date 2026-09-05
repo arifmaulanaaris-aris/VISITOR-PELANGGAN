@@ -3,212 +3,599 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Counter & Dashboard Pengunjung Toko</title>
+  <title>mahadewa.id - Dashboard Pengunjung</title>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { background-color: #fcfbefe0; margin: 0; padding: 20px; display: flex; justify-content: center; }
-    .app-container { width: 100%; max-width: 480px; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f7f6f0; color: #222; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* Header Statistik Atas */
-    .monthly-header { text-align: right; font-size: 13px; font-weight: bold; color: #1a1a1a; margin-bottom: 8px; }
+    /* HEADER */
+    header {
+      background: #ffffff; padding: 10px 25px; display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #e0dfd5;
+    }
+    .brand-section { display: flex; align-items: center; gap: 12px; }
+    .brand-name { font-size: 19px; font-weight: 800; color: #be121c; line-height: 1; }
+    .brand-sub { font-size: 11px; color: #666; font-weight: 600; display: block; margin-top: 2px; }
+    .page-title-badge { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: bold; margin-left: 15px; border-left: 2px solid #ddd; padding-left: 15px; }
+    .page-title-badge::before { content: ""; width: 8px; height: 8px; background: #be121c; border-radius: 50%; display: inline-block; }
 
-    /* Card Dashboard Utama */
-    .dashboard-card {
-      border: 2px dashed #1a1a1a;
-      border-radius: 20px;
-      padding: 20px 15px;
+    .header-user { display: flex; align-items: center; gap: 10px; }
+    .user-name { font-style: italic; font-size: 13px; color: #444; margin-right: 4px; font-weight: 500; }
+    .btn-badge-red { background: #be121c; color: white; border: none; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-badge-gray { background: #e0ded7; color: #333; border: none; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+    /* LAYOUT & SIDEBAR */
+    .container { display: flex; flex: 1; }
+    .sidebar { width: 170px; padding: 20px 10px; background: transparent; }
+    .menu-item {
+      display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: none; background: transparent; font-size: 13px; font-weight: 700; color: #444; cursor: pointer; margin-bottom: 6px; text-align: left;
+    }
+    .menu-item.active { background: #be121c; color: white; }
+    .menu-item svg { fill: currentColor; width: 16px; height: 16px; }
+
+    .content { flex: 1; padding: 20px 25px 30px 10px; }
+    .tab-page { display: none; }
+    .tab-page.active { display: block; }
+
+    /* DASHBOARD TOP CARDS (PUTIH BERSIH) */
+    .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+    .card { 
+      background: #ffffff; 
+      border-radius: 8px; 
+      padding: 12px 14px; 
+      position: relative; 
+      border: 1px solid #e0dfd5;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+    .card.main-card { background: #be121c; color: white; border: none; }
+    .card-head { display: flex; align-items: center; justify-content: flex-end; font-size: 11px; font-weight: 600; opacity: 0.9; margin-bottom: 4px; color: #555; }
+    .card.main-card .card-head { color: white; }
+    .card-body { display: flex; align-items: center; gap: 10px; }
+    .card-icon {
+      width: 38px; height: 38px; background: #f5f4ed; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;
+    }
+    .card.main-card .card-icon { background: rgba(255,255,255,0.2); }
+    .card-icon img { width: 22px; height: 22px; object-fit: contain; }
+
+    .card-val { font-size: 26px; font-weight: 800; line-height: 1; color: #111; }
+    .card.main-card .card-val { color: white; }
+    .card-unit { font-size: 10px; margin-left: 3px; font-weight: normal; color: #666; }
+    .card.main-card .card-unit { color: white; }
+
+    /* DASHBOARD BOTTOM GRID (PUTIH BERSIH) */
+    .dash-bottom { display: grid; grid-template-columns: 1fr 1fr 240px; gap: 15px; }
+    .box-panel { 
+      background: #ffffff; 
+      border-radius: 8px; 
+      padding: 15px; 
+      position: relative; 
+      border: 1px solid #e0dfd5;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+    .panel-header { font-size: 11px; font-weight: bold; color: #444; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+    
+    .legend-container { display: flex; flex-wrap: wrap; gap: 8px; font-size: 9px; font-weight: bold; justify-content: center; margin-bottom: 10px; }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+    /* LIST BARANG PALING DICARI */
+    .barang-card { background: #ffffff; border-radius: 8px; padding: 15px; border: 1px solid #e0dfd5; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .barang-title { text-align: center; font-size: 12px; font-weight: bold; color: #be121c; margin-bottom: 12px; }
+    .barang-list { font-size: 11px; }
+    .barang-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #eee; }
+    .barang-row:last-child { border-bottom: none; }
+
+    /* FORM INPUT CONTAINER LEGA & TIDAK MEPET */
+    .form-container { 
+      max-width: 600px; 
+      margin: 0 auto; 
+    }
+    
+    .display-box-clean {
       background: #ffffff;
-      position: relative;
-      margin-bottom: 25px;
+      border-radius: 16px;
+      padding: 24px 28px;
+      border: 1px solid #e0dfd5;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      margin-bottom: 24px;
     }
 
-    .main-stats { display: flex; justify-content: space-between; align-items: flex-start; }
-    .big-number-box { text-align: left; }
-    .big-number { font-size: 80px; font-weight: 900; color: #a80000; line-height: 0.9; }
-    .big-label { font-size: 13px; font-weight: 600; color: #333; margin-top: 6px; }
-
-    .side-stats { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
-    .stat-pill {
-      background-color: #a80000; color: white; padding: 6px 16px;
-      border-radius: 20px; font-weight: bold; font-size: 13px; text-align: center; min-width: 90px;
-    }
-    .stat-sublabel { font-size: 11px; color: #555; text-align: center; margin-top: 2px; }
-
-    /* Breakdown Kategori */
-    .breakdown-grid {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
-      margin-top: 20px; text-align: center;
-    }
-    .breakdown-title { font-size: 11px; font-weight: 600; color: #333; margin-bottom: 5px; }
-
-    /* Form Container */
-    .form-container {
-      background: #ffffff; padding: 20px; border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px;
-    }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { font-weight: bold; font-size: 14px; display: block; margin-bottom: 6px; color: #222; }
-    .form-control {
-      width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px;
-      font-size: 14px; background-color: #fff;
+    .clean-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #666;
+      font-weight: 500;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
     }
 
-    /* Tombol Eksekusi Merah */
-    .btn-submit {
-      width: 100%; background-color: #a80000; color: white; border: 2px dashed #1a1a1a;
-      padding: 15px; font-size: 18px; font-weight: bold; border-radius: 30px;
-      cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: opacity 0.2s;
+    .clean-hero {
+      text-align: center;
+      padding: 10px 0 22px 0;
     }
-    .btn-submit:active { opacity: 0.85; }
+
+    .clean-number {
+      font-size: 88px;
+      font-weight: 900;
+      color: #111;
+      line-height: 0.9;
+    }
+
+    .clean-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 10px;
+    }
+
+    .clean-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      background: #f9f9f6;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .clean-val { font-size: 20px; font-weight: 800; color: #be121c; }
+    .clean-sub { font-size: 11px; color: #555; font-weight: 500; margin-top: 4px; }
+
+    .clean-sources {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .src-badge {
+      font-size: 11px;
+      color: #444;
+      background: #f0ede4;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .src-badge strong { color: #be121c; margin-left: 3px; }
+
+    .input-card { 
+      background: #ffffff; 
+      border-radius: 16px; 
+      padding: 24px; 
+      border: 1px solid #e0dfd5; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      margin-bottom: 20px; 
+    }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label { font-size: 13px; font-weight: 700; display: block; margin-bottom: 8px; color: #222; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; background: #fff; }
+    
+    .btn-submit-red {
+      width: 100%; 
+      background: #be121c; 
+      color: white; 
+      border: none;
+      padding: 16px; 
+      font-size: 16px; 
+      font-weight: bold; 
+      border-radius: 30px; 
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(190, 18, 28, 0.25);
+    }
+    .btn-submit-red:active { opacity: 0.9; }
     .hidden { display: none; }
   </style>
 </head>
 <body>
 
-<div class="app-container">
+  <!-- HEADER -->
+  <header>
+    <div class="brand-section">
+      <img src="https://lh3.googleusercontent.com/d/FILE_ID_ANDA" alt="mahadewa.id" style="height: 34px; width: auto; object-fit: contain;" onerror="this.style.display='none'">
+      <div>
+        <span class="brand-name">mahadewa.id</span>
+        <span class="brand-sub">Cab. Palopo</span>
+      </div>
+      <div class="page-title-badge" id="headerPageTitle">Dashboard</div>
+    </div>
+    <div class="header-user">
+      <span class="user-name">Arif Maulana</span>
+      <button class="btn-badge-red" onclick="showProfile()">Profil</button>
+      <button class="btn-badge-gray" onclick="handleLogout()">Keluar</button>
+    </div>
+  </header>
 
-  <div class="monthly-header">
-    Total Pelanggan keseluruhan dalam<br>satu bulan ⤵
+  <!-- APP CONTAINER -->
+  <div class="container">
+    <!-- SIDEBAR MENU -->
+    <div class="sidebar">
+      <button class="menu-item active" onclick="switchTab('dashboard', this)">
+        <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        Dashboard
+      </button>
+      <button class="menu-item" onclick="switchTab('form-input', this)">
+        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        Form Input
+      </button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+
+      <!-- TAB 1: DASHBOARD -->
+      <div id="dashboard" class="tab-page active">
+        <!-- 5 CARDS PUTIH BERSIH -->
+        <div class="top-cards">
+          <div class="card main-card">
+            <div class="card-head">Total Pelanggan</div>
+            <div class="card-body">
+              <div class="card-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/33/33308.png" alt="Users Icon">
+              </div>
+              <div>
+                <span class="card-val" id="dTotalBulan">0</span>
+                <span class="card-unit">Orang</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">Transaksi</div>
+            <div class="card-body">
+              <div class="card-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Transaction Icon">
+              </div>
+              <div>
+                <span class="card-val" id="dTransaksi">0</span>
+                <span class="card-unit">Orang</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">Hanya lihat-lihat</div>
+            <div class="card-body">
+              <div class="card-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/709/709612.png" alt="Look Icon">
+              </div>
+              <div>
+                <span class="card-val" id="dLihat">0</span>
+                <span class="card-unit">Orang</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">Cek Harga</div>
+            <div class="card-body">
+              <div class="card-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Price Tag Icon">
+              </div>
+              <div>
+                <span class="card-val" id="dHarga">0</span>
+                <span class="card-unit">Orang</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">Cari barang (Kosong)</div>
+            <div class="card-body">
+              <div class="card-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search Product Icon">
+              </div>
+              <div>
+                <span class="card-val" id="dKosong">0</span>
+                <span class="card-unit">Orang</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM PANELS PUTIH BERSIH -->
+        <div class="dash-bottom">
+          <div class="box-panel">
+            <div class="panel-header">
+              <span>Jam Ramai</span>
+              <span id="peakHourText" style="font-weight:normal; color:#888;">Biasanya sedikit ramai</span>
+            </div>
+            <canvas id="barJamChart" height="180"></canvas>
+          </div>
+
+          <div class="box-panel">
+            <div class="legend-container">
+              <div class="legend-item"><span class="legend-dot" style="background:#ff4d4d;"></span> TIKTOK</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#000000;"></span> INSTAGRAM</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#2ecc71;"></span> REKAN</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#9b59b6;"></span> GOOGLE MAPS</div>
+              <div class="legend-item"><span class="legend-dot" style="background:#e67e22;"></span> LEWAT DEPAN TOKO</div>
+            </div>
+            <canvas id="lineSumberChart" height="180"></canvas>
+          </div>
+
+          <div class="barang-card">
+            <div class="barang-title">Barang Paling dicari</div>
+            <div class="barang-list" id="barangRankingBox">
+              <div style="text-align: center; color: #888;">Memuat data...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: FORM INPUT -->
+      <div id="form-input" class="tab-page">
+        <div class="form-container">
+          
+          <!-- DISPLAY COUNTER SIMPEL & LEGA -->
+          <div class="display-box-clean">
+            <div class="clean-header">
+              <span id="txtTanggalHariIni">Sabtu, 05 Sep 2026</span>
+              <span id="txtJamSekarang" style="color: #be121c; font-weight: bold;">Jam 00:00</span>
+            </div>
+
+            <div class="clean-hero">
+              <div class="clean-number" id="fHariIni">0</div>
+              <div class="clean-label">Total Pengunjung Hari Ini</div>
+            </div>
+
+            <div class="clean-grid">
+              <div>
+                <div class="clean-val" id="fLihat">0</div>
+                <div class="clean-sub">Lihat-lihat</div>
+              </div>
+              <div>
+                <div class="clean-val" id="fHarga">0</div>
+                <div class="clean-sub">Cek Harga</div>
+              </div>
+              <div>
+                <div class="clean-val" id="fKosong">0</div>
+                <div class="clean-sub">Stok Kosong</div>
+              </div>
+              <div>
+                <div class="clean-val" id="fTransaksi">0</div>
+                <div class="clean-sub">Transaksi</div>
+              </div>
+            </div>
+
+            <div class="clean-sources">
+              <div class="src-badge">🎵 TikTok:<strong id="sTiktok">0</strong></div>
+              <div class="src-badge">📷 IG:<strong id="sInstagram">0</strong></div>
+              <div class="src-badge">⭐ Google:<strong id="sMaps">0</strong></div>
+              <div class="src-badge">👥 Rekan:<strong id="sRekan">0</strong></div>
+              <div class="src-badge">🚶 Depan:<strong id="sLewat">0</strong></div>
+            </div>
+          </div>
+
+          <!-- FORM ISIAN -->
+          <form id="visitorForm">
+            <div class="input-card">
+              <div class="form-group">
+                <label>Kategori Kunjungan:</label>
+                <select id="kategori" class="form-control" required onchange="toggleBarangInput()">
+                  <option value="Hanya Lihat-lihat">Hanya Lihat-lihat</option>
+                  <option value="Berhasil Transaksi">Berhasil Transaksi</option>
+                  <option value="Cek Harga">Cek Harga</option>
+                  <option value="Cari Barang (Stok Kosong)">Cari Barang (Kosong)</option>
+                </select>
+              </div>
+
+              <div class="form-group hidden" id="barangGroup">
+                <label>Nama Barang yang Dicari:</label>
+                <input type="text" id="namaBarang" class="form-control" placeholder="Contoh: Asus TUF Gaming A15">
+              </div>
+
+              <div class="form-group">
+                <label>Info Toko Dari Mana?</label>
+                <select id="sumber" class="form-control" required>
+                  <option value="TikTok">TikTok</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Google Review / Maps">Google Review / Maps</option>
+                  <option value="Rekan / Teman">Rekan / Teman</option>
+                  <option value="Lewat Depan Toko">Lewat Depan Toko</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Catatan Opsional:</label>
+                <input type="text" id="catatan" class="form-control" placeholder="Catatan singkat...">
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit-red" id="btnSubmit">Tambahkan Pelanggan</button>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <!-- DASHBOARD CARD -->
-  <div class="dashboard-card">
-    <div class="main-stats">
-      <div class="big-number-box">
-        <div class="big-number" id="statHariIni">0</div>
-        <div class="big-label">Jumlah Pengunjung hari ini</div>
-      </div>
-      
-      <div class="side-stats">
-        <div>
-          <div class="stat-pill" id="statBulanIni">0 Orang</div>
-          <div class="stat-sublabel">Total Pelanggan</div>
-        </div>
-        <div>
-          <div class="stat-pill" id="statTransaksi">0 Orang</div>
-          <div class="stat-sublabel">Berhasil Transaksi</div>
-        </div>
-      </div>
-    </div>
+  <script>
+    // MASUKKAN URL GOOGLE APPS SCRIPT LENGKAP KAMU DI SINI
+    const SCRIPT_URL = "URL_WEB_APP_APPS_SCRIPT_ANDA";
 
-    <div class="breakdown-grid">
-      <div>
-        <div class="breakdown-title">Hanya lihat-lihat</div>
-        <div class="stat-pill" id="statLihat">0 Orang</div>
-      </div>
-      <div>
-        <div class="breakdown-title">Cek Harga</div>
-        <div class="stat-pill" id="statCekHarga">0 Orang</div>
-      </div>
-      <div>
-        <div class="breakdown-title">Cari barang (Kosong)</div>
-        <div class="stat-pill" id="statCariBarang">0 Orang</div>
-      </div>
-    </div>
-  </div>
+    let barChartInst = null;
+    let lineChartInst = null;
 
-  <!-- INPUT FORM -->
-  <form id="visitorForm">
-    <div class="form-container">
-      <div class="form-group">
-        <label>Kategori Kunjungan:</label>
-        <select id="kategori" class="form-control" required onchange="toggleBarangInput()">
-          <option value="Berhasil Transaksi">Berhasil Transaksi</option>
-          <option value="Hanya Lihat-lihat">Hanya Lihat-lihat</option>
-          <option value="Cek Harga">Cek Harga</option>
-          <option value="Cari Barang (Stok Kosong)">Cari Barang (Kosong)</option>
-        </select>
-      </div>
-
-      <div class="form-group hidden" id="barangGroup">
-        <label>Nama Barang yang Dicari:</label>
-        <input type="text" id="namaBarang" class="form-control" placeholder="Contoh: Laptop Asus TUF A15">
-      </div>
-
-      <div class="form-group">
-        <label>Info Toko Dari Mana?</label>
-        <select id="sumber" class="form-control" required>
-          <option value="TikTok">TikTok</option>
-          <option value="Instagram">Instagram</option>
-          <option value="Rekan / Teman">Rekan / Teman</option>
-          <option value="Google Maps">Google Maps</option>
-          <option value="Lewat Depan Toko">Lewat Depan Toko</option>
-        </select>
-      </div>
-
-      <div class="form-group" style="margin-bottom: 0;">
-        <label>Catatan Opsional:</label>
-        <input type="text" id="catatan" class="form-control" placeholder="Catatan singkat...">
-      </div>
-    </div>
-
-    <button type="submit" class="btn-submit" id="btnSubmit">Tambahkan Pengunjung hari ini</button>
-  </form>
-
-</div>
-
-<script>
-  // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
-
-  window.addEventListener("DOMContentLoaded", fetchStats);
-
-  function fetchStats() {
-    if (SCRIPT_URL === "URL_WEB_APP_APPS_SCRIPT_ANDA") return;
-    const script = document.createElement('script');
-    script.src = `${SCRIPT_URL}?callback=updateDashboard&ts=${new Date().getTime()}`;
-    document.body.appendChild(script);
-    document.body.removeChild(script);
-  }
-
-  function updateDashboard(stats) {
-    if (!stats) return;
-    document.getElementById("statHariIni").innerText = stats.hariIni || 0;
-    document.getElementById("statBulanIni").innerText = (stats.bulanIni || 0) + " Orang";
-    document.getElementById("statTransaksi").innerText = (stats.berhasilTransaksi || 0) + " Orang";
-    document.getElementById("statLihat").innerText = (stats.lihatLihat || 0) + " Orang";
-    document.getElementById("statCekHarga").innerText = (stats.cekHarga || 0) + " Orang";
-    document.getElementById("statCariBarang").innerText = (stats.cariBarang || 0) + " Orang";
-  }
-
-  function toggleBarangInput() {
-    const kategori = document.getElementById("kategori").value;
-    const barangGroup = document.getElementById("barangGroup");
-    barangGroup.classList.toggle("hidden", kategori !== "Cari Barang (Stok Kosong)");
-  }
-
-  document.getElementById("visitorForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const btn = document.getElementById("btnSubmit");
-    btn.disabled = true;
-    btn.innerText = "Menyimpan...";
-
-    const payload = {
-      kategori: document.getElementById("kategori").value,
-      sumber: document.getElementById("sumber").value,
-      namaBarang: document.getElementById("namaBarang").value || "-",
-      catatan: document.getElementById("catatan").value || "-"
-    };
-
-    fetch(SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify(payload)
-    })
-    .then(() => {
-      alert("Data berhasil disimpan!");
-      document.getElementById("visitorForm").reset();
-      toggleBarangInput();
-      setTimeout(fetchStats, 1000);
-    })
-    .catch(err => alert("Gagal menyimpan data: " + err))
-    .finally(() => {
-      btn.disabled = false;
-      btn.innerText = "Tambahkan Pengunjung hari ini";
+    window.addEventListener("DOMContentLoaded", () => {
+      updateDateTime();
+      initCharts();
+      fetchStats();
+      setInterval(updateDateTime, 10000);
     });
-  });
-</script>
 
+    function updateDateTime() {
+      const now = new Date();
+      const options = { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' };
+      document.getElementById("txtTanggalHariIni").innerText = now.toLocaleDateString('id-ID', options);
+      document.getElementById("txtJamSekarang").innerText = "Jam " + String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-page').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+
+      document.getElementById("headerPageTitle").innerText = tabId === 'dashboard' ? 'Dashboard' : 'Form Input';
+    }
+
+    function fetchStats() {
+      if (SCRIPT_URL === "URL_WEB_APP_APPS_SCRIPT_ANDA") return;
+      const script = document.createElement('script');
+      script.src = `${SCRIPT_URL}?callback=renderUI&ts=${new Date().getTime()}`;
+      document.body.appendChild(script);
+      document.body.removeChild(script);
+    }
+
+    function renderUI(data) {
+      if (!data) return;
+
+      // Dashboard
+      document.getElementById("dTotalBulan").innerText = data.bulanIni || 0;
+      document.getElementById("dTransaksi").innerText = data.berhasilTransaksi || 0;
+      document.getElementById("dLihat").innerText = data.lihatLihat || 0;
+      document.getElementById("dHarga").innerText = data.cekHarga || 0;
+      document.getElementById("dKosong").innerText = data.cariBarang || 0;
+
+      // Clean Counter Box
+      document.getElementById("fHariIni").innerText = data.hariIni || 0;
+      document.getElementById("fLihat").innerText = data.lihatLihat || 0;
+      document.getElementById("fHarga").innerText = data.cekHarga || 0;
+      document.getElementById("fKosong").innerText = data.cariBarang || 0;
+      document.getElementById("fTransaksi").innerText = data.berhasilTransaksi || 0;
+
+      // Medsos Stats
+      if (data.sumber) {
+        document.getElementById("sTiktok").innerText = data.sumber.tiktok || 0;
+        document.getElementById("sInstagram").innerText = data.sumber.instagram || 0;
+        document.getElementById("sRekan").innerText = data.sumber.rekan || 0;
+        document.getElementById("sMaps").innerText = data.sumber.googleMaps || 0;
+        document.getElementById("sLewat").innerText = data.sumber.lewatDepan || 0;
+      }
+
+      // Ranking Barang
+      const rankingBox = document.getElementById("barangRankingBox");
+      if (data.topBarang && data.topBarang.length > 0) {
+        rankingBox.innerHTML = data.topBarang.map((item, i) => `
+          <div class="barang-row">
+            <span>${i + 1}. ${item.nama}</span>
+            <span style="font-weight:bold; color:#be121c;">: ${item.jumlah} Pelanggan</span>
+          </div>
+        `).join('');
+      } else {
+        rankingBox.innerHTML = `<div style="text-align:center; color:#999;">Belum ada data barang dicari</div>`;
+      }
+
+      if (data.hourlyData && barChartInst) {
+        const sliced = data.hourlyData.slice(9, 22);
+        barChartInst.data.datasets[0].data = sliced;
+        barChartInst.update();
+      }
+
+      if (data.sumber && lineChartInst) {
+        lineChartInst.data.datasets[0].data = [data.sumber.tiktok, data.sumber.instagram, data.sumber.rekan, data.sumber.googleMaps, data.sumber.lewatDepan];
+        lineChartInst.update();
+      }
+    }
+
+    function initCharts() {
+      const ctx1 = document.getElementById('barJamChart').getContext('2d');
+      barChartInst = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['09', '12', '15', '18', '21'],
+          datasets: [{
+            data: [0, 0, 0, 0, 0],
+            backgroundColor: '#be121c',
+            borderRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { display: false }, x: { grid: { display: false } } }
+        }
+      });
+
+      const ctx2 = document.getElementById('lineSumberChart').getContext('2d');
+      lineChartInst = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: ['TikTok', 'Instagram', 'Rekan', 'Google Maps', 'Lewat Depan'],
+          datasets: [{
+            data: [0, 0, 0, 0, 0],
+            borderColor: '#be121c',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { grid: { color: '#eee' } }, x: { grid: { display: false } } }
+        }
+      });
+    }
+
+    function toggleBarangInput() {
+      const kategori = document.getElementById("kategori").value;
+      const barangGroup = document.getElementById("barangGroup");
+      barangGroup.classList.toggle("hidden", kategori !== "Cari Barang (Stok Kosong)");
+    }
+
+    function showProfile() {
+      alert("=== PROFIL PENGGUNA ===\n\nNama: Arif Maulana\nToko: mahadewa.id Cab. Palopo\nStatus: Admin / Staf Toko");
+    }
+
+    function handleLogout() {
+      if (confirm("Apakah Anda yakin ingin keluar dari sesi ini?")) {
+        window.location.reload();
+      }
+    }
+
+    document.getElementById("visitorForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSubmit");
+      btn.disabled = true;
+      btn.innerText = "Menyimpan...";
+
+      const payload = {
+        kategori: document.getElementById("kategori").value,
+        sumber: document.getElementById("sumber").value,
+        namaBarang: document.getElementById("namaBarang").value || "-",
+        catatan: document.getElementById("catatan").value || "-"
+      };
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        alert("Pelanggan berhasil ditambahkan!");
+        document.getElementById("visitorForm").reset();
+        toggleBarangInput();
+        setTimeout(fetchStats, 1000);
+      })
+      .catch(err => alert("Gagal menyimpan data: " + err))
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerText = "Tambahkan Pelanggan";
+      });
+    });
+  </script>
 </body>
 </html>
