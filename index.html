@@ -62,7 +62,7 @@
     .card-unit { font-size: 9px; margin-left: 2px; font-weight: normal; color: #666; }
     .card.main-card .card-unit { color: white; }
 
-    /* DASHBOARD BOTTOM PANELS WITH FIXED HEIGHT (FIX BUG GRAFIK MELAR) */
+    /* DASHBOARD BOTTOM PANELS WITH FIXED HEIGHT */
     .dash-bottom { display: grid; grid-template-columns: 1fr 1fr 260px; gap: 15px; }
     .box-panel { 
       background: #ffffff; border-radius: 8px; padding: 14px; position: relative; 
@@ -445,9 +445,16 @@
         rankingBox.innerHTML = `<div style="text-align:center; color:#999; margin-top:20px;">Belum ada data barang dicari</div>`;
       }
 
+      // KELOMPOKKAN DATA JAM RAMAI PER 3 JAM SECARA SEIMBANG
       if (data.hourlyData && barChartInst) {
-        const sliced = data.hourlyData.slice(9, 22);
-        barChartInst.data.datasets[0].data = sliced;
+        const h = data.hourlyData;
+        const g09 = (h[9]||0)  + (h[10]||0) + (h[11]||0);
+        const g12 = (h[12]||0) + (h[13]||0) + (h[14]||0);
+        const g15 = (h[15]||0) + (h[16]||0) + (h[17]||0);
+        const g18 = (h[18]||0) + (h[19]||0) + (h[20]||0);
+        const g21 = (h[21]||0) + (h[22]||0) + (h[23]||0);
+
+        barChartInst.data.datasets[0].data = [g09, g12, g15, g18, g21];
         barChartInst.update();
       }
 
