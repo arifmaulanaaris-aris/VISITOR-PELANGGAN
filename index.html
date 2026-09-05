@@ -374,7 +374,7 @@
 
   <script>
     // MASUKKAN URL GOOGLE APPS SCRIPT LENGKAP KAMU DI SINI
-    const SCRIPT_URL = "URL_WEB_APP_APPS_SCRIPT_ANDA";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
 
     let barChartInst = null;
     let lineChartInst = null;
@@ -403,7 +403,7 @@
     }
 
     function fetchStats() {
-      if (SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec") return;
+      if (SCRIPT_URL === "URL_WEB_APP_APPS_SCRIPT_ANDA") return;
       const script = document.createElement('script');
       script.src = `${SCRIPT_URL}?callback=renderUI&ts=${new Date().getTime()}`;
       document.body.appendChild(script);
