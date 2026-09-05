@@ -10,24 +10,24 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f7f6f0; color: #222; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* HEADER RESPONSIP */
+    /* HEADER */
     header {
-      background: #ffffff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+      background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
       border-bottom: 1px solid #e0dfd5; flex-wrap: wrap; gap: 8px;
     }
     .brand-section { display: flex; align-items: center; gap: 8px; }
-    .brand-name { font-size: 17px; font-weight: 800; color: #be121c; line-height: 1; }
-    .brand-sub { font-size: 10px; color: #666; font-weight: 600; display: block; margin-top: 2px; }
-    .page-title-badge { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: bold; margin-left: 8px; border-left: 2px solid #ddd; padding-left: 8px; }
-    .page-title-badge::before { content: ""; width: 6px; height: 6px; background: #be121c; border-radius: 50%; display: inline-block; }
+    .brand-name { font-size: 18px; font-weight: 800; color: #be121c; line-height: 1; }
+    .brand-sub { font-size: 11px; color: #666; font-weight: 600; display: block; margin-top: 2px; }
+    .page-title-badge { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: bold; margin-left: 10px; border-left: 2px solid #ddd; padding-left: 10px; }
+    .page-title-badge::before { content: ""; width: 7px; height: 7px; background: #be121c; border-radius: 50%; display: inline-block; }
 
-    .header-user { display: flex; align-items: center; gap: 6px; }
+    .header-user { display: flex; align-items: center; gap: 8px; }
     .user-name { font-style: italic; font-size: 12px; color: #444; font-weight: 500; }
-    .btn-badge-red { background: #be121c; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
-    .btn-badge-gray { background: #e0ded7; color: #333; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .btn-badge-red { background: #be121c; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .btn-badge-gray { background: #e0ded7; color: #333; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
 
-    /* LAYOUT & NAVIGATION */
-    .container { display: flex; flex: 1; flex-direction: row; }
+    /* LAYOUT & SIDEBAR */
+    .container { display: flex; flex: 1; }
     .sidebar { width: 170px; padding: 15px 10px; background: transparent; flex-shrink: 0; }
     .menu-item {
       display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 12px; border-radius: 8px;
@@ -36,89 +36,96 @@
     .menu-item.active { background: #be121c; color: white; }
     .menu-item svg { fill: currentColor; width: 16px; height: 16px; }
 
-    .content { flex: 1; padding: 15px; width: 100%; overflow-x: hidden; }
+    .content { flex: 1; padding: 15px 20px; width: 100%; overflow-x: hidden; }
     .tab-page { display: none; }
     .tab-page.active { display: block; }
 
     /* DASHBOARD TOP CARDS */
-    .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px; }
+    .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
     .card { 
-      background: #ffffff; border-radius: 8px; padding: 10px 12px; position: relative; 
+      background: #ffffff; border-radius: 8px; padding: 12px; position: relative; 
       border: 1px solid #e0dfd5; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
     }
     .card.main-card { background: #be121c; color: white; border: none; }
-    .card-head { display: flex; align-items: center; justify-content: flex-end; font-size: 10px; font-weight: 600; opacity: 0.9; margin-bottom: 4px; color: #555; }
+    .card-head { display: flex; align-items: center; justify-content: flex-end; font-size: 11px; font-weight: 600; opacity: 0.9; margin-bottom: 4px; color: #555; }
     .card.main-card .card-head { color: white; }
     .card-body { display: flex; align-items: center; gap: 8px; }
     .card-icon {
-      width: 32px; height: 32px; background: #f5f4ed; border-radius: 50%;
+      width: 34px; height: 34px; background: #f5f4ed; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;
     }
     .card.main-card .card-icon { background: rgba(255,255,255,0.2); }
     .card-icon img { width: 18px; height: 18px; object-fit: contain; }
 
-    .card-val { font-size: 22px; font-weight: 800; line-height: 1; color: #111; }
+    .card-val { font-size: 24px; font-weight: 800; line-height: 1; color: #111; }
     .card.main-card .card-val { color: white; }
     .card-unit { font-size: 9px; margin-left: 2px; font-weight: normal; color: #666; }
     .card.main-card .card-unit { color: white; }
 
-    /* DASHBOARD BOTTOM GRID */
-    .dash-bottom { display: grid; grid-template-columns: 1fr 1fr 240px; gap: 12px; }
+    /* DASHBOARD BOTTOM PANELS WITH FIXED HEIGHT (FIX BUG GRAFIK MELAR) */
+    .dash-bottom { display: grid; grid-template-columns: 1fr 1fr 260px; gap: 15px; }
     .box-panel { 
-      background: #ffffff; border-radius: 8px; padding: 12px; position: relative; 
+      background: #ffffff; border-radius: 8px; padding: 14px; position: relative; 
       border: 1px solid #e0dfd5; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+      height: 250px; display: flex; flex-direction: column;
     }
     .panel-header { font-size: 11px; font-weight: bold; color: #444; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
     
-    .legend-container { display: flex; flex-wrap: wrap; gap: 6px; font-size: 8px; font-weight: bold; justify-content: center; margin-bottom: 8px; }
+    .chart-wrapper { position: relative; flex: 1; width: 100%; min-height: 0; }
+
+    .legend-container { display: flex; flex-wrap: wrap; gap: 6px; font-size: 8px; font-weight: bold; justify-content: center; margin-bottom: 6px; }
     .legend-item { display: flex; align-items: center; gap: 3px; }
     .legend-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
 
     /* LIST BARANG PALING DICARI */
-    .barang-card { background: #ffffff; border-radius: 8px; padding: 12px; border: 1px solid #e0dfd5; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .barang-card { 
+      background: #ffffff; border-radius: 8px; padding: 14px; border: 1px solid #e0dfd5; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02); height: 250px; overflow-y: auto; 
+    }
     .barang-title { text-align: center; font-size: 12px; font-weight: bold; color: #be121c; margin-bottom: 10px; }
     .barang-list { font-size: 11px; }
-    .barang-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #eee; }
+    .barang-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #eee; }
     .barang-row:last-child { border-bottom: none; }
 
     /* FORM INPUT CONTAINER */
-    .form-container { max-width: 500px; margin: 0 auto; width: 100%; }
+    .form-container { max-width: 520px; margin: 0 auto; width: 100%; }
     
     .display-box-clean {
-      background: #ffffff; border-radius: 12px; padding: 16px; border: 1px solid #e0dfd5;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.03); margin-bottom: 15px;
+      background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e0dfd5;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.03); margin-bottom: 18px;
     }
     .clean-header {
-      display: flex; justify-content: space-between; font-size: 11px; color: #666;
-      font-weight: 500; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; margin-bottom: 12px;
+      display: flex; justify-content: space-between; font-size: 12px; color: #666;
+      font-weight: 500; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 15px;
     }
-    .clean-hero { text-align: center; padding: 4px 0 12px 0; }
-    .clean-number { font-size: 64px; font-weight: 900; color: #111; line-height: 0.9; }
-    .clean-label { font-size: 10px; font-weight: 700; color: #777; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 6px; }
+    .clean-hero { text-align: center; padding: 4px 0 16px 0; }
+    .clean-number { font-size: 72px; font-weight: 900; color: #111; line-height: 0.9; }
+    .clean-label { font-size: 11px; font-weight: 700; color: #777; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
 
     .clean-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #f9f9f6;
-      border-radius: 8px; padding: 10px 6px; text-align: center; margin-bottom: 12px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: #f9f9f6;
+      border-radius: 8px; padding: 10px; text-align: center; margin-bottom: 14px;
     }
-    .clean-val { font-size: 16px; font-weight: 800; color: #be121c; }
-    .clean-sub { font-size: 9px; color: #555; font-weight: 500; margin-top: 2px; }
+    .clean-val { font-size: 18px; font-weight: 800; color: #be121c; }
+    .clean-sub { font-size: 10px; color: #555; font-weight: 500; margin-top: 2px; }
 
     .clean-sources { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
-    .src-badge { font-size: 10px; color: #444; background: #f0ede4; padding: 4px 8px; border-radius: 12px; font-weight: 600; }
+    .src-badge { font-size: 10px; color: #444; background: #f0ede4; padding: 5px 10px; border-radius: 14px; font-weight: 600; }
     .src-badge strong { color: #be121c; margin-left: 2px; }
 
-    .input-card { background: #ffffff; border-radius: 12px; padding: 16px; border: 1px solid #e0dfd5; margin-bottom: 15px; }
-    .form-group { margin-bottom: 12px; }
+    .input-card { background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e0dfd5; margin-bottom: 15px; }
+    .form-group { margin-bottom: 14px; }
     .form-group label { font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px; color: #222; }
     .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background: #fff; }
     
     .btn-submit-red {
       width: 100%; background: #be121c; color: white; border: none; padding: 14px;
-      font-size: 14px; font-weight: bold; border-radius: 25px; cursor: pointer;
+      font-size: 15px; font-weight: bold; border-radius: 25px; cursor: pointer;
       box-shadow: 0 3px 8px rgba(190, 18, 28, 0.2);
     }
+    .hidden { display: none; }
 
-    /* MEDIA QUERIES KHUSUS TAMPILAN HP (RESPONSIVE FIX) */
+    /* MEDIA QUERIES (KHUSUS TAMPILAN HP) */
     @media (max-width: 768px) {
       .container { flex-direction: column; }
       .sidebar {
@@ -128,17 +135,14 @@
       .menu-item { margin-bottom: 0; justify-content: center; padding: 8px 12px; }
       .content { padding: 12px; }
 
-      /* Bikin Kartu Dashboard Berderet Vertikal di HP */
       .top-cards { grid-template-columns: repeat(2, 1fr); }
-      .card.main-card { grid-column: span 2; } /* Card Utama Penuh */
+      .card.main-card { grid-column: span 2; }
 
-      /* Bottom Panels Stack di HP */
       .dash-bottom { grid-template-columns: 1fr; }
       
-      .clean-number { font-size: 56px; }
+      .clean-number { font-size: 58px; }
       .clean-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-      
-      .user-name { display: none; } /* Sembunyikan nama user di header HP agar tidak sempit */
+      .user-name { display: none; }
     }
   </style>
 </head>
@@ -147,7 +151,7 @@
   <!-- HEADER -->
   <header>
     <div class="brand-section">
-      <img src="https://lh3.googleusercontent.com/d/FILE_ID_ANDA" alt="mahadewa.id" style="height: 28px; width: auto; object-fit: contain;" onerror="this.style.display='none'">
+      <img src="https://lh3.googleusercontent.com/d/FILE_ID_ANDA" alt="mahadewa.id" style="height: 30px; width: auto; object-fit: contain;" onerror="this.style.display='none'">
       <div>
         <span class="brand-name">mahadewa.id</span>
         <span class="brand-sub">Cab. Palopo</span>
@@ -163,7 +167,7 @@
 
   <!-- APP CONTAINER -->
   <div class="container">
-    <!-- SIDEBAR MENU (DI HP BERUBAH JADI TAB HORISONTAL DI ATAS) -->
+    <!-- SIDEBAR MENU -->
     <div class="sidebar">
       <button class="menu-item active" onclick="switchTab('dashboard', this)">
         <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
@@ -180,7 +184,7 @@
 
       <!-- TAB 1: DASHBOARD -->
       <div id="dashboard" class="tab-page active">
-        <!-- CARDS STATISTIK -->
+        <!-- TOP CARDS -->
         <div class="top-cards">
           <div class="card main-card">
             <div class="card-head">Total Pelanggan</div>
@@ -255,7 +259,9 @@
               <span>Jam Ramai</span>
               <span id="peakHourText" style="font-weight:normal; color:#888;">Biasanya sedikit ramai</span>
             </div>
-            <canvas id="barJamChart" height="160"></canvas>
+            <div class="chart-wrapper">
+              <canvas id="barJamChart"></canvas>
+            </div>
           </div>
 
           <div class="box-panel">
@@ -266,7 +272,9 @@
               <div class="legend-item"><span class="legend-dot" style="background:#9b59b6;"></span> MAPS</div>
               <div class="legend-item"><span class="legend-dot" style="background:#e67e22;"></span> DEPAN</div>
             </div>
-            <canvas id="lineSumberChart" height="160"></canvas>
+            <div class="chart-wrapper">
+              <canvas id="lineSumberChart"></canvas>
+            </div>
           </div>
 
           <div class="barang-card">
@@ -434,7 +442,7 @@
           </div>
         `).join('');
       } else {
-        rankingBox.innerHTML = `<div style="text-align:center; color:#999;">Belum ada data barang dicari</div>`;
+        rankingBox.innerHTML = `<div style="text-align:center; color:#999; margin-top:20px;">Belum ada data barang dicari</div>`;
       }
 
       if (data.hourlyData && barChartInst) {
