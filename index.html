@@ -3,26 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>mahadewa.id - Dashboard Pengunjung</title>
+  <title>mahadewa.id - Executive Dashboard</title>
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f7f6f0; color: #222; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* LAYAR LOGIN POP-UP (OVERLAY) */
+    /* OVERLAY LOGIN */
     #loginOverlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(247, 246, 240, 0.98);
-      backdrop-filter: blur(8px);
+      background: rgba(247, 246, 240, 0.98); backdrop-filter: blur(8px);
       display: flex; align-items: center; justify-content: center;
       z-index: 9999; padding: 20px;
     }
     .login-card {
       background: #ffffff; width: 100%; max-width: 360px;
       padding: 28px 24px; border-radius: 16px;
-      border: 1px solid #e0dfd5; box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      text-align: center;
+      border: 1px solid #e0dfd5; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center;
     }
     .login-title { font-size: 20px; font-weight: 800; color: #be121c; margin-bottom: 4px; }
     .login-sub { font-size: 12px; color: #666; margin-bottom: 20px; font-weight: 500; }
@@ -60,16 +58,16 @@
     .sidebar { width: 160px; padding: 12px 8px; background: transparent; flex-shrink: 0; }
     .menu-item {
       display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 8px;
-      border: none; background: transparent; font-size: 13px; font-weight: 700; color: #444; cursor: pointer; margin-bottom: 4px; text-align: left;
+      border: none; background: transparent; font-size: 12px; font-weight: 700; color: #444; cursor: pointer; margin-bottom: 4px; text-align: left;
     }
     .menu-item.active { background: #be121c; color: white; }
-    .menu-item svg { fill: currentColor; width: 16px; height: 16px; }
+    .menu-item svg { fill: currentColor; width: 15px; height: 15px; }
 
     .content { flex: 1; padding: 12px 16px; width: 100%; overflow-x: hidden; }
     .tab-page { display: none; }
     .tab-page.active { display: block; }
 
-    /* DASHBOARD TOP CARDS */
+    /* DASHBOARD CARDS & GRID */
     .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px; }
     .card { 
       background: #ffffff; border-radius: 8px; padding: 10px; position: relative; 
@@ -86,12 +84,11 @@
     .card.main-card .card-icon { background: rgba(255,255,255,0.2); }
     .card-icon img { width: 16px; height: 16px; object-fit: contain; }
 
-    .card-val { font-size: 22px; font-weight: 800; line-height: 1; color: #111; }
+    .card-val { font-size: 20px; font-weight: 800; line-height: 1; color: #111; }
     .card.main-card .card-val { color: white; }
     .card-unit { font-size: 9px; margin-left: 2px; font-weight: normal; color: #666; }
     .card.main-card .card-unit { color: white; }
 
-    /* DASHBOARD BOTTOM PANELS WITH FIXED HEIGHT */
     .dash-bottom { display: grid; grid-template-columns: 1fr 1fr 240px; gap: 12px; }
     .box-panel { 
       background: #ffffff; border-radius: 8px; padding: 12px; position: relative; 
@@ -99,63 +96,34 @@
       height: 250px; display: flex; flex-direction: column;
     }
     .panel-header { font-size: 11px; font-weight: bold; color: #444; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
-    
     .chart-wrapper { position: relative; flex: 1; width: 100%; min-height: 0; }
 
-    /* TAB FILTER HARI & INPUT TANGGAL */
-    .day-selector {
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #f0f0f0; padding-bottom: 4px; margin-bottom: 6px;
-    }
-    .day-btn {
-      background: none; border: none; font-size: 9px; font-weight: 700; color: #888;
-      padding: 3px 4px; cursor: pointer; border-radius: 4px;
-    }
-    .day-btn.active {
-      color: #be121c; border-bottom: 2px solid #be121c; border-radius: 0;
-    }
-    .date-picker-input {
-      font-size: 10px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 4px;
-      color: #333; outline: none; font-weight: 600; cursor: pointer;
-    }
-
-    /* LIST BARANG PALING DICARI */
-    .barang-card { 
-      background: #ffffff; border-radius: 8px; padding: 12px; border: 1px solid #e0dfd5; 
-      box-shadow: 0 2px 5px rgba(0,0,0,0.02); height: 250px; overflow-y: auto; 
-    }
-    .barang-title { text-align: center; font-size: 12px; font-weight: bold; color: #be121c; margin-bottom: 8px; }
-    .barang-list { font-size: 11px; }
-    .barang-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #eee; }
-    .barang-row:last-child { border-bottom: none; }
+    /* TAB PENJUALAN GRID LAYOUT */
+    .sales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .sales-full { grid-column: span 2; }
+    .table-container { height: 190px; overflow-y: auto; font-size: 11px; }
+    .custom-table { width: 100%; border-collapse: collapse; }
+    .custom-table th { background: #f4f3ec; padding: 6px 8px; text-align: left; font-size: 10px; color: #555; position: sticky; top: 0; }
+    .custom-table td { padding: 6px 8px; border-bottom: 1px dashed #eee; }
+    .custom-table tr:last-child td { border-bottom: none; }
 
     /* FORM INPUT CONTAINER */
     .form-container { max-width: 480px; margin: 0 auto; width: 100%; }
-    
     .display-box-clean {
       background: #ffffff; border-radius: 10px; padding: 10px 14px; border: 1px solid #e0dfd5;
       box-shadow: 0 2px 6px rgba(0,0,0,0.02); margin-bottom: 10px;
     }
-    .clean-header {
-      display: flex; justify-content: space-between; font-size: 11px; color: #666;
-      font-weight: 500; border-bottom: 1px solid #f0f0f0; padding-bottom: 6px; margin-bottom: 8px;
-    }
+    .clean-header { display: flex; justify-content: space-between; font-size: 11px; color: #666; font-weight: 500; border-bottom: 1px solid #f0f0f0; padding-bottom: 6px; margin-bottom: 8px; }
     .clean-hero { text-align: center; padding: 0 0 6px 0; }
     .clean-number { font-size: 40px; font-weight: 900; color: #111; line-height: 1; }
     .clean-label { font-size: 9px; font-weight: 700; color: #777; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
 
-    .clean-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #f9f9f6;
-      border-radius: 6px; padding: 6px; text-align: center; margin-bottom: 8px;
-    }
+    .clean-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #f9f9f6; border-radius: 6px; padding: 6px; text-align: center; margin-bottom: 8px; }
     .clean-val { font-size: 15px; font-weight: 800; color: #be121c; }
     .clean-sub { font-size: 9px; color: #555; font-weight: 500; margin-top: 1px; }
 
     .clean-sources { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px; }
-    .src-badge { 
-      display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #444; 
-      background: #f4f3ec; padding: 3px 8px; border-radius: 12px; font-weight: 600; border: 1px solid #e5e3d8;
-    }
+    .src-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #444; background: #f4f3ec; padding: 3px 8px; border-radius: 12px; font-weight: 600; border: 1px solid #e5e3d8; }
     .src-badge svg { width: 11px; height: 11px; fill: #555; flex-shrink: 0; }
     .src-badge strong { color: #be121c; margin-left: 2px; }
 
@@ -164,34 +132,26 @@
     .form-group label { font-size: 11px; font-weight: 700; display: block; margin-bottom: 4px; color: #222; }
     .form-control { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 12px; background: #fff; }
     
-    .btn-submit-red {
-      width: 100%; background: #be121c; color: white; border: none; padding: 12px;
-      font-size: 14px; font-weight: bold; border-radius: 20px; cursor: pointer;
-      box-shadow: 0 3px 8px rgba(190, 18, 28, 0.2);
-    }
+    .btn-submit-red { width: 100%; background: #be121c; color: white; border: none; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 20px; cursor: pointer; box-shadow: 0 3px 8px rgba(190, 18, 28, 0.2); }
     .hidden { display: none; }
 
     /* MEDIA QUERIES (HP) */
     @media (max-width: 768px) {
       .container { flex-direction: column; }
-      .sidebar {
-        width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px 12px;
-        border-bottom: 1px solid #e0dfd5; background: #ffffff;
-      }
-      .menu-item { margin-bottom: 0; justify-content: center; padding: 6px 10px; }
+      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px 12px; border-bottom: 1px solid #e0dfd5; background: #ffffff; overflow-x: auto; }
+      .menu-item { margin-bottom: 0; justify-content: center; padding: 6px 10px; flex-shrink: 0; }
       .content { padding: 10px; }
-
       .top-cards { grid-template-columns: repeat(2, 1fr); }
       .card.main-card { grid-column: span 2; }
-
-      .dash-bottom { grid-template-columns: 1fr; }
+      .dash-bottom, .sales-grid { grid-template-columns: 1fr; }
+      .sales-full { grid-column: span 1; }
       .user-name { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- OVERLAY LOGIN DENGAN PASSWORD -->
+  <!-- LOGIN OVERLAY -->
   <div id="loginOverlay">
     <div class="login-card">
       <div class="login-title">mahadewa.id</div>
@@ -225,7 +185,11 @@
     <div class="sidebar">
       <button class="menu-item active" onclick="switchTab('dashboard', this)">
         <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-        Dashboard
+        Visitor
+      </button>
+      <button class="menu-item" onclick="switchTab('penjualan', this)">
+        <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+        Penjualan
       </button>
       <button class="menu-item" onclick="switchTab('form-input', this)">
         <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
@@ -236,84 +200,52 @@
     <!-- MAIN CONTENT -->
     <div class="content">
 
-      <!-- TAB 1: DASHBOARD -->
+      <!-- TAB 1: VISITOR -->
       <div id="dashboard" class="tab-page active">
-        <!-- TOP CARDS -->
         <div class="top-cards">
           <div class="card main-card">
             <div class="card-head">Total Pelanggan</div>
             <div class="card-body">
-              <div class="card-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/33/33308.png" alt="Users Icon">
-              </div>
-              <div>
-                <span class="card-val" id="dTotalBulan">0</span>
-                <span class="card-unit">Orang</span>
-              </div>
+              <div class="card-icon"><img src="https://cdn-icons-png.flaticon.com/512/33/33308.png"></div>
+              <div><span class="card-val" id="dTotalBulan">0</span><span class="card-unit">Orang</span></div>
             </div>
           </div>
-
           <div class="card">
             <div class="card-head">Transaksi</div>
             <div class="card-body">
-              <div class="card-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Transaction Icon">
-              </div>
-              <div>
-                <span class="card-val" id="dTransaksi">0</span>
-                <span class="card-unit">Orang</span>
-              </div>
+              <div class="card-icon"><img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png"></div>
+              <div><span class="card-val" id="dTransaksi">0</span><span class="card-unit">Orang</span></div>
             </div>
           </div>
-
           <div class="card">
             <div class="card-head">Hanya lihat-lihat</div>
             <div class="card-body">
-              <div class="card-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/709/709612.png" alt="Look Icon">
-              </div>
-              <div>
-                <span class="card-val" id="dLihat">0</span>
-                <span class="card-unit">Orang</span>
-              </div>
+              <div class="card-icon"><img src="https://cdn-icons-png.flaticon.com/512/709/709612.png"></div>
+              <div><span class="card-val" id="dLihat">0</span><span class="card-unit">Orang</span></div>
             </div>
           </div>
-
           <div class="card">
             <div class="card-head">Cek Harga</div>
             <div class="card-body">
-              <div class="card-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Price Tag Icon">
-              </div>
-              <div>
-                <span class="card-val" id="dHarga">0</span>
-                <span class="card-unit">Orang</span>
-              </div>
+              <div class="card-icon"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"></div>
+              <div><span class="card-val" id="dHarga">0</span><span class="card-unit">Orang</span></div>
             </div>
           </div>
-
           <div class="card">
             <div class="card-head">Cari barang (Kosong)</div>
             <div class="card-body">
-              <div class="card-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search Product Icon">
-              </div>
-              <div>
-                <span class="card-val" id="dKosong">0</span>
-                <span class="card-unit">Orang</span>
-              </div>
+              <div class="card-icon"><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png"></div>
+              <div><span class="card-val" id="dKosong">0</span><span class="card-unit">Orang</span></div>
             </div>
           </div>
         </div>
 
-        <!-- BOTTOM PANELS -->
         <div class="dash-bottom">
           <div class="box-panel">
             <div class="panel-header">
               <span>Jam Ramai</span>
               <input type="date" id="filterDate" class="date-picker-input" onchange="selectSpecificDate(this.value)">
             </div>
-            
             <div class="day-selector">
               <button class="day-btn" onclick="selectDay(1, this)">SEN</button>
               <button class="day-btn" onclick="selectDay(2, this)">SEL</button>
@@ -323,10 +255,7 @@
               <button class="day-btn" onclick="selectDay(6, this)">SAB</button>
               <button class="day-btn" onclick="selectDay(0, this)">MIN</button>
             </div>
-
-            <div class="chart-wrapper">
-              <canvas id="barJamChart"></canvas>
-            </div>
+            <div class="chart-wrapper"><canvas id="barJamChart"></canvas></div>
           </div>
 
           <div class="box-panel">
@@ -334,9 +263,7 @@
               <span>Sumber Informasi</span>
               <span style="font-weight:normal; color:#888;">Keseluruhan Data</span>
             </div>
-            <div class="chart-wrapper">
-              <canvas id="lineSumberChart"></canvas>
-            </div>
+            <div class="chart-wrapper"><canvas id="lineSumberChart"></canvas></div>
           </div>
 
           <div class="barang-card">
@@ -348,65 +275,108 @@
         </div>
       </div>
 
-      <!-- TAB 2: FORM INPUT -->
+      <!-- TAB 2: PENJUALAN (NEW) -->
+      <div id="penjualan" class="tab-page">
+        <!-- SUMMARY CARDS PENJUALAN -->
+        <div class="top-cards">
+          <div class="card main-card">
+            <div class="card-head">Total Invoice</div>
+            <div class="card-body">
+              <div><span class="card-val" id="pTotalInv">0</span><span class="card-unit">Transaksi</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">Average Order Value (AOV)</div>
+            <div class="card-body">
+              <div><span class="card-val" id="pAov">Rp 0</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">Top Brand</div>
+            <div class="card-body">
+              <div><span class="card-val" id="pTopBrand" style="font-size:16px;">-</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">Top Marketing</div>
+            <div class="card-body">
+              <div><span class="card-val" id="pTopMkt" style="font-size:16px;">-</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">Top Teknisi</div>
+            <div class="card-body">
+              <div><span class="card-val" id="pTopTeknisi" style="font-size:16px;">-</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHARTS & TABLES GRID -->
+        <div class="sales-grid">
+          <!-- CHART 1: BRAND SHARE -->
+          <div class="box-panel">
+            <div class="panel-header">
+              <span>Pangsa Pasar Brand (Units)</span>
+            </div>
+            <div class="chart-wrapper"><canvas id="pieBrandChart"></canvas></div>
+          </div>
+
+          <!-- CHART 2: MONTHLY ACHIEVEMENT -->
+          <div class="box-panel">
+            <div class="panel-header">
+              <span>Pencapaian Penjualan Bulanan</span>
+            </div>
+            <div class="chart-wrapper"><canvas id="barMonthlyChart"></canvas></div>
+          </div>
+
+          <!-- TABLE 1: BEST SELLER -->
+          <div class="box-panel">
+            <div class="panel-header"><span>Top Best Seller Product</span></div>
+            <div class="table-container">
+              <table class="custom-table">
+                <thead><tr><th>#</th><th>Nama Produk</th><th>Qty</th></tr></thead>
+                <tbody id="tblBestSeller"><tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TABLE 2: PERFORMA TIM (MARKETING & TEKNISI) -->
+          <div class="box-panel">
+            <div class="panel-header"><span>Pencapaian Tim Marketing</span></div>
+            <div class="table-container">
+              <table class="custom-table">
+                <thead><tr><th>Nama Sales</th><th>Pencapaian</th></tr></thead>
+                <tbody id="tblMarketing"><tr><td colspan="2" style="text-align:center;">Memuat data...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: FORM INPUT -->
       <div id="form-input" class="tab-page">
         <div class="form-container">
-          
           <div class="display-box-clean">
             <div class="clean-header">
               <span id="txtTanggalHariIni">Rabu, 09 Sep 2026</span>
               <span id="txtJamSekarang" style="color: #be121c; font-weight: bold;">Jam 00:00</span>
             </div>
-
             <div class="clean-hero">
               <div class="clean-number" id="fHariIni">0</div>
               <div class="clean-label">Total Pengunjung Hari Ini</div>
             </div>
-
             <div class="clean-grid">
-              <div>
-                <div class="clean-val" id="fLihat">0</div>
-                <div class="clean-sub">Lihat-lihat</div>
-              </div>
-              <div>
-                <div class="clean-val" id="fHarga">0</div>
-                <div class="clean-sub">Cek Harga</div>
-              </div>
-              <div>
-                <div class="clean-val" id="fKosong">0</div>
-                <div class="clean-sub">Stok Kosong</div>
-              </div>
-              <div>
-                <div class="clean-val" id="fTransaksi">0</div>
-                <div class="clean-sub">Transaksi</div>
-              </div>
+              <div><div class="clean-val" id="fLihat">0</div><div class="clean-sub">Lihat-lihat</div></div>
+              <div><div class="clean-val" id="fHarga">0</div><div class="clean-sub">Cek Harga</div></div>
+              <div><div class="clean-val" id="fKosong">0</div><div class="clean-sub">Stok Kosong</div></div>
+              <div><div class="clean-val" id="fTransaksi">0</div><div class="clean-sub">Transaksi</div></div>
             </div>
-
             <div class="clean-sources">
-              <div class="src-badge">
-                <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 1 1-5.2-1.74 2.89 2.89 0 0 1 2.31-1.42V8.92a6.34 6.34 0 0 0-1 .08 6.34 6.34 0 1 0 7.34 6.25V8.87a8.28 8.28 0 0 0 4.77 1.51V6.93a4.84 4.84 0 0 1-1-.24z"/></svg>
-                TikTok: <strong id="sTiktok">0</strong>
-              </div>
-
-              <div class="src-badge">
-                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                IG: <strong id="sInstagram">0</strong>
-              </div>
-
-              <div class="src-badge">
-                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                Google: <strong id="sMaps">0</strong>
-              </div>
-
-              <div class="src-badge">
-                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                Rekan: <strong id="sRekan">0</strong>
-              </div>
-
-              <div class="src-badge">
-                <svg viewBox="0 0 24 24"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L4 8.3V13h2V9.6l3.8-.7z"/></svg>
-                Depan: <strong id="sLewat">0</strong>
-              </div>
+              <div class="src-badge">TikTok: <strong id="sTiktok">0</strong></div>
+              <div class="src-badge">IG: <strong id="sInstagram">0</strong></div>
+              <div class="src-badge">Google: <strong id="sMaps">0</strong></div>
+              <div class="src-badge">Rekan: <strong id="sRekan">0</strong></div>
+              <div class="src-badge">Depan: <strong id="sLewat">0</strong></div>
             </div>
           </div>
 
@@ -444,10 +414,8 @@
                 <input type="text" id="catatan" class="form-control" placeholder="Catatan singkat...">
               </div>
             </div>
-
             <button type="submit" class="btn-submit-red" id="btnSubmit">Tambahkan Pelanggan</button>
           </form>
-
         </div>
       </div>
 
@@ -455,19 +423,18 @@
   </div>
 
   <script>
-    // URL APPS SCRIPT ANDA
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
-
-    // KATA SANDI / PASSWORD UNTUK MASUK (SILAKAN UBAH DI SINI)
-    const CORRECT_PASSWORD = "M@had3wa2026";
+    const SCRIPT_URL = "URL_WEB_APP_APPS_SCRIPT_ANDA";
+    const CORRECT_PASSWORD = "mahadewa2026";
 
     let barChartInst = null;
     let lineChartInst = null;
+    let pieBrandInst = null;
+    let barMonthlyInst = null;
+    
     let rawDailyData = null;
     let rawDateData = null;
 
     window.addEventListener("DOMContentLoaded", () => {
-      // CEK STATUS LOGIN SAAT HALAMAN DIBUKA
       if (localStorage.getItem("isLoggedIn") === "true") {
         document.getElementById("loginOverlay").style.display = "none";
         initApp();
@@ -477,27 +444,19 @@
     });
 
     function validatePassword() {
-      const inputPass = document.getElementById("passInput").value;
-      const errorEl = document.getElementById("loginError");
-
-      if (inputPass === CORRECT_PASSWORD) {
+      if (document.getElementById("passInput").value === CORRECT_PASSWORD) {
         localStorage.setItem("isLoggedIn", "true");
         document.getElementById("loginOverlay").style.display = "none";
-        errorEl.style.display = "none";
         initApp();
       } else {
-        errorEl.style.display = "block";
+        document.getElementById("loginError").style.display = "block";
       }
     }
 
-    function checkEnterKey(e) {
-      if (e.key === "Enter") {
-        validatePassword();
-      }
-    }
+    function checkEnterKey(e) { if (e.key === "Enter") validatePassword(); }
 
     function handleLogout() {
-      if (confirm("Apakah Anda yakin ingin keluar dari sesi ini?")) {
+      if (confirm("Keluar dari sesi ini?")) {
         localStorage.removeItem("isLoggedIn");
         window.location.reload();
       }
@@ -523,7 +482,8 @@
       document.getElementById(tabId).classList.add('active');
       btn.classList.add('active');
 
-      document.getElementById("headerPageTitle").innerText = tabId === 'dashboard' ? 'Dashboard' : 'Form Input';
+      const titleMap = { 'dashboard': 'Visitor', 'penjualan': 'Penjualan', 'form-input': 'Form Input' };
+      document.getElementById("headerPageTitle").innerText = titleMap[tabId] || 'Dashboard';
     }
 
     function fetchStats() {
@@ -534,84 +494,112 @@
       document.body.removeChild(script);
     }
 
+    function formatRupiah(val) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
+    }
+
     function renderUI(data) {
       if (!data) return;
 
-      document.getElementById("dTotalBulan").innerText = data.bulanIni || 0;
-      document.getElementById("dTransaksi").innerText = data.berhasilTransaksi || 0;
-      document.getElementById("dLihat").innerText = data.lihatLihat || 0;
-      document.getElementById("dHarga").innerText = data.cekHarga || 0;
-      document.getElementById("dKosong").innerText = data.cariBarang || 0;
+      // 1. VISITOR DATA
+      if (data.visitor) {
+        const v = data.visitor;
+        document.getElementById("dTotalBulan").innerText = v.bulanIni || 0;
+        document.getElementById("dTransaksi").innerText = v.berhasilTransaksi || 0;
+        document.getElementById("dLihat").innerText = v.lihatLihat || 0;
+        document.getElementById("dHarga").innerText = v.cekHarga || 0;
+        document.getElementById("dKosong").innerText = v.cariBarang || 0;
 
-      document.getElementById("fHariIni").innerText = data.hariIni || 0;
-      document.getElementById("fLihat").innerText = data.lihatLihat || 0;
-      document.getElementById("fHarga").innerText = data.cekHarga || 0;
-      document.getElementById("fKosong").innerText = data.cariBarang || 0;
-      document.getElementById("fTransaksi").innerText = data.berhasilTransaksi || 0;
+        document.getElementById("fHariIni").innerText = v.hariIni || 0;
+        document.getElementById("fLihat").innerText = v.lihatLihat || 0;
+        document.getElementById("fHarga").innerText = v.cekHarga || 0;
+        document.getElementById("fKosong").innerText = v.cariBarang || 0;
+        document.getElementById("fTransaksi").innerText = v.berhasilTransaksi || 0;
 
-      if (data.sumberHariIni) {
-        document.getElementById("sTiktok").innerText = data.sumberHariIni.tiktok || 0;
-        document.getElementById("sInstagram").innerText = data.sumberHariIni.instagram || 0;
-        document.getElementById("sRekan").innerText = data.sumberHariIni.rekan || 0;
-        document.getElementById("sMaps").innerText = data.sumberHariIni.googleMaps || 0;
-        document.getElementById("sLewat").innerText = data.sumberHariIni.lewatDepan || 0;
+        if (v.sumberHariIni) {
+          document.getElementById("sTiktok").innerText = v.sumberHariIni.tiktok || 0;
+          document.getElementById("sInstagram").innerText = v.sumberHariIni.instagram || 0;
+          document.getElementById("sRekan").innerText = v.sumberHariIni.rekan || 0;
+          document.getElementById("sMaps").innerText = v.sumberHariIni.googleMaps || 0;
+          document.getElementById("sLewat").innerText = v.sumberHariIni.lewatDepan || 0;
+        }
+
+        const rankingBox = document.getElementById("barangRankingBox");
+        if (v.topBarang && v.topBarang.length > 0) {
+          rankingBox.innerHTML = v.topBarang.map((item, i) => `
+            <div class="barang-row"><span>${i + 1}. ${item.nama}</span><span style="font-weight:bold; color:#be121c;">: ${item.jumlah} Pelanggan</span></div>
+          `).join('');
+        }
+
+        rawDailyData = v.dailyHourlyData;
+        rawDateData = v.dateHourlyData;
+        if (v.todayStr) document.getElementById("filterDate").value = v.todayStr;
+
+        const todayIndex = v.currentDay !== undefined ? v.currentDay : new Date().getDay();
+        const btnNodes = document.querySelectorAll('.day-btn');
+        const dayMap = [6, 0, 1, 2, 3, 4, 5];
+        if(btnNodes[dayMap[todayIndex]]) selectDay(todayIndex, btnNodes[dayMap[todayIndex]]);
+
+        if (v.sumberTotal && lineChartInst) {
+          lineChartInst.data.datasets[0].data = [v.sumberTotal.tiktok||0, v.sumberTotal.instagram||0, v.sumberTotal.rekan||0, v.sumberTotal.googleMaps||0, v.sumberTotal.lewatDepan||0];
+          lineChartInst.update();
+        }
       }
 
-      const rankingBox = document.getElementById("barangRankingBox");
-      if (data.topBarang && data.topBarang.length > 0) {
-        rankingBox.innerHTML = data.topBarang.map((item, i) => `
-          <div class="barang-row">
-            <span>${i + 1}. ${item.nama}</span>
-            <span style="font-weight:bold; color:#be121c;">: ${item.jumlah} Pelanggan</span>
-          </div>
-        `).join('');
-      } else {
-        rankingBox.innerHTML = `<div style="text-align:center; color:#999; margin-top:15px;">Belum ada data barang dicari</div>`;
-      }
+      // 2. SALES DATA
+      if (data.sales) {
+        const s = data.sales;
 
-      rawDailyData = data.dailyHourlyData;
-      rawDateData = data.dateHourlyData;
+        if (s.totalInvoice) {
+          document.getElementById("pTotalInv").innerText = s.totalInvoice.total || 0;
+          document.getElementById("pAov").innerText = formatRupiah(s.totalInvoice.aov);
+        }
 
-      if (data.todayStr) {
-        document.getElementById("filterDate").value = data.todayStr;
-      }
+        if (s.byBrand && s.byBrand.length > 0 && pieBrandInst) {
+          document.getElementById("pTopBrand").innerText = s.byBrand[0].brand || "-";
+          pieBrandInst.data.labels = s.byBrand.map(b => b.brand);
+          pieBrandInst.data.datasets[0].data = s.byBrand.map(b => b.unit);
+          pieBrandInst.update();
+        }
 
-      const todayIndex = data.currentDay !== undefined ? data.currentDay : new Date().getDay();
-      const btnNodes = document.querySelectorAll('.day-btn');
-      const dayMap = [6, 0, 1, 2, 3, 4, 5];
-      if(btnNodes[dayMap[todayIndex]]) {
-        selectDay(todayIndex, btnNodes[dayMap[todayIndex]]);
-      }
+        if (s.dataTahunan && s.dataTahunan.length > 0 && barMonthlyInst) {
+          barMonthlyInst.data.labels = s.dataTahunan.map(t => t.bulan);
+          barMonthlyInst.data.datasets[0].data = s.dataTahunan.map(t => t.omzet);
+          barMonthlyInst.update();
+        }
 
-      if (data.sumberTotal && lineChartInst) {
-        lineChartInst.data.datasets[0].data = [
-          data.sumberTotal.tiktok || 0,
-          data.sumberTotal.instagram || 0,
-          data.sumberTotal.rekan || 0,
-          data.sumberTotal.googleMaps || 0,
-          data.sumberTotal.lewatDepan || 0
-        ];
-        lineChartInst.update();
+        if (s.bestSeller && s.bestSeller.length > 0) {
+          document.getElementById("tblBestSeller").innerHTML = s.bestSeller.map((b, i) => `
+            <tr><td>${i+1}</td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td></tr>
+          `).join('');
+        }
+
+        if (s.marketingSales && s.marketingSales.length > 0) {
+          document.getElementById("pTopMkt").innerText = s.marketingSales[0].nama || "-";
+          document.getElementById("tblMarketing").innerHTML = s.marketingSales.map(m => `
+            <tr><td><b>${m.nama}</b></td><td>${formatRupiah(m.pencapaian)}</td></tr>
+          `).join('');
+        }
+
+        if (s.teknisiSales && s.teknisiSales.length > 0) {
+          document.getElementById("pTopTeknisi").innerText = s.teknisiSales[0].nama || "-";
+        }
       }
     }
 
     function selectDay(dayNum, btn) {
       document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
       if(btn) btn.classList.add('active');
-
       if (rawDailyData && rawDailyData[dayNum] && barChartInst) {
-        const jamData = rawDailyData[dayNum].slice(9, 22);
-        barChartInst.data.datasets[0].data = jamData;
+        barChartInst.data.datasets[0].data = rawDailyData[dayNum].slice(9, 22);
         barChartInst.update();
       }
     }
 
     function selectSpecificDate(selectedDate) {
       document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-
       if (rawDateData && rawDateData[selectedDate] && barChartInst) {
-        const jamData = rawDateData[selectedDate].slice(9, 22);
-        barChartInst.data.datasets[0].data = jamData;
+        barChartInst.data.datasets[0].data = rawDateData[selectedDate].slice(9, 22);
         barChartInst.update();
       } else if (barChartInst) {
         barChartInst.data.datasets[0].data = new Array(13).fill(0);
@@ -620,59 +608,36 @@
     }
 
     function initCharts() {
-      const ctx1 = document.getElementById('barJamChart').getContext('2d');
-      const jamLabels = ['09','10','11','12','13','14','15','16','17','18','19','20','21'];
-
-      barChartInst = new Chart(ctx1, {
+      // VISITOR CHARTS
+      barChartInst = new Chart(document.getElementById('barJamChart').getContext('2d'), {
         type: 'bar',
-        data: {
-          labels: jamLabels,
-          datasets: [{
-            data: new Array(13).fill(0),
-            backgroundColor: '#be121c',
-            borderRadius: 3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { display: false },
-            x: { grid: { display: false }, ticks: { font: { size: 9 } } }
-          }
-        }
+        data: { labels: ['09','10','11','12','13','14','15','16','17','18','19','20','21'], datasets: [{ data: new Array(13).fill(0), backgroundColor: '#be121c', borderRadius: 3 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
       });
 
-      const ctx2 = document.getElementById('lineSumberChart').getContext('2d');
-      lineChartInst = new Chart(ctx2, {
+      lineChartInst = new Chart(document.getElementById('lineSumberChart').getContext('2d'), {
         type: 'line',
-        data: {
-          labels: ['TikTok', 'Instagram', 'Rekan', 'Google Maps', 'Lewat Depan'],
-          datasets: [{
-            data: [0, 0, 0, 0, 0],
-            borderColor: '#be121c',
-            backgroundColor: 'transparent',
-            borderWidth: 2,
-            tension: 0.4
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { grid: { color: '#eee' }, ticks: { precision: 0 } },
-            x: { grid: { display: false }, ticks: { font: { size: 9 } } }
-          }
-        }
+        data: { labels: ['TikTok', 'Instagram', 'Rekan', 'Google Maps', 'Lewat Depan'], datasets: [{ data: [0, 0, 0, 0, 0], borderColor: '#be121c', borderWidth: 2, tension: 0.4 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#eee' }, ticks: { precision: 0 } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
+      });
+
+      // SALES CHARTS
+      pieBrandInst = new Chart(document.getElementById('pieBrandChart').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#be121c','#333333','#e67e22','#2ecc71','#3498db','#9b59b6'] }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } }
+      });
+
+      barMonthlyInst = new Chart(document.getElementById('barMonthlyChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: [], datasets: [{ label: 'Omzet', data: [], backgroundColor: '#be121c', borderRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#eee' } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
       });
     }
 
     function toggleBarangInput() {
       const kategori = document.getElementById("kategori").value;
-      const barangGroup = document.getElementById("barangGroup");
-      barangGroup.classList.toggle("hidden", kategori !== "Cari Barang (Stok Kosong)");
+      document.getElementById("barangGroup").classList.toggle("hidden", kategori !== "Cari Barang (Stok Kosong)");
     }
 
     function showProfile() {
@@ -693,10 +658,7 @@
       };
 
       fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(payload)
+        method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
       })
       .then(() => {
         alert("Pelanggan berhasil ditambahkan!");
@@ -705,10 +667,7 @@
         setTimeout(fetchStats, 1000);
       })
       .catch(err => alert("Gagal menyimpan data: " + err))
-      .finally(() => {
-        btn.disabled = false;
-        btn.innerText = "Tambahkan Pelanggan";
-      });
+      .finally(() => { btn.disabled = false; btn.innerText = "Tambahkan Pelanggan"; });
     });
   </script>
 </body>
