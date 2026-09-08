@@ -67,11 +67,27 @@
     .box-panel { 
       background: #ffffff; border-radius: 8px; padding: 12px; position: relative; 
       border: 1px solid #e0dfd5; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-      height: 240px; display: flex; flex-direction: column;
+      height: 250px; display: flex; flex-direction: column;
     }
     .panel-header { font-size: 11px; font-weight: bold; color: #444; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
     
     .chart-wrapper { position: relative; flex: 1; width: 100%; min-height: 0; }
+
+    /* TAB FILTER HARI JAM RAMAI */
+    .day-selector {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+    .day-btn {
+      background: none; border: none; font-size: 9px; font-weight: 700; color: #888;
+      padding: 3px 5px; cursor: pointer; border-radius: 4px;
+    }
+    .day-btn.active {
+      color: #be121c; border-bottom: 2px solid #be121c; border-radius: 0;
+    }
 
     .legend-container { display: flex; flex-wrap: wrap; gap: 6px; font-size: 8px; font-weight: bold; justify-content: center; margin-bottom: 4px; }
     .legend-item { display: flex; align-items: center; gap: 3px; }
@@ -80,14 +96,14 @@
     /* LIST BARANG PALING DICARI */
     .barang-card { 
       background: #ffffff; border-radius: 8px; padding: 12px; border: 1px solid #e0dfd5; 
-      box-shadow: 0 2px 5px rgba(0,0,0,0.02); height: 240px; overflow-y: auto; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02); height: 250px; overflow-y: auto; 
     }
     .barang-title { text-align: center; font-size: 12px; font-weight: bold; color: #be121c; margin-bottom: 8px; }
     .barang-list { font-size: 11px; }
     .barang-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #eee; }
     .barang-row:last-child { border-bottom: none; }
 
-    /* FORM INPUT CONTAINER (DIBUAT RINGKAS PAS DI LAYAR) */
+    /* FORM INPUT CONTAINER (RINGKAS & NAIK) */
     .form-container { max-width: 480px; margin: 0 auto; width: 100%; }
     
     .display-box-clean {
@@ -281,20 +297,28 @@
           <div class="box-panel">
             <div class="panel-header">
               <span>Jam Ramai</span>
-              <span id="peakHourText" style="font-weight:normal; color:#888;">Biasanya sedikit ramai</span>
+              <span style="font-weight:normal; color:#888;">Per Jam Ops.</span>
             </div>
+            
+            <div class="day-selector">
+              <button class="day-btn" onclick="selectDay(1, this)">SEN</button>
+              <button class="day-btn" onclick="selectDay(2, this)">SEL</button>
+              <button class="day-btn" onclick="selectDay(3, this)">RAB</button>
+              <button class="day-btn" onclick="selectDay(4, this)">KAM</button>
+              <button class="day-btn" onclick="selectDay(5, this)">JUM</button>
+              <button class="day-btn" onclick="selectDay(6, this)">SAB</button>
+              <button class="day-btn" onclick="selectDay(0, this)">MIN</button>
+            </div>
+
             <div class="chart-wrapper">
               <canvas id="barJamChart"></canvas>
             </div>
           </div>
 
           <div class="box-panel">
-            <div class="legend-container">
-              <div class="legend-item"><span class="legend-dot" style="background:#ff4d4d;"></span> TIKTOK</div>
-              <div class="legend-item"><span class="legend-dot" style="background:#000000;"></span> IG</div>
-              <div class="legend-item"><span class="legend-dot" style="background:#2ecc71;"></span> REKAN</div>
-              <div class="legend-item"><span class="legend-dot" style="background:#9b59b6;"></span> MAPS</div>
-              <div class="legend-item"><span class="legend-dot" style="background:#e67e22;"></span> DEPAN</div>
+            <div class="panel-header">
+              <span>Sumber Informasi</span>
+              <span style="font-weight:normal; color:#888;">Keseluruhan Data</span>
             </div>
             <div class="chart-wrapper">
               <canvas id="lineSumberChart"></canvas>
@@ -417,11 +441,12 @@
   </div>
 
   <script>
-    // PASTI KAN DIISI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+    // MASUKKAN URL GOOGLE APPS SCRIPT LENGKAP KAMU DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
 
     let barChartInst = null;
     let lineChartInst = null;
+    let rawDailyData = null;
 
     window.addEventListener("DOMContentLoaded", () => {
       updateDateTime();
@@ -469,12 +494,12 @@
       document.getElementById("fKosong").innerText = data.cariBarang || 0;
       document.getElementById("fTransaksi").innerText = data.berhasilTransaksi || 0;
 
-      if (data.sumber) {
-        document.getElementById("sTiktok").innerText = data.sumber.tiktok || 0;
-        document.getElementById("sInstagram").innerText = data.sumber.instagram || 0;
-        document.getElementById("sRekan").innerText = data.sumber.rekan || 0;
-        document.getElementById("sMaps").innerText = data.sumber.googleMaps || 0;
-        document.getElementById("sLewat").innerText = data.sumber.lewatDepan || 0;
+      if (data.sumberHariIni) {
+        document.getElementById("sTiktok").innerText = data.sumberHariIni.tiktok || 0;
+        document.getElementById("sInstagram").innerText = data.sumberHariIni.instagram || 0;
+        document.getElementById("sRekan").innerText = data.sumberHariIni.rekan || 0;
+        document.getElementById("sMaps").innerText = data.sumberHariIni.googleMaps || 0;
+        document.getElementById("sLewat").innerText = data.sumberHariIni.lewatDepan || 0;
       }
 
       const rankingBox = document.getElementById("barangRankingBox");
@@ -489,32 +514,53 @@
         rankingBox.innerHTML = `<div style="text-align:center; color:#999; margin-top:15px;">Belum ada data barang dicari</div>`;
       }
 
-      if (data.hourlyData && barChartInst) {
-        const h = data.hourlyData;
-        const g09 = (h[9]||0)  + (h[10]||0) + (h[11]||0);
-        const g12 = (h[12]||0) + (h[13]||0) + (h[14]||0);
-        const g15 = (h[15]||0) + (h[16]||0) + (h[17]||0);
-        const g18 = (h[18]||0) + (h[19]||0) + (h[20]||0);
-        const g21 = (h[21]||0) + (h[22]||0) + (h[23]||0);
-
-        barChartInst.data.datasets[0].data = [g09, g12, g15, g18, g21];
-        barChartInst.update();
+      // 1. UPDATE JAM RAMAI PER HARI
+      if (data.dailyHourlyData) {
+        rawDailyData = data.dailyHourlyData;
+        const todayIndex = data.currentDay !== undefined ? data.currentDay : new Date().getDay();
+        const btnNodes = document.querySelectorAll('.day-btn');
+        const dayMap = [6, 0, 1, 2, 3, 4, 5]; // Map urutan tombol
+        if(btnNodes[dayMap[todayIndex]]) {
+          selectDay(todayIndex, btnNodes[dayMap[todayIndex]]);
+        }
       }
 
-      if (data.sumber && lineChartInst) {
-        lineChartInst.data.datasets[0].data = [data.sumber.tiktok, data.sumber.instagram, data.sumber.rekan, data.sumber.googleMaps, data.sumber.lewatDepan];
+      // 2. UPDATE GRAFIK SUMBER INFORMASI KESELURUHAN DATA (ALL TIME)
+      if (data.sumberTotal && lineChartInst) {
+        lineChartInst.data.datasets[0].data = [
+          data.sumberTotal.tiktok || 0,
+          data.sumberTotal.instagram || 0,
+          data.sumberTotal.rekan || 0,
+          data.sumberTotal.googleMaps || 0,
+          data.sumberTotal.lewatDepan || 0
+        ];
         lineChartInst.update();
       }
     }
 
+    function selectDay(dayNum, btn) {
+      document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+
+      if (rawDailyData && rawDailyData[dayNum] && barChartInst) {
+        // Rentang Jam Operasional: 09:00 - 21:00
+        const jamData = rawDailyData[dayNum].slice(9, 22);
+        barChartInst.data.datasets[0].data = jamData;
+        barChartInst.update();
+      }
+    }
+
     function initCharts() {
+      // Grafik 1: Jam Ramai (Bar Chart)
       const ctx1 = document.getElementById('barJamChart').getContext('2d');
+      const jamLabels = ['09','10','11','12','13','14','15','16','17','18','19','20','21'];
+
       barChartInst = new Chart(ctx1, {
         type: 'bar',
         data: {
-          labels: ['09', '12', '15', '18', '21'],
+          labels: jamLabels,
           datasets: [{
-            data: [0, 0, 0, 0, 0],
+            data: new Array(13).fill(0),
             backgroundColor: '#be121c',
             borderRadius: 3
           }]
@@ -523,10 +569,14 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
-          scales: { y: { display: false }, x: { grid: { display: false } } }
+          scales: {
+            y: { display: false },
+            x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+          }
         }
       });
 
+      // Grafik 2: Sumber Informasi All-Time (Line Chart)
       const ctx2 = document.getElementById('lineSumberChart').getContext('2d');
       lineChartInst = new Chart(ctx2, {
         type: 'line',
@@ -544,7 +594,10 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
-          scales: { y: { grid: { color: '#eee' } }, x: { grid: { display: false } } }
+          scales: {
+            y: { grid: { color: '#eee' }, ticks: { precision: 0 } },
+            x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+          }
         }
       });
     }
