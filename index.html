@@ -109,10 +109,37 @@
     .clean-val { font-size: 18px; font-weight: 800; color: #be121c; }
     .clean-sub { font-size: 10px; color: #555; font-weight: 500; margin-top: 2px; }
 
-    .clean-sources { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-    .src-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #444; background: #f4f3ec; padding: 4px 10px; border-radius: 20px; font-weight: 600; border: 1px solid #e5e3d8; width: auto !important; /* Mencegah kotak jadi tinggi/besar */height: auto !important; }
-    .src-badge svg { width: 12px; height: 12px; fill: #555; flex-shrink: 0; }
-    .src-badge strong { color: #be121c; margin-left: 2px; }
+    /* PIL BADGE RINGKAS & ELEGAN */
+    .clean-sources { 
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      flex-wrap: wrap; 
+      gap: 6px; 
+      margin-top: 12px;
+    }
+    .src-badge { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 4px; 
+      font-size: 11px; 
+      color: #444; 
+      background: #f4f3ec; 
+      padding: 4px 10px; 
+      border-radius: 20px; 
+      font-weight: 600;
+      border: 1px solid #e5e3d8;
+    }
+    .src-badge svg { 
+      width: 12px; 
+      height: 12px; 
+      fill: #555; 
+      flex-shrink: 0;
+    }
+    .src-badge strong { 
+      color: #be121c; 
+      margin-left: 2px; 
+    }
 
     .input-card { background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e0dfd5; margin-bottom: 15px; }
     .form-group { margin-bottom: 14px; }
@@ -126,7 +153,7 @@
     }
     .hidden { display: none; }
 
-    /* MEDIA QUERIES (KHUSUS TAMPILAN HP) */
+    /* MEDIA QUERIES (HP) */
     @media (max-width: 768px) {
       .container { flex-direction: column; }
       .sidebar {
@@ -293,7 +320,7 @@
           
           <div class="display-box-clean">
             <div class="clean-header">
-              <span id="txtTanggalHariIni">Sabtu, 05 Sep 2026</span>
+              <span id="txtTanggalHariIni">Rabu, 09 Sep 2026</span>
               <span id="txtJamSekarang" style="color: #be121c; font-weight: bold;">Jam 00:00</span>
             </div>
 
@@ -321,7 +348,6 @@
               </div>
             </div>
 
-            <!-- BADGE SUMBER INFORMASI HORISONTAL -->
             <div class="clean-sources">
               <div class="src-badge">
                 <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 1 1-5.2-1.74 2.89 2.89 0 0 1 2.31-1.42V8.92a6.34 6.34 0 0 0-1 .08 6.34 6.34 0 1 0 7.34 6.25V8.87a8.28 8.28 0 0 0 4.77 1.51V6.93a4.84 4.84 0 0 1-1-.24z"/></svg>
@@ -348,9 +374,54 @@
                 Depan: <strong id="sLewat">0</strong>
               </div>
             </div>
+          </div>
+
+          <form id="visitorForm">
+            <div class="input-card">
+              <div class="form-group">
+                <label>Kategori Kunjungan:</label>
+                <select id="kategori" class="form-control" required onchange="toggleBarangInput()">
+                  <option value="Hanya Lihat-lihat">Hanya Lihat-lihat</option>
+                  <option value="Berhasil Transaksi">Berhasil Transaksi</option>
+                  <option value="Servis / Perbaikan">Servis / Perbaikan</option>
+                  <option value="Cek Harga">Cek Harga</option>
+                  <option value="Cari Barang (Stok Kosong)">Cari Barang (Kosong)</option>
+                </select>
+              </div>
+
+              <div class="form-group hidden" id="barangGroup">
+                <label>Nama Barang yang Dicari:</label>
+                <input type="text" id="namaBarang" class="form-control" placeholder="Contoh: Asus TUF Gaming A15">
+              </div>
+
+              <div class="form-group">
+                <label>Info Toko Dari Mana?</label>
+                <select id="sumber" class="form-control" required>
+                  <option value="TikTok">TikTok</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Google Review / Maps">Google Review / Maps</option>
+                  <option value="Rekan / Teman">Rekan / Teman</option>
+                  <option value="Lewat Depan Toko">Lewat Depan Toko</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Catatan Opsional:</label>
+                <input type="text" id="catatan" class="form-control" placeholder="Catatan singkat...">
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit-red" id="btnSubmit">Tambahkan Pelanggan</button>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT LENGKAP KAMU DI SINI
+    // PASTI KAN DIISI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
 
     let barChartInst = null;
@@ -380,7 +451,7 @@
     }
 
     function fetchStats() {
-      if (SCRIPT_URL === "URL_WEB_APP_APPS_SCRIPT_ANDA") return;
+      if (!SCRIPT_URL || SCRIPT_URL === "URL_WEB_APP_APPS_SCRIPT_ANDA") return;
       const script = document.createElement('script');
       script.src = `${SCRIPT_URL}?callback=renderUI&ts=${new Date().getTime()}`;
       document.body.appendChild(script);
@@ -405,8 +476,8 @@
       if (data.sumber) {
         document.getElementById("sTiktok").innerText = data.sumber.tiktok || 0;
         document.getElementById("sInstagram").innerText = data.sumber.instagram || 0;
-        document.getElementById("sMaps").innerText = data.sumber.googleMaps || 0;
         document.getElementById("sRekan").innerText = data.sumber.rekan || 0;
+        document.getElementById("sMaps").innerText = data.sumber.googleMaps || 0;
         document.getElementById("sLewat").innerText = data.sumber.lewatDepan || 0;
       }
 
@@ -422,7 +493,6 @@
         rankingBox.innerHTML = `<div style="text-align:center; color:#999; margin-top:20px;">Belum ada data barang dicari</div>`;
       }
 
-      // KELOMPOKKAN DATA JAM RAMAI PER 3 JAM SECARA SEIMBANG
       if (data.hourlyData && barChartInst) {
         const h = data.hourlyData;
         const g09 = (h[9]||0)  + (h[10]||0) + (h[11]||0);
