@@ -10,6 +10,35 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f7f6f0; color: #222; min-height: 100vh; display: flex; flex-direction: column; }
 
+    /* LAYAR LOGIN POP-UP (OVERLAY) */
+    #loginOverlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(247, 246, 240, 0.98);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; padding: 20px;
+    }
+    .login-card {
+      background: #ffffff; width: 100%; max-width: 360px;
+      padding: 28px 24px; border-radius: 16px;
+      border: 1px solid #e0dfd5; box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    .login-title { font-size: 20px; font-weight: 800; color: #be121c; margin-bottom: 4px; }
+    .login-sub { font-size: 12px; color: #666; margin-bottom: 20px; font-weight: 500; }
+    .login-input {
+      width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;
+      font-size: 14px; text-align: center; margin-bottom: 12px; outline: none;
+      letter-spacing: 2px; font-weight: bold;
+    }
+    .login-input:focus { border-color: #be121c; }
+    .btn-login {
+      width: 100%; background: #be121c; color: white; border: none; padding: 12px;
+      font-size: 14px; font-weight: bold; border-radius: 20px; cursor: pointer;
+      box-shadow: 0 4px 10px rgba(190, 18, 28, 0.25);
+    }
+    .login-error { color: #be121c; font-size: 11px; margin-top: 8px; font-weight: 600; display: none; }
+
     /* HEADER */
     header {
       background: #ffffff; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;
@@ -75,12 +104,8 @@
 
     /* TAB FILTER HARI & INPUT TANGGAL */
     .day-selector {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #f0f0f0;
-      padding-bottom: 4px;
-      margin-bottom: 6px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #f0f0f0; padding-bottom: 4px; margin-bottom: 6px;
     }
     .day-btn {
       background: none; border: none; font-size: 9px; font-weight: 700; color: #888;
@@ -126,24 +151,10 @@
     .clean-val { font-size: 15px; font-weight: 800; color: #be121c; }
     .clean-sub { font-size: 9px; color: #555; font-weight: 500; margin-top: 1px; }
 
-    .clean-sources { 
-      display: flex; 
-      justify-content: center; 
-      align-items: center;
-      flex-wrap: wrap; 
-      gap: 5px; 
-    }
+    .clean-sources { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px; }
     .src-badge { 
-      display: inline-flex; 
-      align-items: center; 
-      gap: 4px; 
-      font-size: 10px; 
-      color: #444; 
-      background: #f4f3ec; 
-      padding: 3px 8px; 
-      border-radius: 12px; 
-      font-weight: 600;
-      border: 1px solid #e5e3d8;
+      display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #444; 
+      background: #f4f3ec; padding: 3px 8px; border-radius: 12px; font-weight: 600; border: 1px solid #e5e3d8;
     }
     .src-badge svg { width: 11px; height: 11px; fill: #555; flex-shrink: 0; }
     .src-badge strong { color: #be121c; margin-left: 2px; }
@@ -179,6 +190,17 @@
   </style>
 </head>
 <body>
+
+  <!-- OVERLAY LOGIN DENGAN PASSWORD -->
+  <div id="loginOverlay">
+    <div class="login-card">
+      <div class="login-title">mahadewa.id</div>
+      <div class="login-sub">Masukkan kata sandi untuk mengakses dashboard</div>
+      <input type="password" id="passInput" class="login-input" placeholder="••••••••" onkeyup="checkEnterKey(event)">
+      <button class="btn-login" onclick="validatePassword()">Masuk</button>
+      <div id="loginError" class="login-error">Kata sandi salah! Silakan coba lagi.</div>
+    </div>
+  </div>
 
   <!-- HEADER -->
   <header>
@@ -289,7 +311,6 @@
           <div class="box-panel">
             <div class="panel-header">
               <span>Jam Ramai</span>
-              <!-- FILTER TANGGAL SPESIFIK -->
               <input type="date" id="filterDate" class="date-picker-input" onchange="selectSpecificDate(this.value)">
             </div>
             
@@ -434,8 +455,11 @@
   </div>
 
   <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT LENGKAP KAMU DI SINI
+    // URL APPS SCRIPT ANDA
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
+
+    // KATA SANDI / PASSWORD UNTUK MASUK (SILAKAN UBAH DI SINI)
+    const CORRECT_PASSWORD = "m@had3wa2026";
 
     let barChartInst = null;
     let lineChartInst = null;
@@ -443,11 +467,48 @@
     let rawDateData = null;
 
     window.addEventListener("DOMContentLoaded", () => {
+      // CEK STATUS LOGIN SAAT HALAMAN DIBUKA
+      if (localStorage.getItem("isLoggedIn") === "true") {
+        document.getElementById("loginOverlay").style.display = "none";
+        initApp();
+      } else {
+        document.getElementById("loginOverlay").style.display = "flex";
+      }
+    });
+
+    function validatePassword() {
+      const inputPass = document.getElementById("passInput").value;
+      const errorEl = document.getElementById("loginError");
+
+      if (inputPass === CORRECT_PASSWORD) {
+        localStorage.setItem("isLoggedIn", "true");
+        document.getElementById("loginOverlay").style.display = "none";
+        errorEl.style.display = "none";
+        initApp();
+      } else {
+        errorEl.style.display = "block";
+      }
+    }
+
+    function checkEnterKey(e) {
+      if (e.key === "Enter") {
+        validatePassword();
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Apakah Anda yakin ingin keluar dari sesi ini?")) {
+        localStorage.removeItem("isLoggedIn");
+        window.location.reload();
+      }
+    }
+
+    function initApp() {
       updateDateTime();
       initCharts();
       fetchStats();
       setInterval(updateDateTime, 10000);
-    });
+    }
 
     function updateDateTime() {
       const now = new Date();
@@ -508,16 +569,13 @@
         rankingBox.innerHTML = `<div style="text-align:center; color:#999; margin-top:15px;">Belum ada data barang dicari</div>`;
       }
 
-      // SIMPAN DATA FILTER
       rawDailyData = data.dailyHourlyData;
       rawDateData = data.dateHourlyData;
 
-      // Set Input Datepicker Default ke Hari Ini
       if (data.todayStr) {
         document.getElementById("filterDate").value = data.todayStr;
       }
 
-      // Default Tampilan: Hari Ini
       const todayIndex = data.currentDay !== undefined ? data.currentDay : new Date().getDay();
       const btnNodes = document.querySelectorAll('.day-btn');
       const dayMap = [6, 0, 1, 2, 3, 4, 5];
@@ -525,7 +583,6 @@
         selectDay(todayIndex, btnNodes[dayMap[todayIndex]]);
       }
 
-      // UPDATE GRAFIK SUMBER (ALL TIME)
       if (data.sumberTotal && lineChartInst) {
         lineChartInst.data.datasets[0].data = [
           data.sumberTotal.tiktok || 0,
@@ -538,19 +595,17 @@
       }
     }
 
-    // FILTER PILIHAN HARI (SEN, SEL, RAB, ...)
     function selectDay(dayNum, btn) {
       document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
       if(btn) btn.classList.add('active');
 
       if (rawDailyData && rawDailyData[dayNum] && barChartInst) {
-        const jamData = rawDailyData[dayNum].slice(9, 22); // Jam 09:00 - 21:00
+        const jamData = rawDailyData[dayNum].slice(9, 22);
         barChartInst.data.datasets[0].data = jamData;
         barChartInst.update();
       }
     }
 
-    // FILTER PILIHAN TANGGAL SPESIFIK (DATE PICKER)
     function selectSpecificDate(selectedDate) {
       document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
 
@@ -559,14 +614,12 @@
         barChartInst.data.datasets[0].data = jamData;
         barChartInst.update();
       } else if (barChartInst) {
-        // Jika tidak ada data pada tanggal tersebut
         barChartInst.data.datasets[0].data = new Array(13).fill(0);
         barChartInst.update();
       }
     }
 
     function initCharts() {
-      // Grafik 1: Jam Ramai
       const ctx1 = document.getElementById('barJamChart').getContext('2d');
       const jamLabels = ['09','10','11','12','13','14','15','16','17','18','19','20','21'];
 
@@ -591,7 +644,6 @@
         }
       });
 
-      // Grafik 2: Sumber Informasi All-Time
       const ctx2 = document.getElementById('lineSumberChart').getContext('2d');
       lineChartInst = new Chart(ctx2, {
         type: 'line',
@@ -625,12 +677,6 @@
 
     function showProfile() {
       alert("=== PROFIL PENGGUNA ===\n\nNama: Arif Maulana\nToko: mahadewa.id Cab. Palopo\nStatus: Admin / Staf Toko");
-    }
-
-    function handleLogout() {
-      if (confirm("Apakah Anda yakin ingin keluar dari sesi ini?")) {
-        window.location.reload();
-      }
     }
 
     document.getElementById("visitorForm").addEventListener("submit", function(e) {
