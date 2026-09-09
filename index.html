@@ -92,7 +92,6 @@
     .card-val { font-size: 17px; font-weight: 800; color: #0f172a; line-height: 1.2; margin-top: 2px; }
     .card.main-card .card-val { color: #ffffff; }
     
-    /* SUBTITEL AVERAGE HARIAN */
     .card-avg { font-size: 10px; font-weight: 600; color: #64748b; margin-top: 6px; padding-top: 4px; border-top: 1px dashed #f1f5f9; }
     .card.main-card .card-avg { color: #fee2e2; border-top-color: rgba(255,255,255,0.2); }
 
@@ -107,11 +106,17 @@
     .chart-wrapper { position: relative; width: 100%; height: 220px; }
 
     /* TABEL CLEAN UI */
-    .table-container { height: 220px; overflow-y: auto; font-size: 12px; }
+    .table-container { height: 240px; overflow-y: auto; font-size: 12px; }
     .custom-table { width: 100%; border-collapse: collapse; }
-    .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; }
+    .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10; }
     .custom-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
     .custom-table tr:hover td { background: #f8fafc; }
+
+    /* BADGES MARKETING PERFORMANCE */
+    .badge-status { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; display: inline-block; }
+    .badge-green { background: #dcfce7; color: #15803d; }
+    .badge-yellow { background: #fef9c3; color: #a16207; }
+    .badge-red { background: #fee2e2; color: #b91c1c; }
 
     /* FORM INPUT */
     .form-container { max-width: 440px; margin: 0 auto; width: 100%; }
@@ -192,6 +197,10 @@
       <button class="menu-item" onclick="switchTab('penjualan', this)">
         <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
         Penjualan
+      </button>
+      <button class="menu-item" onclick="switchTab('marketing-perf', this)">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+        Marketing
       </button>
       <button class="menu-item" onclick="switchTab('form-input', this)">
         <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
@@ -375,7 +384,42 @@
         </div>
       </div>
 
-      <!-- TAB 3: FORM INPUT -->
+      <!-- TAB 3: MARKETING PERFORMANCE (HALAMAN BARU) -->
+      <div id="marketing-perf" class="tab-page">
+        <div class="sales-grid">
+          <!-- GRAFIK COMPARISON PERFORMANSI MARKETING -->
+          <div class="box-panel full-width">
+            <div class="panel-header"><span>Perbandingan Revenue & Proyeksi Run Rate Marketing</span></div>
+            <div class="chart-wrapper" style="height: 260px;"><canvas id="barMktPerfChart"></canvas></div>
+          </div>
+
+          <!-- TABEL RUN RATE DETIL -->
+          <div class="box-panel full-width">
+            <div class="panel-header"><span>Tabel Kinerja Personal Marketing & Run Rate Proyeksi</span></div>
+            <div class="table-container" style="height: 320px;">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Personal</th>
+                    <th>Pencapaian (ACH)</th>
+                    <th>Target / Bln</th>
+                    <th>Target Sisa / Hari</th>
+                    <th>% ACH</th>
+                    <th>Avg / Hari</th>
+                    <th>Proyeksi Run Rate</th>
+                    <th>% Proyeksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tblMktPerf">
+                  <tr><td colspan="8" style="text-align:center;">Memuat data performa marketing...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: FORM INPUT -->
       <div id="form-input" class="tab-page">
         <div class="form-container">
           <div class="display-box-clean">
@@ -459,6 +503,7 @@
     let barWeeklyInst = null;
     let pieBrandInst = null;
     let barDeptInst = null;
+    let barMktPerfInst = null;
 
     let rawDailyData = null;
     let rawDateData = null;
@@ -511,7 +556,7 @@
       document.getElementById(tabId).classList.add('active');
       btn.classList.add('active');
 
-      const titleMap = { 'dashboard': 'Visitor', 'penjualan': 'Penjualan', 'form-input': 'Form Input' };
+      const titleMap = { 'dashboard': 'Visitor', 'penjualan': 'Penjualan', 'marketing-perf': 'Marketing', 'form-input': 'Form Input' };
       document.getElementById("headerPageTitle").innerText = titleMap[tabId] || 'Dashboard';
     }
 
@@ -527,10 +572,13 @@
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
     }
 
+    function formatPercent(val) {
+      return (Number(val || 0) * (val <= 1 ? 100 : 1)).toFixed(2) + "%";
+    }
+
     function renderUI(data) {
       if (!data) return;
 
-      // HITUNG HARI BERLALU BULAN INI UNTUK RATA-RATA
       const now = new Date();
       const currentDayOfMonth = Math.max(1, now.getDate());
 
@@ -655,6 +703,56 @@
         if (s.tekSales) s.tekSales.forEach(t => { teamHTML += `<tr><td><b>${t.nama}</b></td><td><span style="color:#16a34a; font-weight:bold;">Teknisi</span></td><td>${formatRupiah(t.pencapaian)}</td></tr>`; });
         
         if (teamHTML !== "") document.getElementById("tblTeamSales").innerHTML = teamHTML;
+
+        // 3. RENDER TABEL & GRAFIK MARKETING PERFORMANCE
+        if (s.mktPerformance && s.mktPerformance.length > 0) {
+          renderMktPerformance(s.mktPerformance);
+        }
+      }
+    }
+
+    function renderMktPerformance(list) {
+      // RENDER TABEL
+      var html = "";
+      var names = [];
+      var achData = [];
+      var targetData = [];
+      var runRateData = [];
+
+      list.forEach(item => {
+        names.push(item.nama);
+        achData.push(item.ach);
+        targetData.push(item.targetBln);
+        runRateData.push(item.runRate);
+
+        var pctVal = item.pctRunRate <= 1 ? item.pctRunRate * 100 : item.pctRunRate;
+        var badgeClass = "badge-green";
+        if (pctVal < 90) badgeClass = "badge-red";
+        else if (pctVal < 100) badgeClass = "badge-yellow";
+
+        html += `
+          <tr>
+            <td><b>${item.nama}</b></td>
+            <td>${formatRupiah(item.ach)}</td>
+            <td>${formatRupiah(item.targetBln)}</td>
+            <td style="color:${item.targetHari < 0 ? '#dc2626' : '#16a34a'}; font-weight:bold;">${formatRupiah(item.targetHari)}</td>
+            <td><b>${formatPercent(item.pctAch)}</b></td>
+            <td>${formatRupiah(item.avgHari)}</td>
+            <td><b>${formatRupiah(item.runRate)}</b></td>
+            <td><span class="badge-status ${badgeClass}">${formatPercent(item.pctRunRate)}</span></td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("tblMktPerf").innerHTML = html;
+
+      // UPDATE GRAFIK BAR COMPARISON
+      if (barMktPerfInst) {
+        barMktPerfInst.data.labels = names;
+        barMktPerfInst.data.datasets[0].data = achData;
+        barMktPerfInst.data.datasets[1].data = targetData;
+        barMktPerfInst.data.datasets[2].data = runRateData;
+        barMktPerfInst.update();
       }
     }
 
@@ -695,6 +793,25 @@
         type: 'doughnut',
         data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE, borderWidth: 0 }] },
         options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { boxWidth: 8, font: { size: 10 } } } } }
+      });
+
+      // MARKETING PERFORMANCE CHART
+      barMktPerfInst = new Chart(document.getElementById('barMktPerfChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: [],
+          datasets: [
+            { label: 'Pencapaian (ACH)', data: [], backgroundColor: '#dc2626', borderRadius: 4 },
+            { label: 'Target / Bulan', data: [], backgroundColor: '#cbd5e1', borderRadius: 4 },
+            { label: 'Proyeksi Run Rate', data: [], backgroundColor: '#0f172a', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 11 } } } },
+          scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false } } }
+        }
       });
     }
 
