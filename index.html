@@ -4,146 +4,138 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mahadewa.id - Executive Dashboard</title>
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- HIGHCHARTS 3D LIBRARIES -->
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f7f6f0; color: #222; min-height: 100vh; display: flex; flex-direction: column; }
+    body { background-color: #f4f5f7; color: #172b4d; min-height: 100vh; display: flex; flex-direction: column; }
 
     /* OVERLAY LOGIN */
     #loginOverlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(247, 246, 240, 0.98); backdrop-filter: blur(8px);
+      background: rgba(244, 245, 247, 0.98); backdrop-filter: blur(8px);
       display: flex; align-items: center; justify-content: center;
       z-index: 9999; padding: 20px;
     }
     .login-card {
       background: #ffffff; width: 100%; max-width: 360px;
-      padding: 28px 24px; border-radius: 16px;
-      border: 1px solid #e0dfd5; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center;
+      padding: 32px 24px; border-radius: 12px;
+      border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;
     }
-    .login-title { font-size: 20px; font-weight: 800; color: #be121c; margin-bottom: 4px; }
-    .login-sub { font-size: 12px; color: #666; margin-bottom: 20px; font-weight: 500; }
+    .login-title { font-size: 22px; font-weight: 800; color: #d32f2f; margin-bottom: 4px; }
+    .login-sub { font-size: 12px; color: #6b7280; margin-bottom: 24px; font-weight: 500; }
     .login-input {
-      width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;
+      width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;
       font-size: 14px; text-align: center; margin-bottom: 12px; outline: none;
-      letter-spacing: 2px; font-weight: bold;
+      letter-spacing: 2px; font-weight: bold; background: #f9fafb;
     }
-    .login-input:focus { border-color: #be121c; }
+    .login-input:focus { border-color: #d32f2f; background: #fff; }
     .btn-login {
-      width: 100%; background: #be121c; color: white; border: none; padding: 12px;
-      font-size: 14px; font-weight: bold; border-radius: 20px; cursor: pointer;
-      box-shadow: 0 4px 10px rgba(190, 18, 28, 0.25);
+      width: 100%; background: #d32f2f; color: white; border: none; padding: 12px;
+      font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2); transition: all 0.2s;
     }
-    .login-error { color: #be121c; font-size: 11px; margin-top: 8px; font-weight: 600; display: none; }
+    .btn-login:hover { background: #b71c1c; }
+    .login-error { color: #d32f2f; font-size: 11px; margin-top: 8px; font-weight: 600; display: none; }
 
-    /* HEADER */
+    /* HEADER CLEAN */
     header {
-      background: #ffffff; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #e0dfd5; flex-wrap: wrap; gap: 8px;
+      background: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #e5e7eb;
     }
-    .brand-section { display: flex; align-items: center; gap: 8px; }
-    .brand-name { font-size: 17px; font-weight: 800; color: #be121c; line-height: 1; }
-    .brand-sub { font-size: 10px; color: #666; font-weight: 600; display: block; margin-top: 2px; }
-    .page-title-badge { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: bold; margin-left: 8px; border-left: 2px solid #ddd; padding-left: 8px; }
-    .page-title-badge::before { content: ""; width: 6px; height: 6px; background: #be121c; border-radius: 50%; display: inline-block; }
-
-    .header-user { display: flex; align-items: center; gap: 6px; }
-    .user-name { font-style: italic; font-size: 12px; color: #444; font-weight: 500; }
-    .btn-badge-red { background: #be121c; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
-    .btn-badge-gray { background: #e0ded7; color: #333; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .brand-section { display: flex; align-items: center; gap: 12px; }
+    .brand-name { font-size: 18px; font-weight: 800; color: #d32f2f; line-height: 1; }
+    .brand-sub { font-size: 10px; color: #6b7280; font-weight: 600; display: block; margin-top: 3px; }
+    .page-title-badge { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #374151; margin-left: 12px; border-left: 2px solid #e5e7eb; padding-left: 12px; }
+    
+    .header-user { display: flex; align-items: center; gap: 10px; }
+    .user-name { font-size: 12px; color: #4b5563; font-weight: 600; }
+    .btn-badge-red { background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .btn-badge-gray { background: #f3f4f6; color: #4b5563; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
 
     /* LAYOUT & SIDEBAR */
     .container { display: flex; flex: 1; }
-    .sidebar { width: 160px; padding: 12px 8px; background: transparent; flex-shrink: 0; }
+    .sidebar { width: 200px; padding: 20px 12px; background: #ffffff; border-right: 1px solid #e5e7eb; flex-shrink: 0; }
     .menu-item {
-      display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 8px;
-      border: none; background: transparent; font-size: 12px; font-weight: 700; color: #444; cursor: pointer; margin-bottom: 4px; text-align: left;
+      display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: none; background: transparent; font-size: 13px; font-weight: 600; color: #4b5563; cursor: pointer; margin-bottom: 4px; text-align: left;
+      transition: all 0.2s;
     }
-    .menu-item.active { background: #be121c; color: white; }
-    .menu-item svg { fill: currentColor; width: 15px; height: 15px; }
+    .menu-item:hover { background: #f9fafb; color: #111827; }
+    .menu-item.active { background: #dc2626; color: white; }
+    .menu-item svg { fill: currentColor; width: 16px; height: 16px; }
 
-    .content { flex: 1; padding: 12px 16px; width: 100%; overflow-x: hidden; }
+    .content { flex: 1; padding: 20px 24px; width: 100%; overflow-x: hidden; }
     .tab-page { display: none; }
     .tab-page.active { display: block; }
 
-    /* DASHBOARD CARDS & GRID */
-    .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px; }
+    /* KPI CARDS CLEAN */
+    .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
     .card { 
-      background: #ffffff; border-radius: 8px; padding: 10px; position: relative; 
-      border: 1px solid #e0dfd5; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+      background: #ffffff; border-radius: 10px; padding: 14px 16px; 
+      border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
-    .card.main-card { background: #be121c; color: white; border: none; }
-    .card-head { display: flex; align-items: center; justify-content: flex-end; font-size: 10px; font-weight: 600; opacity: 0.9; margin-bottom: 4px; color: #555; }
-    .card.main-card .card-head { color: white; }
-    .card-body { display: flex; align-items: center; gap: 8px; }
-    .card-icon {
-      width: 30px; height: 30px; background: #f5f4ed; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;
-    }
-    .card.main-card .card-icon { background: rgba(255,255,255,0.2); }
-    .card-icon img { width: 16px; height: 16px; object-fit: contain; }
+    .card.main-card { background: #dc2626; color: white; border: none; }
+    .card-head { font-size: 11px; font-weight: 600; color: #6b7280; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card.main-card .card-head { color: #fecaca; }
+    .card-val { font-size: 18px; font-weight: 800; color: #111827; line-height: 1.2; }
+    .card.main-card .card-val { color: #ffffff; }
 
-    .card-val { font-size: 18px; font-weight: 800; line-height: 1; color: #111; }
-    .card.main-card .card-val { color: white; }
-    .card-unit { font-size: 9px; margin-left: 2px; font-weight: normal; color: #666; }
-    .card.main-card .card-unit { color: white; }
-
-    .dash-bottom { display: grid; grid-template-columns: 1fr 1fr 240px; gap: 12px; }
+    /* DASHBOARD GRID PANELS */
+    .sales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .box-panel { 
-      background: #ffffff; border-radius: 8px; padding: 12px; position: relative; 
-      border: 1px solid #e0dfd5; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-      height: 250px; display: flex; flex-direction: column;
+      background: #ffffff; border-radius: 10px; padding: 16px; 
+      border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      display: flex; flex-direction: column;
     }
     .box-panel.full-width { grid-column: span 2; }
-    .panel-header { font-size: 11px; font-weight: bold; color: #444; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
-    .chart-wrapper { position: relative; flex: 1; width: 100%; min-height: 0; }
+    .panel-header { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .chart-wrapper { width: 100%; height: 260px; }
 
-    /* TAB PENJUALAN GRID LAYOUT */
-    .sales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-    .table-container { height: 190px; overflow-y: auto; font-size: 11px; }
+    /* TABEL CLEAN UI */
+    .table-container { height: 240px; overflow-y: auto; font-size: 12px; }
     .custom-table { width: 100%; border-collapse: collapse; }
-    .custom-table th { background: #f4f3ec; padding: 6px 8px; text-align: left; font-size: 10px; color: #555; position: sticky; top: 0; }
-    .custom-table td { padding: 6px 8px; border-bottom: 1px dashed #eee; }
-    .custom-table tr:last-child td { border-bottom: none; }
+    .custom-table th { background: #f9fafb; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #6b7280; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; }
+    .custom-table td { padding: 10px 12px; border-bottom: 1px solid #f3f4f6; color: #374151; }
+    .custom-table tr:hover td { background: #f9fafb; }
 
-    /* FORM INPUT CONTAINER */
-    .form-container { max-width: 480px; margin: 0 auto; width: 100%; }
+    /* FORM INPUT */
+    .form-container { max-width: 460px; margin: 0 auto; width: 100%; }
     .display-box-clean {
-      background: #ffffff; border-radius: 10px; padding: 10px 14px; border: 1px solid #e0dfd5;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02); margin-bottom: 10px;
+      background: #ffffff; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02); margin-bottom: 16px;
     }
-    .clean-header { display: flex; justify-content: space-between; font-size: 11px; color: #666; font-weight: 500; border-bottom: 1px solid #f0f0f0; padding-bottom: 6px; margin-bottom: 8px; }
-    .clean-hero { text-align: center; padding: 0 0 6px 0; }
-    .clean-number { font-size: 40px; font-weight: 900; color: #111; line-height: 1; }
-    .clean-label { font-size: 9px; font-weight: 700; color: #777; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+    .clean-header { display: flex; justify-content: space-between; font-size: 11px; color: #6b7280; font-weight: 600; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin-bottom: 12px; }
+    .clean-hero { text-align: center; padding-bottom: 12px; }
+    .clean-number { font-size: 42px; font-weight: 900; color: #111827; line-height: 1; }
+    .clean-label { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+    .clean-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: #f9fafb; border-radius: 8px; padding: 8px; text-align: center; margin-bottom: 12px; }
+    .clean-val { font-size: 16px; font-weight: 800; color: #dc2626; }
+    .clean-sub { font-size: 9px; color: #6b7280; font-weight: 600; margin-top: 2px; }
+    .clean-sources { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px; }
+    .src-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #4b5563; background: #f3f4f6; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+    .src-badge strong { color: #dc2626; }
 
-    .clean-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #f9f9f6; border-radius: 6px; padding: 6px; text-align: center; margin-bottom: 8px; }
-    .clean-val { font-size: 15px; font-weight: 800; color: #be121c; }
-    .clean-sub { font-size: 9px; color: #555; font-weight: 500; margin-top: 1px; }
-
-    .clean-sources { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px; }
-    .src-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #444; background: #f4f3ec; padding: 3px 8px; border-radius: 12px; font-weight: 600; border: 1px solid #e5e3d8; }
-    .src-badge svg { width: 11px; height: 11px; fill: #555; flex-shrink: 0; }
-    .src-badge strong { color: #be121c; margin-left: 2px; }
-
-    .input-card { background: #ffffff; border-radius: 10px; padding: 12px 14px; border: 1px solid #e0dfd5; margin-bottom: 10px; }
-    .form-group { margin-bottom: 10px; }
-    .form-group label { font-size: 11px; font-weight: 700; display: block; margin-bottom: 4px; color: #222; }
-    .form-control { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 12px; background: #fff; }
-    
-    .btn-submit-red { width: 100%; background: #be121c; color: white; border: none; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 20px; cursor: pointer; box-shadow: 0 3px 8px rgba(190, 18, 28, 0.2); }
+    .input-card { background: #ffffff; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb; margin-bottom: 16px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { font-size: 11px; font-weight: 700; color: #374151; display: block; margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 12px; background: #fff; }
+    .btn-submit-red { width: 100%; background: #dc2626; color: white; border: none; padding: 12px; font-size: 13px; font-weight: 700; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2); }
     .hidden { display: none; }
 
-    /* MEDIA QUERIES (HP) */
+    /* RESPONSIVE */
     @media (max-width: 768px) {
       .container { flex-direction: column; }
-      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px 12px; border-bottom: 1px solid #e0dfd5; background: #ffffff; overflow-x: auto; }
-      .menu-item { margin-bottom: 0; justify-content: center; padding: 6px 10px; flex-shrink: 0; }
-      .content { padding: 10px; }
+      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px 12px; border-right: none; border-bottom: 1px solid #e5e7eb; overflow-x: auto; }
+      .menu-item { margin-bottom: 0; justify-content: center; padding: 8px 12px; flex-shrink: 0; }
+      .content { padding: 12px; }
       .top-cards { grid-template-columns: repeat(2, 1fr); }
       .card.main-card { grid-column: span 2; }
-      .dash-bottom, .sales-grid { grid-template-columns: 1fr; }
+      .sales-grid { grid-template-columns: 1fr; }
       .box-panel.full-width { grid-column: span 1; }
       .user-name { display: none; }
     }
@@ -155,21 +147,17 @@
   <div id="loginOverlay">
     <div class="login-card">
       <div class="login-title">mahadewa.id</div>
-      <div class="login-sub">Masukkan kata sandi untuk mengakses dashboard</div>
+      <div class="login-sub">Masukkan kata sandi akses sistem</div>
       <input type="password" id="passInput" class="login-input" placeholder="••••••••" onkeyup="checkEnterKey(event)">
       <button class="btn-login" onclick="validatePassword()">Masuk</button>
-      <div id="loginError" class="login-error">Kata sandi salah! Silakan coba lagi.</div>
+      <div id="loginError" class="login-error">Kata sandi salah!</div>
     </div>
   </div>
 
   <!-- HEADER -->
   <header>
     <div class="brand-section">
-      <img src="https://lh3.googleusercontent.com/d/FILE_ID_ANDA" alt="mahadewa.id" style="height: 26px; width: auto; object-fit: contain;" onerror="this.style.display='none'">
-      <div>
-        <span class="brand-name">mahadewa.id</span>
-        <span class="brand-sub">Cab. Palopo</span>
-      </div>
+      <span class="brand-name">mahadewa.id</span>
       <div class="page-title-badge" id="headerPageTitle">Visitor</div>
     </div>
     <div class="header-user">
@@ -205,71 +193,47 @@
         <div class="top-cards">
           <div class="card main-card">
             <div class="card-head">Total Pelanggan</div>
-            <div class="card-body">
-              <div class="card-icon"><img src="https://cdn-icons-png.flaticon.com/512/33/33308.png"></div>
-              <div><span class="card-val" id="dTotalBulan">0</span><span class="card-unit">Orang</span></div>
-            </div>
+            <div class="card-val" id="dTotalBulan">0</div>
           </div>
           <div class="card">
             <div class="card-head">Transaksi</div>
-            <div class="card-body">
-              <div class="card-icon"><img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png"></div>
-              <div><span class="card-val" id="dTransaksi">0</span><span class="card-unit">Orang</span></div>
-            </div>
+            <div class="card-val" id="dTransaksi">0</div>
           </div>
           <div class="card">
-            <div class="card-head">Hanya lihat-lihat</div>
-            <div class="card-body">
-              <div class="card-icon"><img src="https://cdn-icons-png.flaticon.com/512/709/709612.png"></div>
-              <div><span class="card-val" id="dLihat">0</span><span class="card-unit">Orang</span></div>
-            </div>
+            <div class="card-head">Hanya Lihat-Lihat</div>
+            <div class="card-val" id="dLihat">0</div>
           </div>
           <div class="card">
             <div class="card-head">Cek Harga</div>
-            <div class="card-body">
-              <div class="card-icon"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"></div>
-              <div><span class="card-val" id="dHarga">0</span><span class="card-unit">Orang</span></div>
-            </div>
+            <div class="card-val" id="dHarga">0</div>
           </div>
           <div class="card">
-            <div class="card-head">Cari barang (Kosong)</div>
-            <div class="card-body">
-              <div class="card-icon"><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png"></div>
-              <div><span class="card-val" id="dKosong">0</span><span class="card-unit">Orang</span></div>
-            </div>
+            <div class="card-head">Stok Kosong</div>
+            <div class="card-val" id="dKosong">0</div>
           </div>
         </div>
 
-        <div class="dash-bottom">
+        <div class="sales-grid">
           <div class="box-panel">
             <div class="panel-header">
-              <span>Jam Ramai</span>
-              <input type="date" id="filterDate" class="date-picker-input" onchange="selectSpecificDate(this.value)">
+              <span>Jam Ramai (3D)</span>
+              <input type="date" id="filterDate" style="font-size:11px; padding:2px 6px; border:1px solid #d1d5db; border-radius:4px;" onchange="selectSpecificDate(this.value)">
             </div>
-            <div class="day-selector">
-              <button class="day-btn" onclick="selectDay(1, this)">SEN</button>
-              <button class="day-btn" onclick="selectDay(2, this)">SEL</button>
-              <button class="day-btn" onclick="selectDay(3, this)">RAB</button>
-              <button class="day-btn" onclick="selectDay(4, this)">KAM</button>
-              <button class="day-btn" onclick="selectDay(5, this)">JUM</button>
-              <button class="day-btn" onclick="selectDay(6, this)">SAB</button>
-              <button class="day-btn" onclick="selectDay(0, this)">MIN</button>
-            </div>
-            <div class="chart-wrapper"><canvas id="barJamChart"></canvas></div>
+            <div class="chart-wrapper" id="chartJam3D"></div>
           </div>
 
           <div class="box-panel">
-            <div class="panel-header">
-              <span>Sumber Informasi</span>
-              <span style="font-weight:normal; color:#888;">Keseluruhan Data</span>
-            </div>
-            <div class="chart-wrapper"><canvas id="lineSumberChart"></canvas></div>
+            <div class="panel-header"><span>Sumber Informasi (3D Donut)</span></div>
+            <div class="chart-wrapper" id="chartSumber3D"></div>
           </div>
 
-          <div class="barang-card">
-            <div class="barang-title">Barang Paling dicari</div>
-            <div class="barang-list" id="barangRankingBox">
-              <div style="text-align: center; color: #888;">Memuat data...</div>
+          <div class="box-panel full-width">
+            <div class="panel-header"><span>Barang Paling Dicari</span></div>
+            <div class="table-container">
+              <table class="custom-table">
+                <thead><tr><th>#</th><th>Nama Produk / Barang</th><th>Jumlah Pencarian</th></tr></thead>
+                <tbody id="tblBarangRank"><tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -277,68 +241,55 @@
 
       <!-- TAB 2: PENJUALAN -->
       <div id="penjualan" class="tab-page">
-        <!-- SUMMARY CARDS TOKO & DEVISI -->
         <div class="top-cards">
           <div class="card main-card">
             <div class="card-head">Pencapaian Toko</div>
-            <div class="card-body">
-              <div><span class="card-val" id="pPencapaianToko">Rp 0</span></div>
-            </div>
+            <div class="card-val" id="pPencapaianToko">Rp 0</div>
           </div>
           <div class="card">
             <div class="card-head">Total Invoice</div>
-            <div class="card-body">
-              <div><span class="card-val" id="pTotalInv">0</span><span class="card-unit">Invoice</span></div>
-            </div>
+            <div class="card-val" id="pTotalInv">0</div>
           </div>
           <div class="card">
-            <div class="card-head">Pencapaian Marketing</div>
-            <div class="card-body">
-              <div><span class="card-val" id="pMktVal">Rp 0</span></div>
-            </div>
+            <div class="card-head">Marketing</div>
+            <div class="card-val" id="pMktVal">Rp 0</div>
           </div>
           <div class="card">
-            <div class="card-head">Pencapaian Admin</div>
-            <div class="card-body">
-              <div><span class="card-val" id="pAdmVal">Rp 0</span></div>
-            </div>
+            <div class="card-head">Admin</div>
+            <div class="card-val" id="pAdmVal">Rp 0</div>
           </div>
           <div class="card">
-            <div class="card-head">Pencapaian Teknisi</div>
-            <div class="card-body">
-              <div><span class="card-val" id="pTekVal">Rp 0</span></div>
-            </div>
+            <div class="card-head">Teknisi</div>
+            <div class="card-val" id="pTekVal">Rp 0</div>
           </div>
         </div>
 
-        <!-- CHARTS & TABLES GRID -->
         <div class="sales-grid">
-          
-          <!-- CHART: DAILY RESULTS (TANGGAL 1 - 31) -->
+          <!-- 3D DAILY CHART -->
           <div class="box-panel full-width">
-            <div class="panel-header"><span>Daily Results (Omzet Harian Tgl 1 - 31)</span></div>
-            <div class="chart-wrapper"><canvas id="barDailyChart"></canvas></div>
+            <div class="panel-header"><span>Daily Results (Omzet Harian Tgl 1-31 - 3D Column)</span></div>
+            <div class="chart-wrapper" id="chartDaily3D"></div>
           </div>
 
-          <!-- CHART: WEEKLY ACHIEVEMENTS -->
+          <!-- 3D WEEKLY CHART -->
           <div class="box-panel">
-            <div class="panel-header"><span>Weekly Achievements (Minggu 1 - 5)</span></div>
-            <div class="chart-wrapper"><canvas id="barWeeklyChart"></canvas></div>
+            <div class="panel-header"><span>Weekly Achievements (3D)</span></div>
+            <div class="chart-wrapper" id="chartWeekly3D"></div>
           </div>
 
-          <!-- CHART: BY BRAND -->
+          <!-- 3D BRAND DONUT CHART -->
           <div class="box-panel">
-            <div class="panel-header"><span>Penjualan By Brand (Units)</span></div>
-            <div class="chart-wrapper"><canvas id="pieBrandChart"></canvas></div>
+            <div class="panel-header"><span>Penjualan By Brand (3D Donut)</span></div>
+            <div class="chart-wrapper" id="chartBrand3D"></div>
           </div>
 
-          <!-- CHART: BY DEPARTEMEN -->
+          <!-- 3D DEPT PIE CHART -->
           <div class="box-panel">
-            <div class="panel-header"><span>Pangsa Pasar By Department</span></div>
-            <div class="chart-wrapper"><canvas id="barDeptChart"></canvas></div>
+            <div class="panel-header"><span>Pangsa Pasar By Department (3D Pie)</span></div>
+            <div class="chart-wrapper" id="chartDept3D"></div>
           </div>
 
-          <!-- TABLE 1: BEST SELLER -->
+          <!-- BEST SELLER TABLE -->
           <div class="box-panel">
             <div class="panel-header"><span>Top Best Seller Product</span></div>
             <div class="table-container">
@@ -349,7 +300,7 @@
             </div>
           </div>
 
-          <!-- TABLE 2: PERFORMA SALES TIM -->
+          <!-- TEAM SALES TABLE -->
           <div class="box-panel full-width">
             <div class="panel-header"><span>Pencapaian Tim (By Sales Name)</span></div>
             <div class="table-container">
@@ -359,7 +310,6 @@
               </table>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -368,17 +318,17 @@
         <div class="form-container">
           <div class="display-box-clean">
             <div class="clean-header">
-              <span id="txtTanggalHariIni">Rabu, 09 Sep 2026</span>
-              <span id="txtJamSekarang" style="color: #be121c; font-weight: bold;">Jam 00:00</span>
+              <span id="txtTanggalHariIni">Senin, 09 Sep 2026</span>
+              <span id="txtJamSekarang" style="color: #dc2626; font-weight: bold;">Jam 00:00</span>
             </div>
             <div class="clean-hero">
               <div class="clean-number" id="fHariIni">0</div>
-              <div class="clean-label">Total Pengunjung Hari Ini</div>
+              <div class="clean-label">Pengunjung Hari Ini</div>
             </div>
             <div class="clean-grid">
-              <div><div class="clean-val" id="fLihat">0</div><div class="clean-sub">Lihat-lihat</div></div>
-              <div><div class="clean-val" id="fHarga">0</div><div class="clean-sub">Cek Harga</div></div>
-              <div><div class="clean-val" id="fKosong">0</div><div class="clean-sub">Stok Kosong</div></div>
+              <div><div class="clean-val" id="fLihat">0</div><div class="clean-sub">Lihat</div></div>
+              <div><div class="clean-val" id="fHarga">0</div><div class="clean-sub">Harga</div></div>
+              <div><div class="clean-val" id="fKosong">0</div><div class="clean-sub">Kosong</div></div>
               <div><div class="clean-val" id="fTransaksi">0</div><div class="clean-sub">Transaksi</div></div>
             </div>
             <div class="clean-sources">
@@ -436,13 +386,9 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
     const CORRECT_PASSWORD = "M@had3wa2026";
 
-    let barChartInst = null;
-    let lineChartInst = null;
-    let pieBrandInst = null;
-    let barDeptInst = null;
-    let barDailyInst = null;
-    let barWeeklyInst = null;
-    
+    // PALETTE WARNA SERAGAM ELEGAN (MAHADEWA RED ACCENT)
+    const MAHADEWA_COLORS = ['#dc2626', '#991b1b', '#7f1d1d', '#f87171', '#4b5563', '#374151', '#1f2937', '#9ca3af'];
+
     let rawDailyData = null;
     let rawDateData = null;
 
@@ -476,7 +422,6 @@
 
     function initApp() {
       updateDateTime();
-      initCharts();
       fetchStats();
       setInterval(updateDateTime, 10000);
     }
@@ -536,10 +481,9 @@
           document.getElementById("sLewat").innerText = v.sumberHariIni.lewatDepan || 0;
         }
 
-        const rankingBox = document.getElementById("barangRankingBox");
         if (v.topBarang && v.topBarang.length > 0) {
-          rankingBox.innerHTML = v.topBarang.map((item, i) => `
-            <div class="barang-row"><span>${i + 1}. ${item.nama}</span><span style="font-weight:bold; color:#be121c;">: ${item.jumlah} Pelanggan</span></div>
+          document.getElementById("tblBarangRank").innerHTML = v.topBarang.map((item, i) => `
+            <tr><td>${i + 1}</td><td><b>${item.nama}</b></td><td>${item.jumlah} Pelanggan</td></tr>
           `).join('');
         }
 
@@ -547,14 +491,17 @@
         rawDateData = v.dateHourlyData;
         if (v.todayStr) document.getElementById("filterDate").value = v.todayStr;
 
-        const todayIndex = v.currentDay !== undefined ? v.currentDay : new Date().getDay();
-        const btnNodes = document.querySelectorAll('.day-btn');
-        const dayMap = [6, 0, 1, 2, 3, 4, 5];
-        if(btnNodes[dayMap[todayIndex]]) selectDay(todayIndex, btnNodes[dayMap[todayIndex]]);
-
-        if (v.sumberTotal && lineChartInst) {
-          lineChartInst.data.datasets[0].data = [v.sumberTotal.tiktok||0, v.sumberTotal.instagram||0, v.sumberTotal.rekan||0, v.sumberTotal.googleMaps||0, v.sumberTotal.lewatDepan||0];
-          lineChartInst.update();
+        // RENDER 3D JAM RAMAI & SUMBER
+        renderJam3D(rawDailyData ? rawDailyData[v.currentDay || 0].slice(9, 22) : []);
+        
+        if (v.sumberTotal) {
+          renderSumber3D([
+            ['TikTok', v.sumberTotal.tiktok || 0],
+            ['Instagram', v.sumberTotal.instagram || 0],
+            ['Rekan', v.sumberTotal.rekan || 0],
+            ['Google Maps', v.sumberTotal.googleMaps || 0],
+            ['Lewat Depan', v.sumberTotal.lewatDepan || 0]
+          ]);
         }
       }
 
@@ -570,110 +517,118 @@
           document.getElementById("pTekVal").innerText = formatRupiah(s.kpi.pencapaianTeknisi);
         }
 
-        // DAILY RESULTS CHART
-        if (s.dailyResults && barDailyInst) {
-          barDailyInst.data.labels = s.dailyResults.map(d => d.tgl);
-          barDailyInst.data.datasets[0].data = s.dailyResults.map(d => d.omzet);
-          barDailyInst.update();
+        // RENDER 3D DAILY RESULTS
+        if (s.dailyResults) {
+          renderDaily3D(s.dailyResults.map(d => d.tgl), s.dailyResults.map(d => d.omzet));
         }
 
-        // WEEKLY ACHIEVEMENTS CHART
-        if (s.weeklyResults && barWeeklyInst) {
-          barWeeklyInst.data.datasets[0].data = s.weeklyResults;
-          barWeeklyInst.update();
+        // RENDER 3D WEEKLY
+        if (s.weeklyResults) {
+          renderWeekly3D(s.weeklyResults);
         }
 
-        // CHART BRAND
-        if (s.byBrand && s.byBrand.length > 0 && pieBrandInst) {
-          pieBrandInst.data.labels = s.byBrand.map(b => b.brand);
-          pieBrandInst.data.datasets[0].data = s.byBrand.map(b => b.unit);
-          pieBrandInst.update();
+        // RENDER 3D BRAND DONUT
+        if (s.byBrand) {
+          renderBrand3D(s.byBrand.map(b => [b.brand, b.unit]));
         }
 
-        // CHART DEPARTEMEN
-        if (s.byDept && s.byDept.length > 0 && barDeptInst) {
-          barDeptInst.data.labels = s.byDept.map(d => d.dept);
-          barDeptInst.data.datasets[0].data = s.byDept.map(d => d.nilai);
-          barDeptInst.update();
+        // RENDER 3D DEPT PIE
+        if (s.byDept) {
+          renderDept3D(s.byDept.map(d => [d.dept, d.nilai]));
         }
 
-        // BEST SELLER TABLE
+        // BEST SELLER
         if (s.bestSeller && s.bestSeller.length > 0) {
           document.getElementById("tblBestSeller").innerHTML = s.bestSeller.map((b, i) => `
             <tr><td>${i+1}</td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td>${formatRupiah(b.total)}</td></tr>
           `).join('');
         }
 
-        // TABEL PENCAPAIAN TIM
+        // TEAM SALES
         var teamHTML = "";
-        if (s.mktSales) s.mktSales.forEach(m => { teamHTML += `<tr><td><b>${m.nama}</b></td><td><span style="color:#be121c; font-weight:bold;">Marketing</span></td><td>${formatRupiah(m.pencapaian)}</td></tr>`; });
-        if (s.admSales) s.admSales.forEach(a => { teamHTML += `<tr><td><b>${a.nama}</b></td><td><span style="color:#333; font-weight:bold;">Admin</span></td><td>${formatRupiah(a.pencapaian)}</td></tr>`; });
-        if (s.tekSales) s.tekSales.forEach(t => { teamHTML += `<tr><td><b>${t.nama}</b></td><td><span style="color:#2ecc71; font-weight:bold;">Teknisi</span></td><td>${formatRupiah(t.pencapaian)}</td></tr>`; });
+        if (s.mktSales) s.mktSales.forEach(m => { teamHTML += `<tr><td><b>${m.nama}</b></td><td><span style="color:#dc2626; font-weight:bold;">Marketing</span></td><td>${formatRupiah(m.pencapaian)}</td></tr>`; });
+        if (s.admSales) s.admSales.forEach(a => { teamHTML += `<tr><td><b>${a.nama}</b></td><td><span style="color:#4b5563; font-weight:bold;">Admin</span></td><td>${formatRupiah(a.pencapaian)}</td></tr>`; });
+        if (s.tekSales) s.tekSales.forEach(t => { teamHTML += `<tr><td><b>${t.nama}</b></td><td><span style="color:#16a34a; font-weight:bold;">Teknisi</span></td><td>${formatRupiah(t.pencapaian)}</td></tr>`; });
         
-        if (teamHTML !== "") {
-          document.getElementById("tblTeamSales").innerHTML = teamHTML;
-        }
+        if (teamHTML !== "") document.getElementById("tblTeamSales").innerHTML = teamHTML;
       }
     }
 
-    function selectDay(dayNum, btn) {
-      document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-      if(btn) btn.classList.add('active');
-      if (rawDailyData && rawDailyData[dayNum] && barChartInst) {
-        barChartInst.data.datasets[0].data = rawDailyData[dayNum].slice(9, 22);
-        barChartInst.update();
-      }
+    // ==========================================
+    // FUNGSI RENDER HIGHCHARTS 3D ELEGAN
+    // ==========================================
+    function renderJam3D(dataJam) {
+      Highcharts.chart('chartJam3D', {
+        chart: { type: 'column', options3d: { enabled: true, alpha: 10, beta: 15, depth: 50, viewDistance: 25 }, backgroundColor: 'transparent' },
+        title: { text: null },
+        credits: { enabled: false },
+        xAxis: { categories: ['09','10','11','12','13','14','15','16','17','18','19','20','21'], labels: { style: { fontSize: '10px' } } },
+        yAxis: { title: { text: null }, visible: false },
+        plotOptions: { column: { depth: 25, colorByPoint: false, color: '#dc2626', borderRadius: 4 } },
+        series: [{ name: 'Pengunjung', data: dataJam, showInLegend: false }]
+      });
+    }
+
+    function renderSumber3D(dataSumber) {
+      Highcharts.chart('chartSumber3D', {
+        chart: { type: 'pie', options3d: { enabled: true, alpha: 45, beta: 0 }, backgroundColor: 'transparent' },
+        title: { text: null },
+        credits: { enabled: false },
+        plotOptions: { pie: { innerSize: 100, depth: 45, colors: MAHADEWA_COLORS } },
+        series: [{ name: 'Total', data: dataSumber }]
+      });
+    }
+
+    function renderDaily3D(labels, dataOmzet) {
+      Highcharts.chart('chartDaily3D', {
+        chart: { type: 'column', options3d: { enabled: true, alpha: 12, beta: 12, depth: 40 }, backgroundColor: 'transparent' },
+        title: { text: null },
+        credits: { enabled: false },
+        xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
+        yAxis: { title: { text: null } },
+        plotOptions: { column: { depth: 30, color: '#dc2626', borderRadius: 3 } },
+        series: [{ name: 'Omzet (Rp)', data: dataOmzet, showInLegend: false }]
+      });
+    }
+
+    function renderWeekly3D(dataWeekly) {
+      Highcharts.chart('chartWeekly3D', {
+        chart: { type: 'column', options3d: { enabled: true, alpha: 15, beta: 15, depth: 50 }, backgroundColor: 'transparent' },
+        title: { text: null },
+        credits: { enabled: false },
+        xAxis: { categories: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4', 'Minggu 5'] },
+        yAxis: { title: { text: null } },
+        plotOptions: { column: { depth: 35, color: '#991b1b', borderRadius: 4 } },
+        series: [{ name: 'Omzet', data: dataWeekly, showInLegend: false }]
+      });
+    }
+
+    function renderBrand3D(dataBrand) {
+      Highcharts.chart('chartBrand3D', {
+        chart: { type: 'pie', options3d: { enabled: true, alpha: 45 }, backgroundColor: 'transparent' },
+        title: { text: null },
+        credits: { enabled: false },
+        plotOptions: { pie: { innerSize: 90, depth: 45, colors: MAHADEWA_COLORS } },
+        series: [{ name: 'Unit Penjualan', data: dataBrand }]
+      });
+    }
+
+    function renderDept3D(dataDept) {
+      Highcharts.chart('chartDept3D', {
+        chart: { type: 'pie', options3d: { enabled: true, alpha: 45 }, backgroundColor: 'transparent' },
+        title: { text: null },
+        credits: { enabled: false },
+        plotOptions: { pie: { depth: 45, colors: MAHADEWA_COLORS } },
+        series: [{ name: 'Pencapaian', data: dataDept }]
+      });
     }
 
     function selectSpecificDate(selectedDate) {
-      document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-      if (rawDateData && rawDateData[selectedDate] && barChartInst) {
-        barChartInst.data.datasets[0].data = rawDateData[selectedDate].slice(9, 22);
-        barChartInst.update();
-      } else if (barChartInst) {
-        barChartInst.data.datasets[0].data = new Array(13).fill(0);
-        barChartInst.update();
+      if (rawDateData && rawDateData[selectedDate]) {
+        renderJam3D(rawDateData[selectedDate].slice(9, 22));
+      } else {
+        renderJam3D(new Array(13).fill(0));
       }
-    }
-
-    function initCharts() {
-      // VISITOR CHARTS
-      barChartInst = new Chart(document.getElementById('barJamChart').getContext('2d'), {
-        type: 'bar',
-        data: { labels: ['09','10','11','12','13','14','15','16','17','18','19','20','21'], datasets: [{ data: new Array(13).fill(0), backgroundColor: '#be121c', borderRadius: 3 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
-      });
-
-      lineChartInst = new Chart(document.getElementById('lineSumberChart').getContext('2d'), {
-        type: 'line',
-        data: { labels: ['TikTok', 'Instagram', 'Rekan', 'Google Maps', 'Lewat Depan'], datasets: [{ data: [0, 0, 0, 0, 0], borderColor: '#be121c', borderWidth: 2, tension: 0.4 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#eee' }, ticks: { precision: 0 } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
-      });
-
-      // SALES CHARTS
-      barDailyInst = new Chart(document.getElementById('barDailyChart').getContext('2d'), {
-        type: 'bar',
-        data: { labels: Array.from({length: 31}, (_, i) => i + 1), datasets: [{ label: 'Omzet Harian', data: [], backgroundColor: '#be121c', borderRadius: 3 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#eee' } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
-      });
-
-      barWeeklyInst = new Chart(document.getElementById('barWeeklyChart').getContext('2d'), {
-        type: 'bar',
-        data: { labels: ['M1', 'M2', 'M3', 'M4', 'M5'], datasets: [{ label: 'Omzet Mingguan', data: [], backgroundColor: '#800000', borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#eee' } }, x: { grid: { display: false } } } }
-      });
-
-      pieBrandInst = new Chart(document.getElementById('pieBrandChart').getContext('2d'), {
-        type: 'doughnut',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#be121c','#333333','#e67e22','#2ecc71','#3498db','#9b59b6','#16a085','#f1c40f'] }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } }
-      });
-
-      barDeptInst = new Chart(document.getElementById('barDeptChart').getContext('2d'), {
-        type: 'doughnut',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#e60000', '#990000', '#cc0000', '#ff3333', '#800000', '#d9534f', '#f0ad4e', '#5bc0de', '#337ab7', '#555555'], borderWidth: 1 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 9 } } } } }
-      });
     }
 
     function toggleBarangInput() {
