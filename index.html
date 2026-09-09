@@ -5,67 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mahadewa.id - Executive Dashboard</title>
   
-  <!-- HIGHCHARTS 3D LIBRARIES -->
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/highcharts-3d.js"></script>
-  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f4f5f7; color: #172b4d; min-height: 100vh; display: flex; flex-direction: column; }
+    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
 
     /* OVERLAY LOGIN */
     #loginOverlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(244, 245, 247, 0.98); backdrop-filter: blur(8px);
+      background: rgba(248, 250, 252, 0.98); backdrop-filter: blur(8px);
       display: flex; align-items: center; justify-content: center;
       z-index: 9999; padding: 20px;
     }
     .login-card {
       background: #ffffff; width: 100%; max-width: 360px;
       padding: 32px 24px; border-radius: 12px;
-      border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;
+      border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03); text-align: center;
     }
-    .login-title { font-size: 22px; font-weight: 800; color: #d32f2f; margin-bottom: 4px; }
-    .login-sub { font-size: 12px; color: #6b7280; margin-bottom: 24px; font-weight: 500; }
+    .login-title { font-size: 20px; font-weight: 800; color: #dc2626; margin-bottom: 4px; }
+    .login-sub { font-size: 12px; color: #64748b; margin-bottom: 24px; font-weight: 500; }
     .login-input {
-      width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;
+      width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px;
       font-size: 14px; text-align: center; margin-bottom: 12px; outline: none;
-      letter-spacing: 2px; font-weight: bold; background: #f9fafb;
+      letter-spacing: 2px; font-weight: bold; background: #f8fafc;
     }
-    .login-input:focus { border-color: #d32f2f; background: #fff; }
+    .login-input:focus { border-color: #dc2626; background: #fff; }
     .btn-login {
-      width: 100%; background: #d32f2f; color: white; border: none; padding: 12px;
-      font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer;
-      box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2); transition: all 0.2s;
+      width: 100%; background: #dc2626; color: white; border: none; padding: 10px;
+      font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;
     }
-    .btn-login:hover { background: #b71c1c; }
-    .login-error { color: #d32f2f; font-size: 11px; margin-top: 8px; font-weight: 600; display: none; }
+    .btn-login:hover { background: #b91c1c; }
+    .login-error { color: #dc2626; font-size: 11px; margin-top: 8px; font-weight: 600; display: none; }
 
     /* HEADER CLEAN */
     header {
       background: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e2e8f0;
     }
     .brand-section { display: flex; align-items: center; gap: 12px; }
-    .brand-name { font-size: 18px; font-weight: 800; color: #d32f2f; line-height: 1; }
-    .brand-sub { font-size: 10px; color: #6b7280; font-weight: 600; display: block; margin-top: 3px; }
-    .page-title-badge { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #374151; margin-left: 12px; border-left: 2px solid #e5e7eb; padding-left: 12px; }
+    .brand-name { font-size: 18px; font-weight: 800; color: #dc2626; line-height: 1; }
+    .page-title-badge { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #334155; margin-left: 12px; border-left: 2px solid #e2e8f0; padding-left: 12px; }
     
-    .header-user { display: flex; align-items: center; gap: 10px; }
-    .user-name { font-size: 12px; color: #4b5563; font-weight: 600; }
-    .btn-badge-red { background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
-    .btn-badge-gray { background: #f3f4f6; color: #4b5563; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .header-user { display: flex; align-items: center; gap: 8px; }
+    .user-name { font-size: 12px; color: #64748b; font-weight: 600; }
+    .btn-badge-red { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .btn-badge-gray { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
 
     /* LAYOUT & SIDEBAR */
     .container { display: flex; flex: 1; }
-    .sidebar { width: 200px; padding: 20px 12px; background: #ffffff; border-right: 1px solid #e5e7eb; flex-shrink: 0; }
+    .sidebar { width: 190px; padding: 16px 12px; background: #ffffff; border-right: 1px solid #e2e8f0; flex-shrink: 0; }
     .menu-item {
-      display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 8px;
-      border: none; background: transparent; font-size: 13px; font-weight: 600; color: #4b5563; cursor: pointer; margin-bottom: 4px; text-align: left;
+      display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border-radius: 6px;
+      border: none; background: transparent; font-size: 13px; font-weight: 600; color: #64748b; cursor: pointer; margin-bottom: 4px; text-align: left;
       transition: all 0.2s;
     }
-    .menu-item:hover { background: #f9fafb; color: #111827; }
+    .menu-item:hover { background: #f8fafc; color: #0f172a; }
     .menu-item.active { background: #dc2626; color: white; }
     .menu-item svg { fill: currentColor; width: 16px; height: 16px; }
 
@@ -76,62 +72,62 @@
     /* KPI CARDS CLEAN */
     .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
     .card { 
-      background: #ffffff; border-radius: 10px; padding: 14px 16px; 
-      border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      background: #ffffff; border-radius: 8px; padding: 14px 16px; 
+      border: 1px solid #e2e8f0;
     }
     .card.main-card { background: #dc2626; color: white; border: none; }
-    .card-head { font-size: 11px; font-weight: 600; color: #6b7280; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card-head { font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
     .card.main-card .card-head { color: #fecaca; }
-    .card-val { font-size: 18px; font-weight: 800; color: #111827; line-height: 1.2; }
+    .card-val { font-size: 18px; font-weight: 800; color: #0f172a; line-height: 1.2; }
     .card.main-card .card-val { color: #ffffff; }
 
     /* DASHBOARD GRID PANELS */
     .sales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .box-panel { 
-      background: #ffffff; border-radius: 10px; padding: 16px; 
-      border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      background: #ffffff; border-radius: 8px; padding: 16px; 
+      border: 1px solid #e2e8f0;
       display: flex; flex-direction: column;
     }
     .box-panel.full-width { grid-column: span 2; }
-    .panel-header { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-    .chart-wrapper { width: 100%; height: 260px; }
+    .panel-header { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
+    .chart-wrapper { position: relative; width: 100%; height: 220px; }
 
     /* TABEL CLEAN UI */
-    .table-container { height: 240px; overflow-y: auto; font-size: 12px; }
+    .table-container { height: 220px; overflow-y: auto; font-size: 12px; }
     .custom-table { width: 100%; border-collapse: collapse; }
-    .custom-table th { background: #f9fafb; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #6b7280; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; }
-    .custom-table td { padding: 10px 12px; border-bottom: 1px solid #f3f4f6; color: #374151; }
-    .custom-table tr:hover td { background: #f9fafb; }
+    .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; }
+    .custom-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+    .custom-table tr:hover td { background: #f8fafc; }
 
     /* FORM INPUT */
-    .form-container { max-width: 460px; margin: 0 auto; width: 100%; }
+    .form-container { max-width: 440px; margin: 0 auto; width: 100%; }
     .display-box-clean {
-      background: #ffffff; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02); margin-bottom: 16px;
+      background: #ffffff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;
+      margin-bottom: 16px;
     }
-    .clean-header { display: flex; justify-content: space-between; font-size: 11px; color: #6b7280; font-weight: 600; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin-bottom: 12px; }
+    .clean-header { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; font-weight: 600; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 12px; }
     .clean-hero { text-align: center; padding-bottom: 12px; }
-    .clean-number { font-size: 42px; font-weight: 900; color: #111827; line-height: 1; }
-    .clean-label { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-    .clean-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: #f9fafb; border-radius: 8px; padding: 8px; text-align: center; margin-bottom: 12px; }
-    .clean-val { font-size: 16px; font-weight: 800; color: #dc2626; }
-    .clean-sub { font-size: 9px; color: #6b7280; font-weight: 600; margin-top: 2px; }
+    .clean-number { font-size: 40px; font-weight: 900; color: #0f172a; line-height: 1; }
+    .clean-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+    .clean-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: #f8fafc; border-radius: 6px; padding: 8px; text-align: center; margin-bottom: 12px; }
+    .clean-val { font-size: 15px; font-weight: 800; color: #dc2626; }
+    .clean-sub { font-size: 9px; color: #64748b; font-weight: 600; margin-top: 2px; }
     .clean-sources { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px; }
-    .src-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #4b5563; background: #f3f4f6; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+    .src-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #475569; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
     .src-badge strong { color: #dc2626; }
 
-    .input-card { background: #ffffff; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb; margin-bottom: 16px; }
+    .input-card { background: #ffffff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 16px; }
     .form-group { margin-bottom: 12px; }
-    .form-group label { font-size: 11px; font-weight: 700; color: #374151; display: block; margin-bottom: 6px; }
-    .form-control { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 12px; background: #fff; }
-    .btn-submit-red { width: 100%; background: #dc2626; color: white; border: none; padding: 12px; font-size: 13px; font-weight: 700; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2); }
+    .form-group label { font-size: 11px; font-weight: 700; color: #334155; display: block; margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: #fff; }
+    .btn-submit-red { width: 100%; background: #dc2626; color: white; border: none; padding: 10px; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; }
     .hidden { display: none; }
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
       .container { flex-direction: column; }
-      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px 12px; border-right: none; border-bottom: 1px solid #e5e7eb; overflow-x: auto; }
-      .menu-item { margin-bottom: 0; justify-content: center; padding: 8px 12px; flex-shrink: 0; }
+      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px 12px; border-right: none; border-bottom: 1px solid #e2e8f0; overflow-x: auto; }
+      .menu-item { margin-bottom: 0; justify-content: center; padding: 6px 10px; flex-shrink: 0; }
       .content { padding: 12px; }
       .top-cards { grid-template-columns: repeat(2, 1fr); }
       .card.main-card { grid-column: span 2; }
@@ -216,15 +212,15 @@
         <div class="sales-grid">
           <div class="box-panel">
             <div class="panel-header">
-              <span>Jam Ramai (3D)</span>
-              <input type="date" id="filterDate" style="font-size:11px; padding:2px 6px; border:1px solid #d1d5db; border-radius:4px;" onchange="selectSpecificDate(this.value)">
+              <span>Jam Ramai</span>
+              <input type="date" id="filterDate" style="font-size:11px; padding:2px 6px; border:1px solid #cbd5e1; border-radius:4px;" onchange="selectSpecificDate(this.value)">
             </div>
-            <div class="chart-wrapper" id="chartJam3D"></div>
+            <div class="chart-wrapper"><canvas id="barJamChart"></canvas></div>
           </div>
 
           <div class="box-panel">
-            <div class="panel-header"><span>Sumber Informasi (3D Donut)</span></div>
-            <div class="chart-wrapper" id="chartSumber3D"></div>
+            <div class="panel-header"><span>Sumber Informasi</span></div>
+            <div class="chart-wrapper"><canvas id="lineSumberChart"></canvas></div>
           </div>
 
           <div class="box-panel full-width">
@@ -265,28 +261,28 @@
         </div>
 
         <div class="sales-grid">
-          <!-- 3D DAILY CHART -->
+          <!-- DAILY RESULTS CHART -->
           <div class="box-panel full-width">
-            <div class="panel-header"><span>Daily Results (Omzet Harian Tgl 1-31 - 3D Column)</span></div>
-            <div class="chart-wrapper" id="chartDaily3D"></div>
+            <div class="panel-header"><span>Daily Results (Omzet Harian Tgl 1 - 31)</span></div>
+            <div class="chart-wrapper"><canvas id="barDailyChart"></canvas></div>
           </div>
 
-          <!-- 3D WEEKLY CHART -->
+          <!-- WEEKLY ACHIEVEMENTS CHART -->
           <div class="box-panel">
-            <div class="panel-header"><span>Weekly Achievements (3D)</span></div>
-            <div class="chart-wrapper" id="chartWeekly3D"></div>
+            <div class="panel-header"><span>Weekly Achievements</span></div>
+            <div class="chart-wrapper"><canvas id="barWeeklyChart"></canvas></div>
           </div>
 
-          <!-- 3D BRAND DONUT CHART -->
+          <!-- BRAND CHART -->
           <div class="box-panel">
-            <div class="panel-header"><span>Penjualan By Brand (3D Donut)</span></div>
-            <div class="chart-wrapper" id="chartBrand3D"></div>
+            <div class="panel-header"><span>Penjualan By Brand (Units)</span></div>
+            <div class="chart-wrapper"><canvas id="pieBrandChart"></canvas></div>
           </div>
 
-          <!-- 3D DEPT PIE CHART -->
+          <!-- DEPT CHART -->
           <div class="box-panel">
-            <div class="panel-header"><span>Pangsa Pasar By Department (3D Pie)</span></div>
-            <div class="chart-wrapper" id="chartDept3D"></div>
+            <div class="panel-header"><span>Pangsa Pasar By Department</span></div>
+            <div class="chart-wrapper"><canvas id="barDeptChart"></canvas></div>
           </div>
 
           <!-- BEST SELLER TABLE -->
@@ -318,7 +314,7 @@
         <div class="form-container">
           <div class="display-box-clean">
             <div class="clean-header">
-              <span id="txtTanggalHariIni">Senin, 09 Sep 2026</span>
+              <span id="txtTanggalHariIni">Rabu, 09 Sep 2026</span>
               <span id="txtJamSekarang" style="color: #dc2626; font-weight: bold;">Jam 00:00</span>
             </div>
             <div class="clean-hero">
@@ -386,8 +382,17 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
     const CORRECT_PASSWORD = "M@had3wa2026";
 
-    // PALETTE WARNA SERAGAM ELEGAN (MAHADEWA RED ACCENT)
-    const MAHADEWA_COLORS = ['#dc2626', '#991b1b', '#7f1d1d', '#f87171', '#4b5563', '#374151', '#1f2937', '#9ca3af'];
+    // PALET WARNA NETRAL EKSEKUTIF
+    const PALETTE_RED = '#dc2626';
+    const PALETTE_GRAY = '#64748b';
+    const PALETTE_PIE = ['#dc2626', '#475569', '#cbd5e1', '#0f172a', '#94a3b8', '#64748b', '#e2e8f0'];
+
+    let barChartInst = null;
+    let lineChartInst = null;
+    let barDailyInst = null;
+    let barWeeklyInst = null;
+    let pieBrandInst = null;
+    let barDeptInst = null;
 
     let rawDailyData = null;
     let rawDateData = null;
@@ -422,6 +427,7 @@
 
     function initApp() {
       updateDateTime();
+      initCharts();
       fetchStats();
       setInterval(updateDateTime, 10000);
     }
@@ -491,17 +497,14 @@
         rawDateData = v.dateHourlyData;
         if (v.todayStr) document.getElementById("filterDate").value = v.todayStr;
 
-        // RENDER 3D JAM RAMAI & SUMBER
-        renderJam3D(rawDailyData ? rawDailyData[v.currentDay || 0].slice(9, 22) : []);
-        
-        if (v.sumberTotal) {
-          renderSumber3D([
-            ['TikTok', v.sumberTotal.tiktok || 0],
-            ['Instagram', v.sumberTotal.instagram || 0],
-            ['Rekan', v.sumberTotal.rekan || 0],
-            ['Google Maps', v.sumberTotal.googleMaps || 0],
-            ['Lewat Depan', v.sumberTotal.lewatDepan || 0]
-          ]);
+        if (rawDailyData && barChartInst) {
+          barChartInst.data.datasets[0].data = rawDailyData[v.currentDay || 0].slice(9, 22);
+          barChartInst.update();
+        }
+
+        if (v.sumberTotal && lineChartInst) {
+          lineChartInst.data.datasets[0].data = [v.sumberTotal.tiktok||0, v.sumberTotal.instagram||0, v.sumberTotal.rekan||0, v.sumberTotal.googleMaps||0, v.sumberTotal.lewatDepan||0];
+          lineChartInst.update();
         }
       }
 
@@ -517,117 +520,91 @@
           document.getElementById("pTekVal").innerText = formatRupiah(s.kpi.pencapaianTeknisi);
         }
 
-        // RENDER 3D DAILY RESULTS
-        if (s.dailyResults) {
-          renderDaily3D(s.dailyResults.map(d => d.tgl), s.dailyResults.map(d => d.omzet));
+        if (s.dailyResults && barDailyInst) {
+          barDailyInst.data.labels = s.dailyResults.map(d => d.tgl);
+          barDailyInst.data.datasets[0].data = s.dailyResults.map(d => d.omzet);
+          barDailyInst.update();
         }
 
-        // RENDER 3D WEEKLY
-        if (s.weeklyResults) {
-          renderWeekly3D(s.weeklyResults);
+        if (s.weeklyResults && barWeeklyInst) {
+          barWeeklyInst.data.datasets[0].data = s.weeklyResults;
+          barWeeklyInst.update();
         }
 
-        // RENDER 3D BRAND DONUT
-        if (s.byBrand) {
-          renderBrand3D(s.byBrand.map(b => [b.brand, b.unit]));
+        if (s.byBrand && s.byBrand.length > 0 && pieBrandInst) {
+          pieBrandInst.data.labels = s.byBrand.map(b => b.brand);
+          pieBrandInst.data.datasets[0].data = s.byBrand.map(b => b.unit);
+          pieBrandInst.update();
         }
 
-        // RENDER 3D DEPT PIE
-        if (s.byDept) {
-          renderDept3D(s.byDept.map(d => [d.dept, d.nilai]));
+        if (s.byDept && s.byDept.length > 0 && barDeptInst) {
+          barDeptInst.data.labels = s.byDept.map(d => d.dept);
+          barDeptInst.data.datasets[0].data = s.byDept.map(d => d.nilai);
+          barDeptInst.update();
         }
 
-        // BEST SELLER
         if (s.bestSeller && s.bestSeller.length > 0) {
           document.getElementById("tblBestSeller").innerHTML = s.bestSeller.map((b, i) => `
             <tr><td>${i+1}</td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td>${formatRupiah(b.total)}</td></tr>
           `).join('');
         }
 
-        // TEAM SALES
         var teamHTML = "";
         if (s.mktSales) s.mktSales.forEach(m => { teamHTML += `<tr><td><b>${m.nama}</b></td><td><span style="color:#dc2626; font-weight:bold;">Marketing</span></td><td>${formatRupiah(m.pencapaian)}</td></tr>`; });
-        if (s.admSales) s.admSales.forEach(a => { teamHTML += `<tr><td><b>${a.nama}</b></td><td><span style="color:#4b5563; font-weight:bold;">Admin</span></td><td>${formatRupiah(a.pencapaian)}</td></tr>`; });
+        if (s.admSales) s.admSales.forEach(a => { teamHTML += `<tr><td><b>${a.nama}</b></td><td><span style="color:#475569; font-weight:bold;">Admin</span></td><td>${formatRupiah(a.pencapaian)}</td></tr>`; });
         if (s.tekSales) s.tekSales.forEach(t => { teamHTML += `<tr><td><b>${t.nama}</b></td><td><span style="color:#16a34a; font-weight:bold;">Teknisi</span></td><td>${formatRupiah(t.pencapaian)}</td></tr>`; });
         
         if (teamHTML !== "") document.getElementById("tblTeamSales").innerHTML = teamHTML;
       }
     }
 
-    // ==========================================
-    // FUNGSI RENDER HIGHCHARTS 3D ELEGAN
-    // ==========================================
-    function renderJam3D(dataJam) {
-      Highcharts.chart('chartJam3D', {
-        chart: { type: 'column', options3d: { enabled: true, alpha: 10, beta: 15, depth: 50, viewDistance: 25 }, backgroundColor: 'transparent' },
-        title: { text: null },
-        credits: { enabled: false },
-        xAxis: { categories: ['09','10','11','12','13','14','15','16','17','18','19','20','21'], labels: { style: { fontSize: '10px' } } },
-        yAxis: { title: { text: null }, visible: false },
-        plotOptions: { column: { depth: 25, colorByPoint: false, color: '#dc2626', borderRadius: 4 } },
-        series: [{ name: 'Pengunjung', data: dataJam, showInLegend: false }]
+    function initCharts() {
+      // VISITOR CHARTS
+      barChartInst = new Chart(document.getElementById('barJamChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: ['09','10','11','12','13','14','15','16','17','18','19','20','21'], datasets: [{ data: new Array(13).fill(0), backgroundColor: PALETTE_RED, borderRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' }, ticks: { font: { size: 10 } } }, x: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
       });
-    }
 
-    function renderSumber3D(dataSumber) {
-      Highcharts.chart('chartSumber3D', {
-        chart: { type: 'pie', options3d: { enabled: true, alpha: 45, beta: 0 }, backgroundColor: 'transparent' },
-        title: { text: null },
-        credits: { enabled: false },
-        plotOptions: { pie: { innerSize: 100, depth: 45, colors: MAHADEWA_COLORS } },
-        series: [{ name: 'Total', data: dataSumber }]
+      lineChartInst = new Chart(document.getElementById('lineSumberChart').getContext('2d'), {
+        type: 'line',
+        data: { labels: ['TikTok', 'Instagram', 'Rekan', 'Google Maps', 'Lewat Depan'], datasets: [{ data: [0, 0, 0, 0, 0], borderColor: PALETTE_RED, backgroundColor: 'rgba(220, 38, 38, 0.05)', fill: true, borderWidth: 2, tension: 0.3 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false } } } }
       });
-    }
 
-    function renderDaily3D(labels, dataOmzet) {
-      Highcharts.chart('chartDaily3D', {
-        chart: { type: 'column', options3d: { enabled: true, alpha: 12, beta: 12, depth: 40 }, backgroundColor: 'transparent' },
-        title: { text: null },
-        credits: { enabled: false },
-        xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
-        yAxis: { title: { text: null } },
-        plotOptions: { column: { depth: 30, color: '#dc2626', borderRadius: 3 } },
-        series: [{ name: 'Omzet (Rp)', data: dataOmzet, showInLegend: false }]
+      // SALES CHARTS
+      barDailyInst = new Chart(document.getElementById('barDailyChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: Array.from({length: 31}, (_, i) => i + 1), datasets: [{ data: [], backgroundColor: PALETTE_RED, borderRadius: 3 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
       });
-    }
 
-    function renderWeekly3D(dataWeekly) {
-      Highcharts.chart('chartWeekly3D', {
-        chart: { type: 'column', options3d: { enabled: true, alpha: 15, beta: 15, depth: 50 }, backgroundColor: 'transparent' },
-        title: { text: null },
-        credits: { enabled: false },
-        xAxis: { categories: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4', 'Minggu 5'] },
-        yAxis: { title: { text: null } },
-        plotOptions: { column: { depth: 35, color: '#991b1b', borderRadius: 4 } },
-        series: [{ name: 'Omzet', data: dataWeekly, showInLegend: false }]
+      barWeeklyInst = new Chart(document.getElementById('barWeeklyChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4', 'Minggu 5'], datasets: [{ data: [], backgroundColor: PALETTE_GRAY, borderRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false } } } }
       });
-    }
 
-    function renderBrand3D(dataBrand) {
-      Highcharts.chart('chartBrand3D', {
-        chart: { type: 'pie', options3d: { enabled: true, alpha: 45 }, backgroundColor: 'transparent' },
-        title: { text: null },
-        credits: { enabled: false },
-        plotOptions: { pie: { innerSize: 90, depth: 45, colors: MAHADEWA_COLORS } },
-        series: [{ name: 'Unit Penjualan', data: dataBrand }]
+      pieBrandInst = new Chart(document.getElementById('pieBrandChart').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE, borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { boxWidth: 8, font: { size: 10 } } } } }
       });
-    }
 
-    function renderDept3D(dataDept) {
-      Highcharts.chart('chartDept3D', {
-        chart: { type: 'pie', options3d: { enabled: true, alpha: 45 }, backgroundColor: 'transparent' },
-        title: { text: null },
-        credits: { enabled: false },
-        plotOptions: { pie: { depth: 45, colors: MAHADEWA_COLORS } },
-        series: [{ name: 'Pencapaian', data: dataDept }]
+      barDeptInst = new Chart(document.getElementById('barDeptChart').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE, borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { boxWidth: 8, font: { size: 10 } } } } }
       });
     }
 
     function selectSpecificDate(selectedDate) {
-      if (rawDateData && rawDateData[selectedDate]) {
-        renderJam3D(rawDateData[selectedDate].slice(9, 22));
-      } else {
-        renderJam3D(new Array(13).fill(0));
+      if (rawDateData && rawDateData[selectedDate] && barChartInst) {
+        barChartInst.data.datasets[0].data = rawDateData[selectedDate].slice(9, 22);
+        barChartInst.update();
+      } else if (barChartInst) {
+        barChartInst.data.datasets[0].data = new Array(13).fill(0);
+        barChartInst.update();
       }
     }
 
