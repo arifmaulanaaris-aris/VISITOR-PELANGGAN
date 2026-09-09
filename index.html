@@ -106,7 +106,7 @@
     .chart-wrapper { position: relative; width: 100%; height: 220px; }
 
     /* TABEL CLEAN UI */
-    .table-container { height: 240px; overflow-y: auto; font-size: 12px; }
+    .table-container { height: 300px; overflow-y: auto; font-size: 12px; }
     .custom-table { width: 100%; border-collapse: collapse; }
     .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10; }
     .custom-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
@@ -276,7 +276,7 @@
 
           <div class="box-panel full-width">
             <div class="panel-header"><span>Barang Paling Dicari</span></div>
-            <div class="table-container">
+            <div class="table-container" style="height:220px;">
               <table class="custom-table">
                 <thead><tr><th>#</th><th>Nama Produk / Barang</th><th>Jumlah Pencarian</th></tr></thead>
                 <tbody id="tblBarangRank"><tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr></tbody>
@@ -331,7 +331,7 @@
               <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.6C.4 7 1 10 2.9 12c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.3z"/></svg></div>
             </div>
             <div class="card-val" id="pTekVal">Rp 0</div>
-            <div class="card-avg" id="pTekValAvg">Avg: Rp 0 / hari</div>
+            <div class="card-avg" id="pTekValAvg">Avg: Rp 1.230.556 / hari</div>
           </div>
         </div>
 
@@ -354,24 +354,13 @@
             <div class="chart-wrapper"><canvas id="barDeptChart"></canvas></div>
           </div>
 
-          <!-- BEST SELLER TABLE -->
-          <div class="box-panel">
-            <div class="panel-header"><span>Top Best Seller Product</span></div>
-            <div class="table-container">
-              <table class="custom-table">
-                <thead><tr><th>#</th><th>Nama Produk</th><th>Qty</th><th>Total Omzet</th></tr></thead>
-                <tbody id="tblBestSeller"><tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- TEAM SALES TABLE -->
+          <!-- BEST SELLER TABLE FULL-WIDTH OVERWRITE -->
           <div class="box-panel full-width">
-            <div class="panel-header"><span>Pencapaian Tim (By Sales Name)</span></div>
-            <div class="table-container">
+            <div class="panel-header"><span>Top Best Seller Product (Diurutkan dari Omzet Terbesar)</span></div>
+            <div class="table-container" style="height: 320px;">
               <table class="custom-table">
-                <thead><tr><th>Nama Tim</th><th>Divisi</th><th>Pencapaian</th></tr></thead>
-                <tbody id="tblTeamSales"><tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr></tbody>
+                <thead><tr><th>Rank</th><th>Nama Produk</th><th>Qty</th><th>Total Omzet</th></tr></thead>
+                <tbody id="tblBestSeller"><tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -679,16 +668,9 @@
 
         if (s.bestSeller && s.bestSeller.length > 0) {
           document.getElementById("tblBestSeller").innerHTML = s.bestSeller.map((b, i) => `
-            <tr><td>${i+1}</td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td>${formatRupiah(b.total)}</td></tr>
+            <tr><td><b>#${i+1}</b></td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td><b>${formatRupiah(b.total)}</b></td></tr>
           `).join('');
         }
-
-        var teamHTML = "";
-        if (s.mktSales) s.mktSales.forEach(m => { teamHTML += `<tr><td><b>${m.nama}</b></td><td><span style="color:#dc2626; font-weight:bold;">Marketing</span></td><td>${formatRupiah(m.pencapaian)}</td></tr>`; });
-        if (s.admSales) s.admSales.forEach(a => { teamHTML += `<tr><td><b>${a.nama}</b></td><td><span style="color:#475569; font-weight:bold;">Admin</span></td><td>${formatRupiah(a.pencapaian)}</td></tr>`; });
-        if (s.tekSales) s.tekSales.forEach(t => { teamHTML += `<tr><td><b>${t.nama}</b></td><td><span style="color:#16a34a; font-weight:bold;">Teknisi</span></td><td>${formatRupiah(t.pencapaian)}</td></tr>`; });
-        
-        if (teamHTML !== "") document.getElementById("tblTeamSales").innerHTML = teamHTML;
 
         // 3. RENDER MARKETING PERFORMANCE
         if (s.mktPerformance && s.mktPerformance.length > 0) {
