@@ -710,48 +710,54 @@
     }
 
     function renderMktPerformance(list) {
-      var html = "";
-      var names = [];
-      var achData = [];
-      var targetData = [];
-      var runRateData = [];
+  var html = "";
+  var names = [];
+  var achData = [];
+  var targetData = [];
+  var runRateData = [];
 
-      list.forEach(item => {
-        names.push(item.nama);
-        achData.push(item.ach);
-        targetData.push(item.targetBln);
-        runRateData.push(item.runRate);
+  list.forEach(item => {
+    names.push(item.nama);
+    achData.push(item.ach);
+    targetData.push(item.targetBln);
+    runRateData.push(item.runRate);
 
-        var pctVal = item.pctRunRate <= 1 ? item.pctRunRate * 100 : item.pctRunRate;
-        var badgeClass = "badge-green";
-        if (pctVal < 90) badgeClass = "badge-red";
-        else if (pctVal < 100) badgeClass = "badge-yellow";
+    // Hitung persen proyeksi murni
+    var rawPct = parseFloat(item.pctRunRate || 0);
+    var pctVal = rawPct <= 10 ? rawPct * 100 : rawPct;
 
-        html += `
-          <tr>
-            <td><b>${item.nama}</b></td>
-            <td>${formatRupiah(item.ach)}</td>
-            <td>${formatRupiah(item.targetBln)}</td>
-            <td style="color:${item.targetHari < 0 ? '#dc2626' : '#16a34a'}; font-weight:bold;">${formatRupiah(item.targetHari)}</td>
-            <td><b>${formatPercent(item.pctAch)}</b></td>
-            <td>${formatRupiah(item.avgHari)}</td>
-            <td><b>${formatRupiah(item.runRate)}</b></td>
-            <td><span class="badge-status ${badgeClass}">${formatPercent(item.pctRunRate)}</span></td>
-          </tr>
-        `;
-      });
-
-      document.getElementById("tblMktPerf").innerHTML = html;
-
-      if (barMktPerfInst) {
-        barMktPerfInst.data.labels = names;
-        barMktPerfInst.data.datasets[0].data = achData;
-        barMktPerfInst.data.datasets[1].data = targetData;
-        barMktPerfInst.data.datasets[2].data = runRateData;
-        barMktPerfInst.update();
-      }
+    // Atur warna badge
+    var badgeClass = "badge-green";
+    if (pctVal < 90) {
+      badgeClass = "badge-red";
+    } else if (pctVal < 100) {
+      badgeClass = "badge-yellow";
     }
 
+    html += `
+      <tr>
+        <td><b>${item.nama}</b></td>
+        <td>${formatRupiah(item.ach)}</td>
+        <td>${formatRupiah(item.targetBln)}</td>
+        <td style="color:${item.targetHari < 0 ? '#dc2626' : '#16a34a'}; font-weight:bold;">${formatRupiah(item.targetHari)}</td>
+        <td><b>${formatPercent(item.pctAch)}</b></td>
+        <td>${formatRupiah(item.avgHari)}</td>
+        <td><b>${formatRupiah(item.runRate)}</b></td>
+        <td><span class="badge-status ${badgeClass}">${formatPercent(item.pctRunRate)}</span></td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("tblMktPerf").innerHTML = html;
+
+  if (barMktPerfInst) {
+    barMktPerfInst.data.labels = names;
+    barMktPerfInst.data.datasets[0].data = achData;
+    barMktPerfInst.data.datasets[1].data = targetData;
+    barMktPerfInst.data.datasets[2].data = runRateData;
+    barMktPerfInst.update();
+  }
+}
     function initCharts() {
       barChartInst = new Chart(document.getElementById('barJamChart').getContext('2d'), {
         type: 'bar',
