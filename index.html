@@ -563,9 +563,17 @@
     }
 
     function formatPercent(val) {
-      var num = Number(val || 0);
-      return (num <= 1 ? num * 100 : num).toFixed(2) + "%";
-    }
+  var num = parseFloat(val || 0);
+  
+  // Jika nilai dari spreadsheet dalam bentuk desimal (misal 1.38 = 138%, 0.9967 = 99.67%)
+  // Kita kalikan 100 agar nilainya tepat.
+  // Bila angka yang dikirim sudah di atas 10 (misal 138 murni), kita biarkan.
+  if (Math.abs(num) <= 10) {
+    num = num * 100;
+  }
+  
+  return num.toFixed(2) + "%";
+}
 
     function renderUI(data) {
       if (!data) return;
