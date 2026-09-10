@@ -12,7 +12,6 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* OVERLAY LOGIN */
     #loginOverlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(248, 250, 252, 0.98); backdrop-filter: blur(8px);
@@ -40,7 +39,6 @@
     .btn-login:hover { background: #b91c1c; }
     .login-error { color: #dc2626; font-size: 11px; margin-top: 8px; font-weight: 600; display: none; }
 
-    /* HEADER CLEAN */
     header {
       background: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;
       border-bottom: 1px solid #e2e8f0;
@@ -55,7 +53,6 @@
     .btn-badge-red { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
     .btn-badge-gray { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
 
-    /* LAYOUT & SIDEBAR */
     .container { display: flex; flex: 1; }
     .sidebar { width: 190px; padding: 16px 12px; background: #ffffff; border-right: 1px solid #e2e8f0; flex-shrink: 0; }
     .menu-item {
@@ -71,7 +68,6 @@
     .tab-page { display: none; }
     .tab-page.active { display: block; }
 
-    /* KPI CARDS WITH SVG ICONS */
     .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
     .card { 
       background: #ffffff; border-radius: 8px; padding: 12px 14px; 
@@ -95,7 +91,6 @@
     .card-avg { font-size: 10px; font-weight: 600; color: #64748b; margin-top: 6px; padding-top: 4px; border-top: 1px dashed #f1f5f9; }
     .card.main-card .card-avg { color: #fee2e2; border-top-color: rgba(255,255,255,0.2); }
 
-    /* DASHBOARD GRID PANELS */
     .sales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .box-panel { 
       background: #ffffff; border-radius: 8px; padding: 16px; 
@@ -105,20 +100,17 @@
     .panel-header { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
     .chart-wrapper { position: relative; width: 100%; height: 220px; }
 
-    /* TABEL CLEAN UI */
     .table-container { height: 300px; overflow-y: auto; font-size: 12px; }
     .custom-table { width: 100%; border-collapse: collapse; }
     .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10; }
     .custom-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
     .custom-table tr:hover td { background: #f8fafc; }
 
-    /* BADGES MARKETING PERFORMANCE */
     .badge-status { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; display: inline-block; }
     .badge-green { background: #dcfce7; color: #15803d; }
     .badge-yellow { background: #fef9c3; color: #a16207; }
     .badge-red { background: #fee2e2; color: #b91c1c; }
 
-    /* FORM INPUT & WIDGET HARI INI */
     .form-container { max-width: 440px; margin: 0 auto; width: 100%; }
     .display-box-clean {
       background: #ffffff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;
@@ -129,7 +121,6 @@
     .clean-number { font-size: 40px; font-weight: 900; color: #0f172a; line-height: 1; }
     .clean-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
     
-    /* GRID 5 KOLOM KHUSUS HARI INI */
     .clean-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; background: #f8fafc; border-radius: 6px; padding: 8px 4px; text-align: center; margin-bottom: 12px; }
     .clean-val { font-size: 14px; font-weight: 800; color: #dc2626; }
     .clean-sub { font-size: 9px; color: #64748b; font-weight: 600; margin-top: 2px; }
@@ -145,7 +136,6 @@
     .btn-submit-red { width: 100%; background: #dc2626; color: white; border: none; padding: 10px; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; }
     .hidden { display: none; }
 
-    /* RESPONSIVE DESIGN FOR MOBILE */
     @media (max-width: 768px) {
       .container { flex-direction: column; }
       .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px 12px; border-right: none; border-bottom: 1px solid #e2e8f0; overflow-x: auto; }
@@ -164,7 +154,6 @@
 </head>
 <body>
 
-  <!-- LOGIN OVERLAY -->
   <div id="loginOverlay">
     <div class="login-card">
       <div class="login-title">mahadewa.id</div>
@@ -176,7 +165,6 @@
     </div>
   </div>
 
-  <!-- HEADER -->
   <header>
     <div class="brand-section">
       <div>
@@ -192,9 +180,7 @@
     </div>
   </header>
 
-  <!-- APP CONTAINER -->
   <div class="container">
-    <!-- SIDEBAR MENU -->
     <div class="sidebar">
       <button class="menu-item active" onclick="switchTab('dashboard', this)">
         <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
@@ -214,7 +200,6 @@
       </button>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="content">
 
       <!-- TAB 1: VISITOR -->
@@ -348,6 +333,30 @@
             <div class="chart-wrapper"><canvas id="barDailyChart"></canvas></div>
           </div>
 
+          <!-- CHART PERFORMA MINGGUAN -->
+          <div class="box-panel">
+            <div class="panel-header"><span>Performa Penjualan Mingguan</span></div>
+            <div class="chart-wrapper"><canvas id="barWeeklyChart"></canvas></div>
+          </div>
+
+          <!-- TABEL PERFORMA BULANAN (Y4:Z15) -->
+          <div class="box-panel">
+            <div class="panel-header"><span>Performa Penjualan Bulanan (Y4:Z15)</span></div>
+            <div class="table-container" style="height: 220px;">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Bulan</th>
+                    <th>Total Omzet</th>
+                  </tr>
+                </thead>
+                <tbody id="tblMonthlyPerf">
+                  <tr><td colspan="2" style="text-align:center;">Memuat data bulanan...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <!-- BRAND CHART -->
           <div class="box-panel">
             <div class="panel-header"><span>Penjualan By Brand (Units)</span></div>
@@ -419,7 +428,6 @@
               <div class="clean-label">Pengunjung Hari Ini</div>
             </div>
             
-            <!-- GRID 5 KOLOM KHUSUS HARI INI -->
             <div class="clean-grid">
               <div><div class="clean-val" id="fLihat">0</div><div class="clean-sub">Lihat</div></div>
               <div><div class="clean-val" id="fHarga">0</div><div class="clean-sub">Harga</div></div>
@@ -480,7 +488,6 @@
   </div>
 
   <script>
-    // PASTI KAN URL INI SESUAI DENGAN WEB APP APPS SCRIPT ANDA
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
     const CORRECT_PASSWORD = "M@had3wa2026";
 
@@ -491,6 +498,7 @@
     let barChartInst = null;
     let lineChartInst = null;
     let barDailyInst = null;
+    let barWeeklyInst = null;
     let pieBrandInst = null;
     let barDeptInst = null;
     let barMktPerfInst = null;
@@ -562,18 +570,14 @@
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
     }
 
+    // PEMBARUAN FUNGSI FORMAT PERSEN (PENANGANAN ANGKA DESIMAL SPREADSHEET MURNI)
     function formatPercent(val) {
-  var num = parseFloat(val || 0);
-  
-  // Jika nilai dari spreadsheet dalam bentuk desimal (misal 1.38 = 138%, 0.9967 = 99.67%)
-  // Kita kalikan 100 agar nilainya tepat.
-  // Bila angka yang dikirim sudah di atas 10 (misal 138 murni), kita biarkan.
-  if (Math.abs(num) <= 10) {
-    num = num * 100;
-  }
-  
-  return num.toFixed(2) + "%";
-}
+      var num = parseFloat(val || 0);
+      if (Math.abs(num) <= 10) {
+        num = num * 100;
+      }
+      return num.toFixed(2) + "%";
+    }
 
     function renderUI(data) {
       if (!data) return;
@@ -607,19 +611,12 @@
 
         document.getElementById("fHariIni").innerText = v.hariIni || 0;
 
-        // MENAMPILKAN AKUMULASI KHUSUS HARI INI DI FORM INPUT
         if (v.kategoriHariIni) {
           document.getElementById("fLihat").innerText = v.kategoriHariIni.lihat || 0;
           document.getElementById("fHarga").innerText = v.kategoriHariIni.harga || 0;
           document.getElementById("fKosong").innerText = v.kategoriHariIni.kosong || 0;
           document.getElementById("fTransaksi").innerText = v.kategoriHariIni.transaksi || 0;
           document.getElementById("fService").innerText = v.kategoriHariIni.service || 0;
-        } else {
-          document.getElementById("fLihat").innerText = 0;
-          document.getElementById("fHarga").innerText = 0;
-          document.getElementById("fKosong").innerText = 0;
-          document.getElementById("fTransaksi").innerText = 0;
-          document.getElementById("fService").innerText = 0;
         }
 
         if (v.sumberHariIni) {
@@ -684,6 +681,21 @@
           barDailyInst.update();
         }
 
+        if (s.weeklyResults && barWeeklyInst) {
+          barWeeklyInst.data.labels = s.weeklyResults.map(w => w.minggum);
+          barWeeklyInst.data.datasets[0].data = s.weeklyResults.map(w => w.omzet);
+          barWeeklyInst.update();
+        }
+
+        if (s.monthlyPerformance && s.monthlyPerformance.length > 0) {
+          document.getElementById("tblMonthlyPerf").innerHTML = s.monthlyPerformance.map(m => `
+            <tr>
+              <td><b>${m.bulan}</b></td>
+              <td><b>${formatRupiah(m.omzet)}</b></td>
+            </tr>
+          `).join('');
+        }
+
         if (s.byBrand && s.byBrand.length > 0 && pieBrandInst) {
           pieBrandInst.data.labels = s.byBrand.map(b => b.brand);
           pieBrandInst.data.datasets[0].data = s.byBrand.map(b => b.unit);
@@ -702,7 +714,6 @@
           `).join('');
         }
 
-        // 3. RENDER MARKETING PERFORMANCE
         if (s.mktPerformance && s.mktPerformance.length > 0) {
           renderMktPerformance(s.mktPerformance);
         }
@@ -710,54 +721,50 @@
     }
 
     function renderMktPerformance(list) {
-  var html = "";
-  var names = [];
-  var achData = [];
-  var targetData = [];
-  var runRateData = [];
+      var html = "";
+      var names = [];
+      var achData = [];
+      var targetData = [];
+      var runRateData = [];
 
-  list.forEach(item => {
-    names.push(item.nama);
-    achData.push(item.ach);
-    targetData.push(item.targetBln);
-    runRateData.push(item.runRate);
+      list.forEach(item => {
+        names.push(item.nama);
+        achData.push(item.ach);
+        targetData.push(item.targetBln);
+        runRateData.push(item.runRate);
 
-    // Hitung persen proyeksi murni
-    var rawPct = parseFloat(item.pctRunRate || 0);
-    var pctVal = rawPct <= 10 ? rawPct * 100 : rawPct;
+        var rawPct = parseFloat(item.pctRunRate || 0);
+        var pctVal = rawPct <= 10 ? rawPct * 100 : rawPct;
 
-    // Atur warna badge
-    var badgeClass = "badge-green";
-    if (pctVal < 90) {
-      badgeClass = "badge-red";
-    } else if (pctVal < 100) {
-      badgeClass = "badge-yellow";
+        var badgeClass = "badge-green";
+        if (pctVal < 90) badgeClass = "badge-red";
+        else if (pctVal < 100) badgeClass = "badge-yellow";
+
+        html += `
+          <tr>
+            <td><b>${item.nama}</b></td>
+            <td>${formatRupiah(item.ach)}</td>
+            <td>${formatRupiah(item.targetBln)}</td>
+            <td style="color:${item.targetHari < 0 ? '#dc2626' : '#16a34a'}; font-weight:bold;">${formatRupiah(item.targetHari)}</td>
+            <td><b>${formatPercent(item.pctAch)}</b></td>
+            <td>${formatRupiah(item.avgHari)}</td>
+            <td><b>${formatRupiah(item.runRate)}</b></td>
+            <td><span class="badge-status ${badgeClass}">${formatPercent(item.pctRunRate)}</span></td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("tblMktPerf").innerHTML = html;
+
+      if (barMktPerfInst) {
+        barMktPerfInst.data.labels = names;
+        barMktPerfInst.data.datasets[0].data = achData;
+        barMktPerfInst.data.datasets[1].data = targetData;
+        barMktPerfInst.data.datasets[2].data = runRateData;
+        barMktPerfInst.update();
+      }
     }
 
-    html += `
-      <tr>
-        <td><b>${item.nama}</b></td>
-        <td>${formatRupiah(item.ach)}</td>
-        <td>${formatRupiah(item.targetBln)}</td>
-        <td style="color:${item.targetHari < 0 ? '#dc2626' : '#16a34a'}; font-weight:bold;">${formatRupiah(item.targetHari)}</td>
-        <td><b>${formatPercent(item.pctAch)}</b></td>
-        <td>${formatRupiah(item.avgHari)}</td>
-        <td><b>${formatRupiah(item.runRate)}</b></td>
-        <td><span class="badge-status ${badgeClass}">${formatPercent(item.pctRunRate)}</span></td>
-      </tr>
-    `;
-  });
-
-  document.getElementById("tblMktPerf").innerHTML = html;
-
-  if (barMktPerfInst) {
-    barMktPerfInst.data.labels = names;
-    barMktPerfInst.data.datasets[0].data = achData;
-    barMktPerfInst.data.datasets[1].data = targetData;
-    barMktPerfInst.data.datasets[2].data = runRateData;
-    barMktPerfInst.update();
-  }
-}
     function initCharts() {
       barChartInst = new Chart(document.getElementById('barJamChart').getContext('2d'), {
         type: 'bar',
@@ -775,6 +782,12 @@
         type: 'bar',
         data: { labels: Array.from({length: 31}, (_, i) => i + 1), datasets: [{ data: [], backgroundColor: PALETTE_RED, borderRadius: 3 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
+      });
+
+      barWeeklyInst = new Chart(document.getElementById('barWeeklyChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: ['W1 (1-7)', 'W2 (8-14)', 'W3 (15-21)', 'W4 (22-28)', 'W5 (29-31)'], datasets: [{ label: 'Omzet Mingguan', data: [0, 0, 0, 0, 0], backgroundColor: '#0f172a', borderRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false } } } }
       });
 
       pieBrandInst = new Chart(document.getElementById('pieBrandChart').getContext('2d'), {
