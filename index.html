@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>mahadewa.id - Executive Dashboard</title>
   
   <!-- Chart.js CDN -->
@@ -10,8 +10,9 @@
 
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; -webkit-tap-highlight-color: transparent; }
 
+    /* OVERLAY LOGIN */
     #loginOverlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(248, 250, 252, 0.98); backdrop-filter: blur(8px);
@@ -39,9 +40,10 @@
     .btn-login:hover { background: #b91c1c; }
     .login-error { color: #dc2626; font-size: 11px; margin-top: 8px; font-weight: 600; display: none; }
 
+    /* HEADER */
     header {
       background: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0; sticky: top; z-index: 100;
     }
     .brand-section { display: flex; align-items: center; gap: 8px; }
     .brand-name { font-size: 18px; font-weight: 800; color: #dc2626; line-height: 1; }
@@ -53,6 +55,7 @@
     .btn-badge-red { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
     .btn-badge-gray { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
 
+    /* LAYOUT & SIDEBAR */
     .container { display: flex; flex: 1; }
     .sidebar { width: 190px; padding: 16px 12px; background: #ffffff; border-right: 1px solid #e2e8f0; flex-shrink: 0; }
     .menu-item {
@@ -68,6 +71,7 @@
     .tab-page { display: none; }
     .tab-page.active { display: block; }
 
+    /* KPI CARDS */
     .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
     .card { 
       background: #ffffff; border-radius: 8px; padding: 12px 14px; 
@@ -91,26 +95,37 @@
     .card-avg { font-size: 10px; font-weight: 600; color: #64748b; margin-top: 6px; padding-top: 4px; border-top: 1px dashed #f1f5f9; }
     .card.main-card .card-avg { color: #fee2e2; border-top-color: rgba(255,255,255,0.2); }
 
+    /* DASHBOARD PANELS & RESPONSIVE CONTAINERS */
     .sales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .box-panel { 
       background: #ffffff; border-radius: 8px; padding: 16px; 
-      border: 1px solid #e2e8f0; display: flex; flex-direction: column;
+      border: 1px solid #e2e8f0; display: flex; flex-direction: column; overflow: hidden;
     }
     .box-panel.full-width { grid-column: span 2; }
     .panel-header { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
-    .chart-wrapper { position: relative; width: 100%; height: 220px; }
+    
+    /* WRAPPER CHART SUPAYA SMOOTH SCROLL DI SMARTPHONE */
+    .chart-scroll-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .chart-wrapper { position: relative; width: 100%; height: 220px; min-width: 300px; }
 
-    .table-container { height: 300px; overflow-y: auto; font-size: 12px; }
-    .custom-table { width: 100%; border-collapse: collapse; }
-    .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10; }
-    .custom-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+    /* TABEL CLEAN UI + RESPONSIVE WRAPPER */
+    .table-container { height: 300px; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; font-size: 12px; }
+    .custom-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+    .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10; white-space: nowrap; }
+    .custom-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; white-space: nowrap; }
     .custom-table tr:hover td { background: #f8fafc; }
 
+    /* BADGES */
     .badge-status { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; display: inline-block; }
     .badge-green { background: #dcfce7; color: #15803d; }
     .badge-yellow { background: #fef9c3; color: #a16207; }
     .badge-red { background: #fee2e2; color: #b91c1c; }
 
+    /* FORM INPUT */
     .form-container { max-width: 440px; margin: 0 auto; width: 100%; }
     .display-box-clean {
       background: #ffffff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;
@@ -136,24 +151,36 @@
     .btn-submit-red { width: 100%; background: #dc2626; color: white; border: none; padding: 10px; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; }
     .hidden { display: none; }
 
+    /* OPTIMASI KHUSUS TAMPILAN SMARTPHONE (MOBILE) */
     @media (max-width: 768px) {
+      header { padding: 10px 14px; }
       .container { flex-direction: column; }
-      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px 12px; border-right: none; border-bottom: 1px solid #e2e8f0; overflow-x: auto; }
-      .menu-item { margin-bottom: 0; justify-content: center; padding: 6px 10px; flex-shrink: 0; }
+      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px; border-right: none; border-bottom: 1px solid #e2e8f0; overflow-x: auto; background: #fff; position: sticky; top: 0; z-index: 90; }
+      .menu-item { margin-bottom: 0; justify-content: center; padding: 8px 12px; flex-shrink: 0; font-size: 12px; }
       .content { padding: 12px; }
-      .top-cards { grid-template-columns: repeat(2, 1fr); }
+      
+      .top-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .card.main-card { grid-column: span 2; }
-      .sales-grid { grid-template-columns: 1fr; }
+      .sales-grid { grid-template-columns: 1fr; gap: 12px; }
       .box-panel.full-width { grid-column: span 1; }
       .user-name { display: none; }
       
-      .table-container { overflow-x: auto; }
-      .custom-table { min-width: 600px; }
+      /* MEMBERIKAN LEBAR MINIMAL KHUSUS CHART PANJANG DI SMARTPHONE */
+      #barDailyChart { min-width: 650px; }
+      #barMktPerfChart { min-width: 550px; }
+      
+      .chart-wrapper { height: 200px; }
+      .table-container { max-height: 280px; }
+      
+      .clean-number { font-size: 32px; }
+      .clean-val { font-size: 12px; }
+      .clean-sub { font-size: 8px; }
     }
   </style>
 </head>
 <body>
 
+  <!-- LOGIN OVERLAY -->
   <div id="loginOverlay">
     <div class="login-card">
       <div class="login-title">mahadewa.id</div>
@@ -165,6 +192,7 @@
     </div>
   </div>
 
+  <!-- HEADER -->
   <header>
     <div class="brand-section">
       <div>
@@ -181,6 +209,7 @@
   </header>
 
   <div class="container">
+    <!-- NAVIGATION SIDEBAR / BAR MOBILE -->
     <div class="sidebar">
       <button class="menu-item active" onclick="switchTab('dashboard', this)">
         <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
@@ -257,12 +286,16 @@
               <span>Jam Ramai</span>
               <input type="date" id="filterDate" style="font-size:11px; padding:2px 6px; border:1px solid #cbd5e1; border-radius:4px;" onchange="selectSpecificDate(this.value)">
             </div>
-            <div class="chart-wrapper"><canvas id="barJamChart"></canvas></div>
+            <div class="chart-scroll-wrapper">
+              <div class="chart-wrapper"><canvas id="barJamChart"></canvas></div>
+            </div>
           </div>
 
           <div class="box-panel">
             <div class="panel-header"><span>Sumber Informasi</span></div>
-            <div class="chart-wrapper"><canvas id="lineSumberChart"></canvas></div>
+            <div class="chart-scroll-wrapper">
+              <div class="chart-wrapper"><canvas id="lineSumberChart"></canvas></div>
+            </div>
           </div>
 
           <div class="box-panel full-width">
@@ -327,16 +360,20 @@
         </div>
 
         <div class="sales-grid">
-          <!-- DAILY RESULTS CHART -->
+          <!-- DAILY RESULTS CHART SCROLLABLE -->
           <div class="box-panel full-width">
             <div class="panel-header"><span>Daily Results (Omzet Harian Tgl 1 - 31)</span></div>
-            <div class="chart-wrapper"><canvas id="barDailyChart"></canvas></div>
+            <div class="chart-scroll-wrapper">
+              <div class="chart-wrapper"><canvas id="barDailyChart"></canvas></div>
+            </div>
           </div>
 
           <!-- CHART PERFORMA MINGGUAN -->
           <div class="box-panel">
             <div class="panel-header"><span>Performa Penjualan Mingguan</span></div>
-            <div class="chart-wrapper"><canvas id="barWeeklyChart"></canvas></div>
+            <div class="chart-scroll-wrapper">
+              <div class="chart-wrapper"><canvas id="barWeeklyChart"></canvas></div>
+            </div>
           </div>
 
           <!-- TABEL PERFORMA BULANAN (Y4:Z15) -->
@@ -387,7 +424,9 @@
         <div class="sales-grid">
           <div class="box-panel full-width">
             <div class="panel-header"><span>Perbandingan Revenue & Proyeksi Run Rate Marketing</span></div>
-            <div class="chart-wrapper" style="height: 260px;"><canvas id="barMktPerfChart"></canvas></div>
+            <div class="chart-scroll-wrapper">
+              <div class="chart-wrapper" style="height: 260px;"><canvas id="barMktPerfChart"></canvas></div>
+            </div>
           </div>
 
           <div class="box-panel full-width">
@@ -488,8 +527,8 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmqP46GI5Dl0Zn2lqPZRNURlc9aWi7xuf_HZjSbTMXXKnoF2xjCB_MDlxoFLO1kDoRFA/exec";
-    const CORRECT_PASSWORD = "M@had3wa2026";
+    const SCRIPT_URL = "URL_WEB_APP_APPS_SCRIPT_ANDA";
+    const CORRECT_PASSWORD = "mahadewa2026";
 
     const PALETTE_RED = '#dc2626';
     const PALETTE_GRAY = '#64748b';
@@ -570,7 +609,13 @@
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
     }
 
-    // PEMBARUAN FUNGSI FORMAT PERSEN (PENANGANAN ANGKA DESIMAL SPREADSHEET MURNI)
+    // FORMAT SINGKAT RUPIAH UNTUK TICK CHART MOBILE (misal: 1.8M / 500Jt)
+    function formatShortRupiah(val) {
+      if (val >= 1000000000) return (val / 1000000000).toFixed(1) + 'M';
+      if (val >= 1000000) return (val / 1000000).toFixed(0) + 'Jt';
+      return val;
+    }
+
     function formatPercent(val) {
       var num = parseFloat(val || 0);
       if (Math.abs(num) <= 10) {
@@ -766,6 +811,9 @@
     }
 
     function initCharts() {
+      const isMobile = window.innerWidth <= 768;
+      const legendPosition = isMobile ? 'bottom' : 'right';
+
       barChartInst = new Chart(document.getElementById('barJamChart').getContext('2d'), {
         type: 'bar',
         data: { labels: ['09','10','11','12','13','14','15','16','17','18','19','20','21'], datasets: [{ data: new Array(13).fill(0), backgroundColor: PALETTE_RED, borderRadius: 4 }] },
@@ -775,31 +823,51 @@
       lineChartInst = new Chart(document.getElementById('lineSumberChart').getContext('2d'), {
         type: 'line',
         data: { labels: ['TikTok', 'Instagram', 'Rekan', 'Google Maps', 'Lewat Depan'], datasets: [{ data: [0, 0, 0, 0, 0], borderColor: PALETTE_RED, backgroundColor: 'rgba(220, 38, 38, 0.05)', fill: true, borderWidth: 2, tension: 0.3 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false } } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
       });
 
       barDailyInst = new Chart(document.getElementById('barDailyChart').getContext('2d'), {
         type: 'bar',
         data: { labels: Array.from({length: 31}, (_, i) => i + 1), datasets: [{ data: [], backgroundColor: PALETTE_RED, borderRadius: 3 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
+        options: { 
+          responsive: true, maintainAspectRatio: false, 
+          plugins: { legend: { display: false } }, 
+          scales: { 
+            y: { 
+              grid: { borderDash: [2, 2], color: '#f1f5f9' },
+              ticks: { callback: function(value) { return formatShortRupiah(value); }, font: { size: 9 } }
+            }, 
+            x: { grid: { display: false }, ticks: { font: { size: 9 } } } 
+          } 
+        }
       });
 
       barWeeklyInst = new Chart(document.getElementById('barWeeklyChart').getContext('2d'), {
         type: 'bar',
         data: { labels: ['W1 (1-7)', 'W2 (8-14)', 'W3 (15-21)', 'W4 (22-28)', 'W5 (29-31)'], datasets: [{ label: 'Omzet Mingguan', data: [0, 0, 0, 0, 0], backgroundColor: '#0f172a', borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false } } } }
+        options: { 
+          responsive: true, maintainAspectRatio: false, 
+          plugins: { legend: { display: false } }, 
+          scales: { 
+            y: { 
+              grid: { borderDash: [2, 2], color: '#f1f5f9' },
+              ticks: { callback: function(value) { return formatShortRupiah(value); }, font: { size: 9 } }
+            }, 
+            x: { grid: { display: false }, ticks: { font: { size: 10 } } } 
+          } 
+        }
       });
 
       pieBrandInst = new Chart(document.getElementById('pieBrandChart').getContext('2d'), {
         type: 'doughnut',
         data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE, borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { boxWidth: 8, font: { size: 10 } } } } }
+        options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: legendPosition, labels: { boxWidth: 8, font: { size: 9 } } } } }
       });
 
       barDeptInst = new Chart(document.getElementById('barDeptChart').getContext('2d'), {
         type: 'doughnut',
         data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE, borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { boxWidth: 8, font: { size: 10 } } } } }
+        options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: legendPosition, labels: { boxWidth: 8, font: { size: 9 } } } } }
       });
 
       barMktPerfInst = new Chart(document.getElementById('barMktPerfChart').getContext('2d'), {
@@ -815,8 +883,14 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 11 } } } },
-          scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false } } }
+          plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } },
+          scales: { 
+            y: { 
+              grid: { borderDash: [2, 2], color: '#f1f5f9' },
+              ticks: { callback: function(value) { return formatShortRupiah(value); }, font: { size: 9 } }
+            }, 
+            x: { grid: { display: false }, ticks: { font: { size: 10 } } } 
+          }
         }
       });
     }
