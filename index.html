@@ -50,8 +50,8 @@
     .brand-sub { font-size: 10px; color: #64748b; font-weight: 600; display: block; margin-top: 2px; }
     .page-title-badge { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #334155; margin-left: 12px; border-left: 2px solid #e2e8f0; padding-left: 12px; }
     
-    .header-user { display: flex; align-items: center; gap: 8px; }
-    .user-name { font-size: 12px; color: #64748b; font-weight: 600; }
+    .header-user { display: flex; align-items: center; gap: 6px; }
+    .user-name { font-size: 12px; color: #64748b; font-weight: 600; margin-right: 4px; }
     .btn-badge-red { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
     .btn-badge-gray { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
 
@@ -203,6 +203,7 @@
     </div>
     <div class="header-user">
       <span class="user-name">Arif Maulana</span>
+      <button class="btn-badge-gray" onclick="fetchStats()">🔄 Refresh</button>
       <button class="btn-badge-red" onclick="showProfile()">Profil</button>
       <button class="btn-badge-gray" onclick="handleLogout()">Keluar</button>
     </div>
@@ -583,7 +584,17 @@
       updateDateTime();
       initCharts();
       fetchStats();
+      
+      // Auto refresh rutin setiap 30 detik
+      setInterval(fetchStats, 30000);
       setInterval(updateDateTime, 10000);
+
+      // FIX REALTIME UPDATE: Ambil data terbaru otomatis ketika HP dinyalakan / tab dibuka kembali
+      document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === "visible") {
+          fetchStats();
+        }
+      });
     }
 
     function updateDateTime() {
@@ -687,11 +698,12 @@
         rawDateData = v.dateHourlyData;
         if (v.todayStr) document.getElementById("filterDate").value = v.todayStr;
 
+        // ACCURATE TOTAL FIX: Menggunakan angka total asli hari ini agar 100% sama dengan di atas
         if (rawDailyData && barChartInst) {
-          var todayHourly = rawDailyData[v.currentDay || 0].slice(9, 22);
-          var todayTotal = todayHourly.reduce(function(a, b) { return a + b; }, 0);
+          var todayHourlyFull = rawDailyData[v.currentDay || 0] || [];
+          var todayTotal = v.hariIni || todayHourlyFull.reduce(function(a, b) { return a + b; }, 0);
           
-          barChartInst.data.datasets[0].data = todayHourly;
+          barChartInst.data.datasets[0].data = todayHourlyFull.slice(9, 22);
           barChartInst.update();
           
           document.getElementById("txtTotalVisitorHarian").innerText = "Total: " + todayTotal + " Pelanggan";
@@ -905,10 +917,12 @@
       });
     }
 
+    // ACCURATE TOTAL FIX: Menghitung total 24 jam untuk badge saat pilih tanggal
     function selectSpecificDate(selectedDate) {
       if (rawDateData && rawDateData[selectedDate] && barChartInst) {
-        var hourlyArray = rawDateData[selectedDate].slice(9, 22);
-        var totalHariIni = hourlyArray.reduce(function(a, b) { return a + b; }, 0);
+        var fullHourlyArray = rawDateData[selectedDate];
+        var hourlyArray = fullHourlyArray.slice(9, 22);
+        var totalHariIni = fullHourlyArray.reduce(function(a, b) { return a + b; }, 0);
         
         barChartInst.data.datasets[0].data = hourlyArray;
         barChartInst.update();
