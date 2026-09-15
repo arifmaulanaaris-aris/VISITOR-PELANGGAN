@@ -43,7 +43,7 @@
     /* HEADER */
     header {
       background: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #e2e8f0; sticky: top; z-index: 100;
+      border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100;
     }
     .brand-section { display: flex; align-items: center; gap: 8px; }
     .brand-name { font-size: 18px; font-weight: 800; color: #dc2626; line-height: 1; }
@@ -283,7 +283,10 @@
         <div class="sales-grid">
           <div class="box-panel">
             <div class="panel-header">
-              <span>Jam Ramai</span>
+              <div style="display:flex; align-items:center;">
+                <span>Jam Ramai</span>
+                <span id="txtTotalVisitorHarian" style="font-size:11px; font-weight:bold; color:#dc2626; margin-left:8px; background:#fef2f2; padding:2px 8px; border-radius:4px; border:1px solid #fecaca;">Total: 0 Pelanggan</span>
+              </div>
               <input type="date" id="filterDate" style="font-size:11px; padding:2px 6px; border:1px solid #cbd5e1; border-radius:4px;" onchange="selectSpecificDate(this.value)">
             </div>
             <div class="chart-scroll-wrapper">
@@ -313,10 +316,13 @@
       <!-- TAB 2: PENJUALAN -->
       <div id="penjualan" class="tab-page">
         <div class="top-cards">
+          <!-- CARD PENCAPAIAN TOKO DENGAN ICON SVG BENAR -->
           <div class="card main-card">
             <div class="card-top-row">
               <span class="card-head">Pencapaian Toko</span>
-              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M5 92h3v12H5zm5-6h3v18h-3zm5-9h3v27h-3zm5-7h3v34h-3z"/></svg></div>
+              <div class="card-icon">
+                <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+              </div>
             </div>
             <div class="card-val" id="pPencapaianToko">Rp 0</div>
             <div class="card-avg" id="pPencapaianTokoAvg">Avg: Rp 0 / hari</div>
@@ -609,7 +615,6 @@
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
     }
 
-    // FORMAT SINGKAT RUPIAH UNTUK TICK CHART MOBILE (misal: 1.8M / 500Jt)
     function formatShortRupiah(val) {
       if (val >= 1000000000) return (val / 1000000000).toFixed(1) + 'M';
       if (val >= 1000000) return (val / 1000000).toFixed(0) + 'Jt';
@@ -683,8 +688,13 @@
         if (v.todayStr) document.getElementById("filterDate").value = v.todayStr;
 
         if (rawDailyData && barChartInst) {
-          barChartInst.data.datasets[0].data = rawDailyData[v.currentDay || 0].slice(9, 22);
+          var todayHourly = rawDailyData[v.currentDay || 0].slice(9, 22);
+          var todayTotal = todayHourly.reduce(function(a, b) { return a + b; }, 0);
+          
+          barChartInst.data.datasets[0].data = todayHourly;
           barChartInst.update();
+          
+          document.getElementById("txtTotalVisitorHarian").innerText = "Total: " + todayTotal + " Pelanggan";
         }
 
         if (v.sumberTotal && lineChartInst) {
@@ -897,11 +907,17 @@
 
     function selectSpecificDate(selectedDate) {
       if (rawDateData && rawDateData[selectedDate] && barChartInst) {
-        barChartInst.data.datasets[0].data = rawDateData[selectedDate].slice(9, 22);
+        var hourlyArray = rawDateData[selectedDate].slice(9, 22);
+        var totalHariIni = hourlyArray.reduce(function(a, b) { return a + b; }, 0);
+        
+        barChartInst.data.datasets[0].data = hourlyArray;
         barChartInst.update();
+        
+        document.getElementById("txtTotalVisitorHarian").innerText = "Total: " + totalHariIni + " Pelanggan";
       } else if (barChartInst) {
         barChartInst.data.datasets[0].data = new Array(13).fill(0);
         barChartInst.update();
+        document.getElementById("txtTotalVisitorHarian").innerText = "Total: 0 Pelanggan";
       }
     }
 
