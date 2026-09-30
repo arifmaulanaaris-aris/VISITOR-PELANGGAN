@@ -105,7 +105,7 @@
     .box-panel.full-width { grid-column: span 2; }
     .panel-header { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
     
-    /* WRAPPER CHART SUPAYA SMOOTH SCROLL DI SMARTPHONE */
+    /* WRAPPER CHART */
     .chart-scroll-wrapper {
       width: 100%;
       overflow-x: auto;
@@ -113,7 +113,7 @@
     }
     .chart-wrapper { position: relative; width: 100%; height: 220px; min-width: 300px; }
 
-    /* TABEL CLEAN UI + RESPONSIVE WRAPPER */
+    /* TABEL CLEAN UI */
     .table-container { height: 300px; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; font-size: 12px; }
     .custom-table { width: 100%; border-collapse: collapse; min-width: 500px; }
     .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10; white-space: nowrap; }
@@ -126,33 +126,7 @@
     .badge-yellow { background: #fef9c3; color: #a16207; }
     .badge-red { background: #fee2e2; color: #b91c1c; }
 
-    /* FORM INPUT */
-    .form-container { max-width: 440px; margin: 0 auto; width: 100%; }
-    .display-box-clean {
-      background: #ffffff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;
-      margin-bottom: 16px;
-    }
-    .clean-header { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; font-weight: 600; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 12px; }
-    .clean-hero { text-align: center; padding-bottom: 12px; }
-    .clean-number { font-size: 40px; font-weight: 900; color: #0f172a; line-height: 1; }
-    .clean-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-    
-    .clean-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; background: #f8fafc; border-radius: 6px; padding: 8px 4px; text-align: center; margin-bottom: 12px; }
-    .clean-val { font-size: 14px; font-weight: 800; color: #dc2626; }
-    .clean-sub { font-size: 9px; color: #64748b; font-weight: 600; margin-top: 2px; }
-    
-    .clean-sources { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px; }
-    .src-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #475569; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
-    .src-badge strong { color: #dc2626; }
-
-    .input-card { background: #ffffff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 16px; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { font-size: 11px; font-weight: 700; color: #334155; display: block; margin-bottom: 6px; }
-    .form-control { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; background: #fff; }
-    .btn-submit-red { width: 100%; background: #dc2626; color: white; border: none; padding: 10px; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; }
-    .hidden { display: none; }
-
-    /* OPTIMASI KHUSUS TAMPILAN SMARTPHONE (MOBILE) */
+    /* OPTIMASI SMARTPHONE (MOBILE) */
     @media (max-width: 768px) {
       header { padding: 10px 14px; }
       .container { flex-direction: column; }
@@ -172,10 +146,6 @@
       
       .chart-wrapper { height: 200px; }
       .table-container { max-height: 280px; }
-      
-      .clean-number { font-size: 32px; }
-      .clean-val { font-size: 12px; }
-      .clean-sub { font-size: 8px; }
     }
   </style>
 </head>
@@ -200,7 +170,7 @@
         <span class="brand-name">mahadewa.id</span>
         <span class="brand-sub">Cab. Palopo</span>
       </div>
-      <div class="page-title-badge" id="headerPageTitle">Visitor</div>
+      <div class="page-title-badge" id="headerPageTitle">Penjualan</div>
     </div>
     <div class="header-user">
       <span class="user-name">Arif Maulana</span>
@@ -213,7 +183,7 @@
   <div class="container">
     <!-- NAVIGATION SIDEBAR -->
     <div class="sidebar">
-      <button class="menu-item" onclick="switchTab('penjualan', this)">
+      <button class="menu-item active" onclick="switchTab('penjualan', this)">
         <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
         Penjualan
       </button>
@@ -229,8 +199,8 @@
 
     <div class="content">
 
-      <!-- TAB 2: PENJUALAN -->
-      <div id="penjualan" class="tab-page">
+      <!-- TAB 1: PENJUALAN (UTAMA) -->
+      <div id="penjualan" class="tab-page active">
         <div class="top-cards">
           <div class="card main-card">
             <div class="card-top-row">
@@ -296,7 +266,7 @@
           </div>
 
           <div class="box-panel">
-            <div class="panel-header"><span>Performa Penjualan Bulanan (Y4:Z15)</span></div>
+            <div class="panel-header"><span>Performa Penjualan Bulanan</span></div>
             <div class="table-container" style="height: 220px;">
               <table class="custom-table">
                 <thead>
@@ -323,7 +293,7 @@
           </div>
 
           <div class="box-panel full-width">
-            <div class="panel-header"><span>Top Best Seller Product (Diurutkan dari Omzet Terbesar)</span></div>
+            <div class="panel-header"><span>Top Best Seller Product</span></div>
             <div class="table-container" style="height: 320px;">
               <table class="custom-table">
                 <thead><tr><th>Rank</th><th>Nama Produk</th><th>Qty</th><th>Total Omzet</th></tr></thead>
@@ -334,20 +304,18 @@
         </div>
       </div>
 
-      <!-- TAB 3: KEUANGAN -->
+      <!-- TAB 2: KEUANGAN -->
       <div id="keuangan" class="tab-page">
         <div class="finance-cards">
-          <!-- CARD TOTAL PENJUALAN MTK -->
           <div class="card main-card" style="grid-column: span 2;">
             <div class="card-top-row">
-              <span class="card-head">Total Penjualan (MTK)</span>
+              <span class="card-head">Total Penjualan (KASIR)</span>
               <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
             </div>
             <div class="card-val" id="kTotalPenjualan">Rp 0</div>
-            <div class="card-avg">Total akumulasi dari kolom Total MTK</div>
+            <div class="card-avg">Total akumulasi dari Sheet KASIR</div>
           </div>
 
-          <!-- CARD TRANSFER -->
           <div class="card">
             <div class="card-top-row">
               <span class="card-head">Pembayaran Transfer</span>
@@ -357,7 +325,6 @@
             <div class="card-avg">Metode Transfer Bank</div>
           </div>
 
-          <!-- CARD QRIS / EDC -->
           <div class="card">
             <div class="card-top-row">
               <span class="card-head">Pembayaran QRIS / EDC</span>
@@ -367,7 +334,6 @@
             <div class="card-avg">Metode QRIS & Mesin EDC</div>
           </div>
 
-          <!-- CARD PEMBIAYAAN -->
           <div class="card">
             <div class="card-top-row">
               <span class="card-head">Transaksi Pembiayaan</span>
@@ -377,7 +343,6 @@
             <div class="card-avg">Kredit / Leasing / Finansial</div>
           </div>
 
-          <!-- CARD DP / PP -->
           <div class="card">
             <div class="card-top-row">
               <span class="card-head">Pembayaran DP / PP</span>
@@ -387,7 +352,6 @@
             <div class="card-avg">Uang Muka / Down Payment</div>
           </div>
 
-          <!-- CARD TUNAI -->
           <div class="card">
             <div class="card-top-row">
               <span class="card-head">Pembayaran Tunai</span>
@@ -397,7 +361,6 @@
             <div class="card-avg">Pembayaran Cash Tunai</div>
           </div>
 
-          <!-- CARD PIUTANG -->
           <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
             <div class="card-top-row">
               <span class="card-head" style="color: #dc2626;">Total Piutang</span>
@@ -408,10 +371,9 @@
           </div>
         </div>
 
-        <!-- BREAKDOWN KEUANGAN HARIAN (NEW) -->
         <div class="sales-grid">
           <div class="box-panel full-width">
-            <div class="panel-header"><span>Breakdown Keuangan Harian (Sheet MTK)</span></div>
+            <div class="panel-header"><span>Breakdown Keuangan Harian (Sheet KASIR)</span></div>
             <div class="table-container" style="height: 360px;">
               <table class="custom-table">
                 <thead>
@@ -435,7 +397,7 @@
         </div>
       </div>
 
-      <!-- TAB 4: MARKETING PERFORMANCE -->
+      <!-- TAB 3: MARKETING PERFORMANCE -->
       <div id="marketing-perf" class="tab-page">
         <div class="sales-grid">
           <div class="box-panel full-width">
@@ -470,24 +432,21 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwcYRAGdOrZ1rY9z5oGxQ04qUOgl-uwmxHL4gm0a4XP_aYWnjVMj4K5la0SCViFDjy_sw/exec";
     const CORRECT_PASSWORD = "M@had3wa2026";
 
     const PALETTE_RED = '#dc2626';
-    const PALETTE_GRAY = '#64748b';
     const PALETTE_PIE = ['#dc2626', '#475569', '#cbd5e1', '#0f172a', '#94a3b8', '#64748b', '#e2e8f0'];
 
-    let barChartInst = null;
-    let lineChartInst = null;
     let barDailyInst = null;
     let barWeeklyInst = null;
     let pieBrandInst = null;
     let barDeptInst = null;
     let barMktPerfInst = null;
-
-    let rawDailyData = null;
-    let rawDateData = null;
 
     window.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("isLoggedIn") === "true") {
@@ -518,25 +477,13 @@
     }
 
     function initApp() {
-      updateDateTime();
       initCharts();
       fetchStats();
-      
       setInterval(fetchStats, 30000);
-      setInterval(updateDateTime, 10000);
 
       document.addEventListener("visibilitychange", function() {
-        if (document.visibilityState === "visible") {
-          fetchStats();
-        }
+        if (document.visibilityState === "visible") fetchStats();
       });
-    }
-
-    function updateDateTime() {
-      const now = new Date();
-      const options = { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' };
-      document.getElementById("txtTanggalHariIni").innerText = now.toLocaleDateString('id-ID', options);
-      document.getElementById("txtJamSekarang").innerText = "Jam " + String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
     }
 
     function switchTab(tabId, btn) {
@@ -545,7 +492,7 @@
       document.getElementById(tabId).classList.add('active');
       btn.classList.add('active');
 
-      const titleMap = { 'dashboard': 'Visitor', 'penjualan': 'Penjualan', 'keuangan': 'Keuangan', 'marketing-perf': 'Marketing', 'form-input': 'Form Input' };
+      const titleMap = { 'penjualan': 'Penjualan', 'keuangan': 'Keuangan', 'marketing-perf': 'Marketing' };
       document.getElementById("headerPageTitle").innerText = titleMap[tabId] || 'Dashboard';
     }
 
@@ -569,111 +516,29 @@
 
     function formatPercent(val) {
       var num = parseFloat(val || 0);
-      if (Math.abs(num) <= 10) {
-        num = num * 100;
-      }
+      if (Math.abs(num) <= 10) num = num * 100;
       return num.toFixed(2) + "%";
     }
 
     function renderUI(data) {
       if (!data) return;
-
       const now = new Date();
       const currentDayOfMonth = Math.max(1, now.getDate());
 
-      // 1. VISITOR DATA
-      if (data.visitor) {
-        const v = data.visitor;
-        const totalBulan = v.bulanIni || 0;
-        const totalTransaksi = v.berhasilTransaksi || 0;
-        const totalLihat = v.lihatLihat || 0;
-        const totalHarga = v.cekHarga || 0;
-        const totalKosong = v.cariBarang || 0;
-
-        document.getElementById("dTotalBulan").innerText = totalBulan;
-        document.getElementById("dTotalBulanAvg").innerText = "Avg: " + (totalBulan / currentDayOfMonth).toFixed(1) + " / hari";
-
-        document.getElementById("dTransaksi").innerText = totalTransaksi;
-        document.getElementById("dTransaksiAvg").innerText = "Avg: " + (totalTransaksi / currentDayOfMonth).toFixed(1) + " / hari";
-
-        document.getElementById("dLihat").innerText = totalLihat;
-        document.getElementById("dLihatAvg").innerText = "Avg: " + (totalLihat / currentDayOfMonth).toFixed(1) + " / hari";
-
-        document.getElementById("dHarga").innerText = totalHarga;
-        document.getElementById("dHargaAvg").innerText = "Avg: " + (totalHarga / currentDayOfMonth).toFixed(1) + " / hari";
-
-        document.getElementById("dKosong").innerText = totalKosong;
-        document.getElementById("dKosongAvg").innerText = "Avg: " + (totalKosong / currentDayOfMonth).toFixed(1) + " / hari";
-
-        document.getElementById("fHariIni").innerText = v.hariIni || 0;
-
-        if (v.kategoriHariIni) {
-          document.getElementById("fLihat").innerText = v.kategoriHariIni.lihat || 0;
-          document.getElementById("fHarga").innerText = v.kategoriHariIni.harga || 0;
-          document.getElementById("fKosong").innerText = v.kategoriHariIni.kosong || 0;
-          document.getElementById("fTransaksi").innerText = v.kategoriHariIni.transaksi || 0;
-          document.getElementById("fService").innerText = v.kategoriHariIni.service || 0;
-        }
-
-        if (v.sumberHariIni) {
-          document.getElementById("sTiktok").innerText = v.sumberHariIni.tiktok || 0;
-          document.getElementById("sInstagram").innerText = v.sumberHariIni.instagram || 0;
-          document.getElementById("sRekan").innerText = v.sumberHariIni.rekan || 0;
-          document.getElementById("sMaps").innerText = v.sumberHariIni.googleMaps || 0;
-          document.getElementById("sLewat").innerText = v.sumberHariIni.lewatDepan || 0;
-        }
-
-        if (v.topBarang && v.topBarang.length > 0) {
-          document.getElementById("tblBarangRank").innerHTML = v.topBarang.map((item, i) => `
-            <tr><td>${i + 1}</td><td><b>${item.nama}</b></td><td>${item.jumlah} Pelanggan</td></tr>
-          `).join('');
-        }
-
-        rawDailyData = v.dailyHourlyData;
-        rawDateData = v.dateHourlyData;
-        if (v.todayStr) document.getElementById("filterDate").value = v.todayStr;
-
-        if (rawDailyData && barChartInst) {
-          var todayHourlyFull = rawDailyData[v.currentDay || 0] || [];
-          var todayTotal = v.hariIni || todayHourlyFull.reduce(function(a, b) { return a + b; }, 0);
-          
-          barChartInst.data.datasets[0].data = todayHourlyFull.slice(9, 22);
-          barChartInst.update();
-          
-          document.getElementById("txtTotalVisitorHarian").innerText = "Total: " + todayTotal + " Pelanggan";
-        }
-
-        if (v.sumberTotal && lineChartInst) {
-          lineChartInst.data.datasets[0].data = [v.sumberTotal.tiktok||0, v.sumberTotal.instagram||0, v.sumberTotal.rekan||0, v.sumberTotal.googleMaps||0, v.sumberTotal.lewatDepan||0];
-          lineChartInst.update();
-        }
-      }
-
-      // 2. SALES DATA
+      // 1. DATA PENJUALAN
       if (data.sales) {
         const s = data.sales;
-
         if (s.kpi) {
-          const pencToko = s.kpi.pencapaianToko || 0;
-          const totInv = s.kpi.totalInvoice || 0;
-          const pencMkt = s.kpi.pencapaianMarketing || 0;
-          const pencAdm = s.kpi.pencapaianAdmin || 0;
-          const pencTek = s.kpi.pencapaianTeknisi || 0;
-
-          document.getElementById("pPencapaianToko").innerText = formatRupiah(pencToko);
-          document.getElementById("pPencapaianTokoAvg").innerText = "Avg: " + formatRupiah(pencToko / currentDayOfMonth) + " / hari";
-
-          document.getElementById("pTotalInv").innerText = totInv;
-          document.getElementById("pTotalInvAvg").innerText = "Avg: " + (totInv / currentDayOfMonth).toFixed(1) + " inv / hari";
-
-          document.getElementById("pMktVal").innerText = formatRupiah(pencMkt);
-          document.getElementById("pMktValAvg").innerText = "Avg: " + formatRupiah(pencMkt / currentDayOfMonth) + " / hari";
-
-          document.getElementById("pAdmVal").innerText = formatRupiah(pencAdm);
-          document.getElementById("pAdmValAvg").innerText = "Avg: " + formatRupiah(pencAdm / currentDayOfMonth) + " / hari";
-
-          document.getElementById("pTekVal").innerText = formatRupiah(pencTek);
-          document.getElementById("pTekValAvg").innerText = "Avg: " + formatRupiah(pencTek / currentDayOfMonth) + " / hari";
+          document.getElementById("pPencapaianToko").innerText = formatRupiah(s.kpi.pencapaianToko);
+          document.getElementById("pPencapaianTokoAvg").innerText = "Avg: " + formatRupiah(s.kpi.pencapaianToko / currentDayOfMonth) + " / hari";
+          document.getElementById("pTotalInv").innerText = s.kpi.totalInvoice || 0;
+          document.getElementById("pTotalInvAvg").innerText = "Avg: " + ((s.kpi.totalInvoice || 0) / currentDayOfMonth).toFixed(1) + " inv / hari";
+          document.getElementById("pMktVal").innerText = formatRupiah(s.kpi.pencapaianMarketing);
+          document.getElementById("pMktValAvg").innerText = "Avg: " + formatRupiah(s.kpi.pencapaianMarketing / currentDayOfMonth) + " / hari";
+          document.getElementById("pAdmVal").innerText = formatRupiah(s.kpi.pencapaianAdmin);
+          document.getElementById("pAdmValAvg").innerText = "Avg: " + formatRupiah(s.kpi.pencapaianAdmin / currentDayOfMonth) + " / hari";
+          document.getElementById("pTekVal").innerText = formatRupiah(s.kpi.pencapaianTeknisi);
+          document.getElementById("pTekValAvg").innerText = "Avg: " + formatRupiah(s.kpi.pencapaianTeknisi / currentDayOfMonth) + " / hari";
         }
 
         if (s.dailyResults && barDailyInst) {
@@ -690,10 +555,7 @@
 
         if (s.monthlyPerformance && s.monthlyPerformance.length > 0) {
           document.getElementById("tblMonthlyPerf").innerHTML = s.monthlyPerformance.map(m => `
-            <tr>
-              <td><b>${m.bulan}</b></td>
-              <td><b>${formatRupiah(m.omzet)}</b></td>
-            </tr>
+            <tr><td><b>${m.bulan}</b></td><td><b>${formatRupiah(m.omzet)}</b></td></tr>
           `).join('');
         }
 
@@ -720,7 +582,7 @@
         }
       }
 
-      // 3. KEUANGAN DATA (MTK) + BREAKDOWN HARIAN
+      // 2. DATA KEUANGAN (KASIR)
       if (data.keuangan) {
         const k = data.keuangan;
         document.getElementById("kTotalPenjualan").innerText = formatRupiah(k.totalPenjualan);
@@ -752,10 +614,7 @@
 
     function renderMktPerformance(list) {
       var html = "";
-      var names = [];
-      var achData = [];
-      var targetData = [];
-      var runRateData = [];
+      var names = [], achData = [], targetData = [], runRateData = [];
 
       list.forEach(item => {
         names.push(item.nama);
@@ -799,18 +658,6 @@
       const isMobile = window.innerWidth <= 768;
       const legendPosition = isMobile ? 'bottom' : 'right';
 
-      barChartInst = new Chart(document.getElementById('barJamChart').getContext('2d'), {
-        type: 'bar',
-        data: { labels: ['09','10','11','12','13','14','15','16','17','18','19','20','21'], datasets: [{ data: new Array(13).fill(0), backgroundColor: PALETTE_RED, borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' }, ticks: { font: { size: 10 } } }, x: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
-      });
-
-      lineChartInst = new Chart(document.getElementById('lineSumberChart').getContext('2d'), {
-        type: 'line',
-        data: { labels: ['TikTok', 'Instagram', 'Rekan', 'Google Maps', 'Lewat Depan'], datasets: [{ data: [0, 0, 0, 0, 0], borderColor: PALETTE_RED, backgroundColor: 'rgba(220, 38, 38, 0.05)', fill: true, borderWidth: 2, tension: 0.3 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { borderDash: [2, 2], color: '#f1f5f9' } }, x: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
-      });
-
       barDailyInst = new Chart(document.getElementById('barDailyChart').getContext('2d'), {
         type: 'bar',
         data: { labels: Array.from({length: 31}, (_, i) => i + 1), datasets: [{ data: [], backgroundColor: PALETTE_RED, borderRadius: 3 }] },
@@ -818,10 +665,7 @@
           responsive: true, maintainAspectRatio: false, 
           plugins: { legend: { display: false } }, 
           scales: { 
-            y: { 
-              grid: { borderDash: [2, 2], color: '#f1f5f9' },
-              ticks: { callback: function(value) { return formatShortRupiah(value); }, font: { size: 9 } }
-            }, 
+            y: { grid: { borderDash: [2, 2], color: '#f1f5f9' }, ticks: { callback: function(value) { return formatShortRupiah(value); }, font: { size: 9 } } }, 
             x: { grid: { display: false }, ticks: { font: { size: 9 } } } 
           } 
         }
@@ -834,10 +678,7 @@
           responsive: true, maintainAspectRatio: false, 
           plugins: { legend: { display: false } }, 
           scales: { 
-            y: { 
-              grid: { borderDash: [2, 2], color: '#f1f5f9' },
-              ticks: { callback: function(value) { return formatShortRupiah(value); }, font: { size: 9 } }
-            }, 
+            y: { grid: { borderDash: [2, 2], color: '#f1f5f9' }, ticks: { callback: function(value) { return formatShortRupiah(value); }, font: { size: 9 } } }, 
             x: { grid: { display: false }, ticks: { font: { size: 10 } } } 
           } 
         }
@@ -866,71 +707,19 @@
           ]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
+          responsive: true, maintainAspectRatio: false,
           plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } },
           scales: { 
-            y: { 
-              grid: { borderDash: [2, 2], color: '#f1f5f9' },
-              ticks: { callback: function(value) { return formatShortRupiah(value); }, font: { size: 9 } }
-            }, 
+            y: { grid: { borderDash: [2, 2], color: '#f1f5f9' }, ticks: { callback: function(value) { return formatShortRupiah(value); }, font: { size: 9 } } }, 
             x: { grid: { display: false }, ticks: { font: { size: 10 } } } 
           }
         }
       });
     }
 
-    function selectSpecificDate(selectedDate) {
-      if (rawDateData && rawDateData[selectedDate] && barChartInst) {
-        var fullHourlyArray = rawDateData[selectedDate];
-        var hourlyArray = fullHourlyArray.slice(9, 22);
-        var totalHariIni = fullHourlyArray.reduce(function(a, b) { return a + b; }, 0);
-        
-        barChartInst.data.datasets[0].data = hourlyArray;
-        barChartInst.update();
-        
-        document.getElementById("txtTotalVisitorHarian").innerText = "Total: " + totalHariIni + " Pelanggan";
-      } else if (barChartInst) {
-        barChartInst.data.datasets[0].data = new Array(13).fill(0);
-        barChartInst.update();
-        document.getElementById("txtTotalVisitorHarian").innerText = "Total: 0 Pelanggan";
-      }
-    }
-
-    function toggleBarangInput() {
-      const kategori = document.getElementById("kategori").value;
-      document.getElementById("barangGroup").classList.toggle("hidden", kategori !== "Cari Barang (Stok Kosong)");
-    }
-
     function showProfile() {
       alert("=== PROFIL PENGGUNA ===\n\nNama: Arif Maulana\nToko: mahadewa.id Cab. Palopo\nStatus: Admin / Staf Toko");
     }
-
-    document.getElementById("visitorForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const btn = document.getElementById("btnSubmit");
-      btn.disabled = true;
-      btn.innerText = "Menyimpan...";
-
-      const payload = {
-        kategori: document.getElementById("kategori").value,
-        sumber: document.getElementById("sumber").value,
-        namaBarang: document.getElementById("namaBarang").value || "-",
-        catatan: document.getElementById("catatan").value || "-"
-      };
-
-      fetch(SCRIPT_URL, {
-        method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
-      })
-      .then(() => {
-        alert("Pelanggan berhasil ditambahkan!");
-        document.getElementById("visitorForm").reset();
-        toggleBarangInput();
-        setTimeout(fetchStats, 1000);
-      })
-      .catch(err => alert("Gagal menyimpan data: " + err))
-      .finally(() => { btn.disabled = false; btn.innerText = "Tambahkan Pelanggan"; });
-    });
   </script>
 </body>
 </html>
