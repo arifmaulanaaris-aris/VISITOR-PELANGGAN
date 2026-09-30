@@ -73,6 +73,7 @@
 
     /* KPI CARDS */
     .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+    .finance-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
     .card { 
       background: #ffffff; border-radius: 8px; padding: 12px 14px; 
       border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;
@@ -160,12 +161,12 @@
       .content { padding: 12px; }
       
       .top-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .finance-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .card.main-card { grid-column: span 2; }
       .sales-grid { grid-template-columns: 1fr; gap: 12px; }
       .box-panel.full-width { grid-column: span 1; }
       .user-name { display: none; }
       
-      /* MEMBERIKAN LEBAR MINIMAL KHUSUS CHART PANJANG DI SMARTPHONE */
       #barDailyChart { min-width: 650px; }
       #barMktPerfChart { min-width: 550px; }
       
@@ -210,7 +211,7 @@
   </header>
 
   <div class="container">
-    <!-- NAVIGATION SIDEBAR / BAR MOBILE -->
+    <!-- NAVIGATION SIDEBAR -->
     <div class="sidebar">
       <button class="menu-item active" onclick="switchTab('dashboard', this)">
         <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
@@ -219,6 +220,10 @@
       <button class="menu-item" onclick="switchTab('penjualan', this)">
         <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
         Penjualan
+      </button>
+      <button class="menu-item" onclick="switchTab('keuangan', this)">
+        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        Keuangan
       </button>
       <button class="menu-item" onclick="switchTab('marketing-perf', this)">
         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
@@ -317,7 +322,6 @@
       <!-- TAB 2: PENJUALAN -->
       <div id="penjualan" class="tab-page">
         <div class="top-cards">
-          <!-- CARD PENCAPAIAN TOKO DENGAN ICON SVG BENAR -->
           <div class="card main-card">
             <div class="card-top-row">
               <span class="card-head">Pencapaian Toko</span>
@@ -367,7 +371,6 @@
         </div>
 
         <div class="sales-grid">
-          <!-- DAILY RESULTS CHART SCROLLABLE -->
           <div class="box-panel full-width">
             <div class="panel-header"><span>Daily Results (Omzet Harian Tgl 1 - 31)</span></div>
             <div class="chart-scroll-wrapper">
@@ -375,7 +378,6 @@
             </div>
           </div>
 
-          <!-- CHART PERFORMA MINGGUAN -->
           <div class="box-panel">
             <div class="panel-header"><span>Performa Penjualan Mingguan</span></div>
             <div class="chart-scroll-wrapper">
@@ -383,7 +385,6 @@
             </div>
           </div>
 
-          <!-- TABEL PERFORMA BULANAN (Y4:Z15) -->
           <div class="box-panel">
             <div class="panel-header"><span>Performa Penjualan Bulanan (Y4:Z15)</span></div>
             <div class="table-container" style="height: 220px;">
@@ -401,19 +402,16 @@
             </div>
           </div>
 
-          <!-- BRAND CHART -->
           <div class="box-panel">
             <div class="panel-header"><span>Penjualan By Brand (Units)</span></div>
             <div class="chart-wrapper"><canvas id="pieBrandChart"></canvas></div>
           </div>
 
-          <!-- DEPT CHART -->
           <div class="box-panel">
             <div class="panel-header"><span>Pangsa Pasar By Department</span></div>
             <div class="chart-wrapper"><canvas id="barDeptChart"></canvas></div>
           </div>
 
-          <!-- BEST SELLER TABLE FULL WIDTH -->
           <div class="box-panel full-width">
             <div class="panel-header"><span>Top Best Seller Product (Diurutkan dari Omzet Terbesar)</span></div>
             <div class="table-container" style="height: 320px;">
@@ -426,7 +424,108 @@
         </div>
       </div>
 
-      <!-- TAB 3: MARKETING PERFORMANCE -->
+      <!-- TAB 3: KEUANGAN -->
+      <div id="keuangan" class="tab-page">
+        <div class="finance-cards">
+          <!-- CARD TOTAL PENJUALAN MTK -->
+          <div class="card main-card" style="grid-column: span 2;">
+            <div class="card-top-row">
+              <span class="card-head">Total Penjualan (MTK)</span>
+              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+            </div>
+            <div class="card-val" id="kTotalPenjualan">Rp 0</div>
+            <div class="card-avg">Total akumulasi dari kolom Total MTK</div>
+          </div>
+
+          <!-- CARD TRANSFER -->
+          <div class="card">
+            <div class="card-top-row">
+              <span class="card-head">Pembayaran Transfer</span>
+              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M4 10h16v2H4zm0-4h16v2H4zm0 8h10v2H4zm12 0l4 4-4 4v-3h-4v-2h4z"/></svg></div>
+            </div>
+            <div class="card-val" id="kTotalTransfer">Rp 0</div>
+            <div class="card-avg">Metode Transfer Bank</div>
+          </div>
+
+          <!-- CARD QRIS / EDC -->
+          <div class="card">
+            <div class="card-top-row">
+              <span class="card-head">Pembayaran QRIS / EDC</span>
+              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-14h-4V3h4c1.1 0 2-.9 2-2v4h-2V5z"/></svg></div>
+            </div>
+            <div class="card-val" id="kTotalQrisEdc">Rp 0</div>
+            <div class="card-avg">Metode QRIS & Mesin EDC</div>
+          </div>
+
+          <!-- CARD PEMBIAYAAN -->
+          <div class="card">
+            <div class="card-top-row">
+              <span class="card-head">Transaksi Pembiayaan</span>
+              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></div>
+            </div>
+            <div class="card-val" id="kTotalPembiayaan">Rp 0</div>
+            <div class="card-avg">Kredit / Leasing / Finansial</div>
+          </div>
+
+          <!-- CARD DP / PP -->
+          <div class="card">
+            <div class="card-top-row">
+              <span class="card-head">Pembayaran DP / PP</span>
+              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9z"/></svg></div>
+            </div>
+            <div class="card-val" id="kTotalDpPp">Rp 0</div>
+            <div class="card-avg">Uang Muka / Down Payment</div>
+          </div>
+
+          <!-- CARD TUNAI -->
+          <div class="card">
+            <div class="card-top-row">
+              <span class="card-head">Pembayaran Tunai</span>
+              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg></div>
+            </div>
+            <div class="card-val" id="kTotalTunai">Rp 0</div>
+            <div class="card-avg">Pembayaran Cash Tunai</div>
+          </div>
+
+          <!-- CARD PIUTANG -->
+          <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
+            <div class="card-top-row">
+              <span class="card-head" style="color: #dc2626;">Total Piutang</span>
+              <div class="card-icon" style="color: #dc2626; background: #fef2f2;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+            </div>
+            <div class="card-val" id="kTotalPiutang" style="color: #dc2626;">Rp 0</div>
+            <div class="card-avg" style="color: #b91c1c;">Tagihan / Piutang Belum Lunas</div>
+          </div>
+        </div>
+
+        <!-- BREAKDOWN KEUANGAN HARIAN (NEW) -->
+        <div class="sales-grid">
+          <div class="box-panel full-width">
+            <div class="panel-header"><span>Breakdown Keuangan Harian (Sheet MTK)</span></div>
+            <div class="table-container" style="height: 360px;">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Total Penjualan</th>
+                    <th>Transfer</th>
+                    <th>QRIS / EDC</th>
+                    <th>Pembiayaan</th>
+                    <th>DP / PP</th>
+                    <th>Tunai</th>
+                    <th>Piutang</th>
+                  </tr>
+                </thead>
+                <tbody id="tblKeuanganHarian">
+                  <tr><td colspan="8" style="text-align:center;">Memuat data breakdown harian...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: MARKETING PERFORMANCE -->
       <div id="marketing-perf" class="tab-page">
         <div class="sales-grid">
           <div class="box-panel full-width">
@@ -461,7 +560,7 @@
         </div>
       </div>
 
-      <!-- TAB 4: FORM INPUT -->
+      <!-- TAB 5: FORM INPUT -->
       <div id="form-input" class="tab-page">
         <div class="form-container">
           <div class="display-box-clean">
@@ -585,11 +684,9 @@
       initCharts();
       fetchStats();
       
-      // Auto refresh rutin setiap 30 detik
       setInterval(fetchStats, 30000);
       setInterval(updateDateTime, 10000);
 
-      // FIX REALTIME UPDATE: Ambil data terbaru otomatis ketika HP dinyalakan / tab dibuka kembali
       document.addEventListener("visibilitychange", function() {
         if (document.visibilityState === "visible") {
           fetchStats();
@@ -610,7 +707,7 @@
       document.getElementById(tabId).classList.add('active');
       btn.classList.add('active');
 
-      const titleMap = { 'dashboard': 'Visitor', 'penjualan': 'Penjualan', 'marketing-perf': 'Marketing', 'form-input': 'Form Input' };
+      const titleMap = { 'dashboard': 'Visitor', 'penjualan': 'Penjualan', 'keuangan': 'Keuangan', 'marketing-perf': 'Marketing', 'form-input': 'Form Input' };
       document.getElementById("headerPageTitle").innerText = titleMap[tabId] || 'Dashboard';
     }
 
@@ -698,7 +795,6 @@
         rawDateData = v.dateHourlyData;
         if (v.todayStr) document.getElementById("filterDate").value = v.todayStr;
 
-        // ACCURATE TOTAL FIX: Menggunakan angka total asli hari ini agar 100% sama dengan di atas
         if (rawDailyData && barChartInst) {
           var todayHourlyFull = rawDailyData[v.currentDay || 0] || [];
           var todayTotal = v.hariIni || todayHourlyFull.reduce(function(a, b) { return a + b; }, 0);
@@ -783,6 +879,35 @@
 
         if (s.mktPerformance && s.mktPerformance.length > 0) {
           renderMktPerformance(s.mktPerformance);
+        }
+      }
+
+      // 3. KEUANGAN DATA (MTK) + BREAKDOWN HARIAN
+      if (data.keuangan) {
+        const k = data.keuangan;
+        document.getElementById("kTotalPenjualan").innerText = formatRupiah(k.totalPenjualan);
+        document.getElementById("kTotalTransfer").innerText = formatRupiah(k.totalTransfer);
+        document.getElementById("kTotalQrisEdc").innerText = formatRupiah(k.totalQrisEdc);
+        document.getElementById("kTotalPembiayaan").innerText = formatRupiah(k.totalPembiayaan);
+        document.getElementById("kTotalDpPp").innerText = formatRupiah(k.totalDpPp);
+        document.getElementById("kTotalTunai").innerText = formatRupiah(k.totalTunai);
+        document.getElementById("kTotalPiutang").innerText = formatRupiah(k.totalPiutang);
+
+        if (k.breakdownHarian && k.breakdownHarian.length > 0) {
+          document.getElementById("tblKeuanganHarian").innerHTML = k.breakdownHarian.map(row => `
+            <tr>
+              <td><b>${row.tanggal}</b></td>
+              <td><b>${formatRupiah(row.total)}</b></td>
+              <td>${formatRupiah(row.transfer)}</td>
+              <td>${formatRupiah(row.qris)}</td>
+              <td>${formatRupiah(row.pembiayaan)}</td>
+              <td>${formatRupiah(row.dppp)}</td>
+              <td>${formatRupiah(row.tunai)}</td>
+              <td style="color:${row.piutang > 0 ? '#dc2626' : 'inherit'}; font-weight:${row.piutang > 0 ? 'bold' : 'normal'};">${formatRupiah(row.piutang)}</td>
+            </tr>
+          `).join('');
+        } else {
+          document.getElementById("tblKeuanganHarian").innerHTML = `<tr><td colspan="8" style="text-align:center;">Tidak ada data transaksi.</td></tr>`;
         }
       }
     }
@@ -917,7 +1042,6 @@
       });
     }
 
-    // ACCURATE TOTAL FIX: Menghitung total 24 jam untuk badge saat pilih tanggal
     function selectSpecificDate(selectedDate) {
       if (rawDateData && rawDateData[selectedDate] && barChartInst) {
         var fullHourlyArray = rawDateData[selectedDate];
