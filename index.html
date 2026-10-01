@@ -187,9 +187,13 @@
         <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
         Penjualan
       </button>
-      <button class="menu-item" onclick="switchTab('keuangan', this)">
+      <button class="menu-item" onclick="switchTab('keuangan-mtk', this)">
         <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-        Keuangan
+        Keuangan MTK
+      </button>
+      <button class="menu-item" onclick="switchTab('keuangan-service', this)">
+        <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.6C.4 7 1 10 2.9 12c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.3z"/></svg>
+        Keuangan Service
       </button>
       <button class="menu-item" onclick="switchTab('marketing-perf', this)">
         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
@@ -209,9 +213,7 @@
           <div class="card main-card">
             <div class="card-top-row">
               <span class="card-head">Pencapaian Toko</span>
-              <div class="card-icon">
-                <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-              </div>
+              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></div>
             </div>
             <div class="card-val" id="pPencapaianToko">Rp 0</div>
             <div class="card-avg" id="pPencapaianTokoAvg">Avg: Rp 0 / hari</div>
@@ -274,13 +276,10 @@
             <div class="table-container" style="height: 220px;">
               <table class="custom-table">
                 <thead>
-                  <tr>
-                    <th>Bulan</th>
-                    <th>Total Omzet</th>
-                  </tr>
+                  <tr><th>Bulan</th><th>Total Omzet</th></tr>
                 </thead>
                 <tbody id="tblMonthlyPerf">
-                  <tr><td colspan="2" style="text-align:center;">Memuat data bulanan...</td></tr>
+                  <tr><td colspan="2" style="text-align:center;">Memuat data...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -308,8 +307,8 @@
         </div>
       </div>
 
-      <!-- TAB 2: KEUANGAN -->
-      <div id="keuangan" class="tab-page">
+      <!-- TAB 2A: KEUANGAN MTK (SHEET KASIR) -->
+      <div id="keuangan-mtk" class="tab-page">
         <div class="finance-cards">
           <div class="card main-card" style="grid-column: span 2;">
             <div class="card-top-row">
@@ -321,63 +320,39 @@
           </div>
 
           <div class="card">
-            <div class="card-top-row">
-              <span class="card-head">Pembayaran Transfer</span>
-              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M4 10h16v2H4zm0-4h16v2H4zm0 8h10v2H4zm12 0l4 4-4 4v-3h-4v-2h4z"/></svg></div>
-            </div>
+            <div class="card-top-row"><span class="card-head">Pembayaran Transfer</span></div>
             <div class="card-val" id="kTotalTransfer">Rp 0</div>
-            <div class="card-avg">Metode Transfer Bank</div>
           </div>
 
           <div class="card">
-            <div class="card-top-row">
-              <span class="card-head">Pembayaran QRIS / EDC</span>
-              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-14h-4V3h4c1.1 0 2-.9 2-2v4h-2V5z"/></svg></div>
-            </div>
+            <div class="card-top-row"><span class="card-head">Pembayaran QRIS / EDC</span></div>
             <div class="card-val" id="kTotalQrisEdc">Rp 0</div>
-            <div class="card-avg">Metode QRIS & Mesin EDC</div>
           </div>
 
           <div class="card">
-            <div class="card-top-row">
-              <span class="card-head">Transaksi Pembiayaan</span>
-              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></div>
-            </div>
+            <div class="card-top-row"><span class="card-head">Transaksi Pembiayaan</span></div>
             <div class="card-val" id="kTotalPembiayaan">Rp 0</div>
-            <div class="card-avg">Kredit / Leasing / Finansial</div>
           </div>
 
           <div class="card">
-            <div class="card-top-row">
-              <span class="card-head">Pembayaran DP / PP</span>
-              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9z"/></svg></div>
-            </div>
+            <div class="card-top-row"><span class="card-head">Pembayaran DP / PP</span></div>
             <div class="card-val" id="kTotalDpPp">Rp 0</div>
-            <div class="card-avg">Uang Muka / Down Payment</div>
           </div>
 
           <div class="card">
-            <div class="card-top-row">
-              <span class="card-head">Pembayaran Tunai</span>
-              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg></div>
-            </div>
+            <div class="card-top-row"><span class="card-head">Pembayaran Tunai</span></div>
             <div class="card-val" id="kTotalTunai">Rp 0</div>
-            <div class="card-avg">Pembayaran Cash Tunai</div>
           </div>
 
           <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
-            <div class="card-top-row">
-              <span class="card-head" style="color: #dc2626;">Total Piutang</span>
-              <div class="card-icon" style="color: #dc2626; background: #fef2f2;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
-            </div>
+            <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Piutang</span></div>
             <div class="card-val" id="kTotalPiutang" style="color: #dc2626;">Rp 0</div>
-            <div class="card-avg" style="color: #b91c1c;">Tagihan / Piutang Belum Lunas</div>
           </div>
         </div>
 
         <div class="sales-grid">
           <div class="box-panel full-width">
-            <div class="panel-header"><span>Breakdown Keuangan Harian (Sheet KASIR)</span></div>
+            <div class="panel-header"><span>Breakdown Keuangan Harian MTK (Sheet KASIR)</span></div>
             <div class="table-container" style="height: 360px;">
               <table class="custom-table">
                 <thead>
@@ -393,7 +368,76 @@
                   </tr>
                 </thead>
                 <tbody id="tblKeuanganHarian">
-                  <tr><td colspan="8" style="text-align:center;">Memuat data breakdown harian...</td></tr>
+                  <tr><td colspan="8" style="text-align:center;">Memuat data...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2B: KEUANGAN SERVICE (SHEET SERVICE) -->
+      <div id="keuangan-service" class="tab-page">
+        <div class="finance-cards">
+          <div class="card main-card" style="grid-column: span 2;">
+            <div class="card-top-row">
+              <span class="card-head">Total Pendapatan Service</span>
+              <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.6C.4 7 1 10 2.9 12c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.3z"/></svg></div>
+            </div>
+            <div class="card-val" id="ksTotalPenjualan">Rp 0</div>
+            <div class="card-avg">Total akumulasi dari Sheet SERVICE</div>
+          </div>
+
+          <div class="card">
+            <div class="card-top-row"><span class="card-head">Transfer Service</span></div>
+            <div class="card-val" id="ksTotalTransfer">Rp 0</div>
+          </div>
+
+          <div class="card">
+            <div class="card-top-row"><span class="card-head">QRIS / EDC Service</span></div>
+            <div class="card-val" id="ksTotalQrisEdc">Rp 0</div>
+          </div>
+
+          <div class="card">
+            <div class="card-top-row"><span class="card-head">Pembiayaan Service</span></div>
+            <div class="card-val" id="ksTotalPembiayaan">Rp 0</div>
+          </div>
+
+          <div class="card">
+            <div class="card-top-row"><span class="card-head">DP / PP Service</span></div>
+            <div class="card-val" id="ksTotalDpPp">Rp 0</div>
+          </div>
+
+          <div class="card">
+            <div class="card-top-row"><span class="card-head">Tunai Service</span></div>
+            <div class="card-val" id="ksTotalTunai">Rp 0</div>
+          </div>
+
+          <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
+            <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Piutang Service</span></div>
+            <div class="card-val" id="ksTotalPiutang" style="color: #dc2626;">Rp 0</div>
+          </div>
+        </div>
+
+        <div class="sales-grid">
+          <div class="box-panel full-width">
+            <div class="panel-header"><span>Breakdown Keuangan Harian (Sheet SERVICE)</span></div>
+            <div class="table-container" style="height: 360px;">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Total Penjualan</th>
+                    <th>Transfer</th>
+                    <th>QRIS / EDC</th>
+                    <th>Pembiayaan</th>
+                    <th>DP / PP</th>
+                    <th>Tunai</th>
+                    <th>Piutang</th>
+                  </tr>
+                </thead>
+                <tbody id="tblKeuanganServiceHarian">
+                  <tr><td colspan="8" style="text-align:center;">Memuat data...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -428,7 +472,7 @@
                   </tr>
                 </thead>
                 <tbody id="tblMktPerf">
-                  <tr><td colspan="8" style="text-align:center;">Memuat data performa marketing...</td></tr>
+                  <tr><td colspan="8" style="text-align:center;">Memuat data...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -589,7 +633,13 @@
       document.getElementById(tabId).classList.add('active');
       btn.classList.add('active');
 
-      const titleMap = { 'penjualan': 'Penjualan', 'keuangan': 'Keuangan', 'marketing-perf': 'Marketing', 'siplah-tertunda': 'SIPLah Tertunda' };
+      const titleMap = { 
+        'penjualan': 'Penjualan', 
+        'keuangan-mtk': 'Keuangan MTK', 
+        'keuangan-service': 'Keuangan Service', 
+        'marketing-perf': 'Marketing', 
+        'siplah-tertunda': 'SIPLah Tertunda' 
+      };
       document.getElementById("headerPageTitle").innerText = titleMap[tabId] || 'Dashboard';
     }
 
@@ -679,7 +729,7 @@
         }
       }
 
-      // 2. DATA KEUANGAN (KASIR)
+      // 2A. DATA KEUANGAN MTK (KASIR)
       if (data.keuangan) {
         const k = data.keuangan;
         document.getElementById("kTotalPenjualan").innerText = formatRupiah(k.totalPenjualan);
@@ -703,8 +753,33 @@
               <td style="color:${row.piutang > 0 ? '#dc2626' : 'inherit'}; font-weight:${row.piutang > 0 ? 'bold' : 'normal'};">${formatRupiah(row.piutang)}</td>
             </tr>
           `).join('');
-        } else {
-          document.getElementById("tblKeuanganHarian").innerHTML = `<tr><td colspan="8" style="text-align:center;">Tidak ada data transaksi.</td></tr>`;
+        }
+      }
+
+      // 2B. DATA KEUANGAN SERVICE (SERVICE)
+      if (data.keuanganService) {
+        const ks = data.keuanganService;
+        document.getElementById("ksTotalPenjualan").innerText = formatRupiah(ks.totalPenjualan);
+        document.getElementById("ksTotalTransfer").innerText = formatRupiah(ks.totalTransfer);
+        document.getElementById("ksTotalQrisEdc").innerText = formatRupiah(ks.totalQrisEdc);
+        document.getElementById("ksTotalPembiayaan").innerText = formatRupiah(ks.totalPembiayaan);
+        document.getElementById("ksTotalDpPp").innerText = formatRupiah(ks.totalDpPp);
+        document.getElementById("ksTotalTunai").innerText = formatRupiah(ks.totalTunai);
+        document.getElementById("ksTotalPiutang").innerText = formatRupiah(ks.totalPiutang);
+
+        if (ks.breakdownHarian && ks.breakdownHarian.length > 0) {
+          document.getElementById("tblKeuanganServiceHarian").innerHTML = ks.breakdownHarian.map(row => `
+            <tr>
+              <td><b>${row.tanggal}</b></td>
+              <td><b>${formatRupiah(row.total)}</b></td>
+              <td>${formatRupiah(row.transfer)}</td>
+              <td>${formatRupiah(row.qris)}</td>
+              <td>${formatRupiah(row.pembiayaan)}</td>
+              <td>${formatRupiah(row.dppp)}</td>
+              <td>${formatRupiah(row.tunai)}</td>
+              <td style="color:${row.piutang > 0 ? '#dc2626' : 'inherit'}; font-weight:${row.piutang > 0 ? 'bold' : 'normal'};">${formatRupiah(row.piutang)}</td>
+            </tr>
+          `).join('');
         }
       }
 
