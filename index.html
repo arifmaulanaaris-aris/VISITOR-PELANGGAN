@@ -187,13 +187,13 @@
         <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
         Penjualan
       </button>
-      <button class="menu-item" onclick="switchTab('marketing-perf', this)">
-        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-        Marketing
-      </button>
       <button class="menu-item" onclick="switchTab('keuangan', this)">
         <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
         Keuangan
+      </button>
+      <button class="menu-item" onclick="switchTab('marketing-perf', this)">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+        Marketing
       </button>
       <button class="menu-item" onclick="switchTab('siplah-tertunda', this)">
         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
@@ -513,16 +513,17 @@
                   <tr>
                     <th>No. Dok</th>
                     <th>Tanggal</th>
-                    <th>Nama Sekolah / User</th>
                     <th>Total Keseluruhan</th>
+                    <th>SO MSK</th>
                     <th>Harga JL MSK</th>
+                    <th>Nama Sekolah / User</th>
                     <th>Catatan</th>
                     <th>Posisi Uang</th>
                     <th>Marketing</th>
                   </tr>
                 </thead>
                 <tbody id="tblSiplahDetail">
-                  <tr><td colspan="8" style="text-align:center;">Memuat rincian data...</td></tr>
+                  <tr><td colspan="9" style="text-align:center;">Memuat rincian data...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -742,9 +743,10 @@
             <tr>
               <td><b>${d.noDok}</b></td>
               <td>${d.tgl}</td>
-              <td><b>${d.user}</b></td>
               <td><b>${formatRupiah(d.total)}</b></td>
+              <td><b>${d.soMsk}</b></td>
               <td>${formatRupiah(d.hargaMsk)}</td>
+              <td><b>${d.user}</b></td>
               <td><span class="badge-status badge-yellow">${d.catatan}</span></td>
               <td>${d.posUang}</td>
               <td><b>${d.marketing}</b></td>
