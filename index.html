@@ -436,7 +436,102 @@
           </div>
         </div>
       </div>
+      <!-- TAB 4: SIPLAH TERTUNDA -->
+<div id="siplah-tertunda" class="tab-page">
+  <div class="top-cards">
+    <div class="card main-card">
+      <div class="card-top-row">
+        <span class="card-head">Total SIPLah Tertunda</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg></div>
+      </div>
+      <div class="card-val" id="sipTotalNilai">Rp 0</div>
+      <div class="card-avg">Total Tagihan Keseluruhan</div>
+    </div>
 
+    <div class="card">
+      <div class="card-top-row">
+        <span class="card-head">Total Harga JL MSK</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+      </div>
+      <div class="card-val" id="sipTotalMsk">Rp 0</div>
+      <div class="card-avg">Pencairan Makassar</div>
+    </div>
+
+    <div class="card">
+      <div class="card-top-row">
+        <span class="card-head">Total Transaksi / Sekolah</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+      </div>
+      <div class="card-val" id="sipTotalTrx">0</div>
+      <div class="card-avg">Berkas Sekolah</div>
+    </div>
+  </div>
+
+  <div class="sales-grid">
+    <!-- Tabel Rekap Per Marketing -->
+    <div class="box-panel">
+      <div class="panel-header"><span>Rekap Piutang SIPLah Per Marketing</span></div>
+      <div class="table-container" style="height: 240px;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Marketing</th>
+              <th>Jml Sekolah</th>
+              <th>Total Keseluruhan</th>
+              <th>Harga JL MSK</th>
+            </tr>
+          </thead>
+          <tbody id="tblSiplahMkt">
+            <tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tabel Rekap Per Catatan Disiplahkan -->
+    <div class="box-panel">
+      <div class="panel-header"><span>Rekap Per Status / Disiplahkan</span></div>
+      <div class="table-container" style="height: 240px;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Status / Catatan</th>
+              <th>Jumlah</th>
+              <th>Total Nilai</th>
+            </tr>
+          </thead>
+          <tbody id="tblSiplahCatatan">
+            <tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tabel Detail Seluruh Tagihan SIPLah -->
+    <div class="box-panel full-width">
+      <div class="panel-header"><span>Rincian Seluruh Transaksi SIPLah Tertunda</span></div>
+      <div class="table-container" style="height: 380px;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>No. Dok</th>
+              <th>Tanggal</th>
+              <th>Nama Sekolah / User</th>
+              <th>Total Keseluruhan</th>
+              <th>Harga JL MSK</th>
+              <th>Catatan</th>
+              <th>Posisi Uang</th>
+              <th>Marketing</th>
+            </tr>
+          </thead>
+          <tbody id="tblSiplahDetail">
+            <tr><td colspan="8" style="text-align:center;">Memuat rincian data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
   </div>
 
