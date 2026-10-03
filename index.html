@@ -329,16 +329,33 @@
           </div>
 
           <div class="box-panel full-width">
-            <div class="panel-header"><span>Top Best Seller Product</span></div>
+            <div class="panel-header">
+              <span>Top Best Seller Product</span>
+              <!-- TOMBOL FILTER DROPDOWN / SWITCH -->
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:10px; color:#64748b; font-weight:600;">Urutkan:</span>
+                <select id="bestSellerFilter" onchange="changeBestSellerSort(this.value)" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 11px; font-weight: 700; background: #fff; color: #334155; cursor: pointer; outline: none;">
+                  <option value="omzet">By Omzet (Rp)</option>
+                  <option value="qty">By Qty (Pcs)</option>
+                </select>
+              </div>
+            </div>
             <div class="table-container" style="height: 320px;">
               <table class="custom-table">
-                <thead><tr><th>Rank</th><th>Nama Produk</th><th>Qty</th><th>Total Omzet</th></tr></thead>
-                <tbody id="tblBestSeller"><tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr></tbody>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Nama Produk</th>
+                    <th>Qty</th>
+                    <th>Total Omzet</th>
+                  </tr>
+                </thead>
+                <tbody id="tblBestSeller">
+                  <tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>
+                </tbody>
               </table>
             </div>
           </div>
-        </div>
-      </div>
 
       <!-- TAB 2A: KEUANGAN MTK (SHEET KASIR) -->
       <div id="keuangan-mtk" class="tab-page">
@@ -622,6 +639,35 @@
     let barDeptInst = null;
     let barMktPerfInst = null;
 
+    // --- TAMBAHKAN DUA BARIS & FUNGSI INI DI SINI ---
+    let rawBestSellerData = [];
+
+    function renderBestSellerTable(sortBy) {
+      if (!rawBestSellerData || rawBestSellerData.length === 0) return;
+
+      let sortedList = [...rawBestSellerData];
+
+      if (sortBy === 'qty') {
+        sortedList.sort((a, b) => b.qty - a.qty);
+      } else {
+        sortedList.sort((a, b) => b.total - a.total);
+      }
+
+      document.getElementById("tblBestSeller").innerHTML = sortedList.slice(0, 10).map((b, i) => `
+        <tr>
+          <td><b>#${i + 1}</b></td>
+          <td><b>${b.item}</b></td>
+          <td><span style="${sortBy === 'qty' ? 'color:#dc2626; font-weight:bold;' : ''}">${b.qty} Pcs</span></td>
+          <td><span style="${sortBy === 'omzet' ? 'color:#dc2626; font-weight:bold;' : ''}">${formatRupiah(b.total)}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function changeBestSellerSort(val) {
+      renderBestSellerTable(val);
+    }
+    // ------------------------------------------------
+
     window.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("isLoggedIn") === "true") {
         document.getElementById("loginOverlay").style.display = "none";
@@ -706,10 +752,11 @@
     }
 
     function renderUI(data) {
-      if (!data) return;
-      const now = new Date();
-      const currentDayOfMonth = Math.max(1, now.getDate());
-
+      if (s.bestSeller && s.bestSeller.length > 0) {
+          document.getElementById("tblBestSeller").innerHTML = s.bestSeller.map((b, i) => `
+            <tr><td><b>#${i+1}</b></td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td><b>${formatRupiah(b.total)}</b></td></tr>
+          `).join('');
+        }
       // 1. DATA PENJUALAN
       if (data.sales) {
         const s = data.sales;
@@ -906,7 +953,7 @@
         barMktPerfInst.update();
       }
     }
-
+    
     function initCharts() {
       const isMobile = window.innerWidth <= 768;
       const legendPosition = isMobile ? 'bottom' : 'right';
