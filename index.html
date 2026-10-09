@@ -360,7 +360,7 @@
 
       <!-- TAB 2A: KEUANGAN MTK (SHEET KASIR) -->
       <div id="keuangan-mtk" class="tab-page">
-        <div class="finance-cards">
+        <div class="finance-cards" style="grid-template-columns: repeat(4, 1fr);">
           <div class="card main-card" style="grid-column: span 2;">
             <div class="card-top-row">
               <span class="card-head">Total Penjualan (KASIR)</span>
@@ -383,6 +383,12 @@
           <div class="card">
             <div class="card-top-row"><span class="card-head">Transaksi Pembiayaan</span></div>
             <div class="card-val" id="kTotalPembiayaan">Rp 0</div>
+          </div>
+
+          <!-- DITAMBAHKAN CARD KPI DENGAN METODE PEMBAYARAN TNT -->
+          <div class="card" style="border-color: #cbd5e1; background: #f8fafc;">
+            <div class="card-top-row"><span class="card-head" style="color: #0284c7;">Pembayaran TNT</span></div>
+            <div class="card-val" id="kTotalTnt" style="color: #0369a1;">Rp 0</div>
           </div>
 
           <div class="card">
@@ -413,13 +419,14 @@
                     <th>Transfer</th>
                     <th>QRIS / EDC</th>
                     <th>Pembiayaan</th>
+                    <th>TNT</th> <!-- KOLOM BARU TNT -->
                     <th>DP / PP</th>
                     <th>Tunai</th>
                     <th>Piutang</th>
                   </tr>
                 </thead>
                 <tbody id="tblKeuanganHarian">
-                  <tr><td colspan="8" style="text-align:center;">Memuat data...</td></tr>
+                  <tr><td colspan="9" style="text-align:center;">Memuat data...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -819,6 +826,12 @@
         document.getElementById("kTotalTransfer").innerText = formatRupiah(k.totalTransfer);
         document.getElementById("kTotalQrisEdc").innerText = formatRupiah(k.totalQrisEdc);
         document.getElementById("kTotalPembiayaan").innerText = formatRupiah(k.totalPembiayaan);
+        
+        // PENGELOLAAN METODE TNT
+        if (document.getElementById("kTotalTnt")) {
+          document.getElementById("kTotalTnt").innerText = formatRupiah(k.totalTnt || 0);
+        }
+
         document.getElementById("kTotalDpPp").innerText = formatRupiah(k.totalDpPp);
         document.getElementById("kTotalTunai").innerText = formatRupiah(k.totalTunai);
         document.getElementById("kTotalPiutang").innerText = formatRupiah(k.totalPiutang);
@@ -831,6 +844,7 @@
               <td>${formatRupiah(row.transfer)}</td>
               <td>${formatRupiah(row.qris)}</td>
               <td>${formatRupiah(row.pembiayaan)}</td>
+              <td><b>${formatRupiah(row.tnt || 0)}</b></td>
               <td>${formatRupiah(row.dppp)}</td>
               <td>${formatRupiah(row.tunai)}</td>
               <td style="color:${row.piutang > 0 ? '#dc2626' : 'inherit'}; font-weight:${row.piutang > 0 ? 'bold' : 'normal'};">${formatRupiah(row.piutang)}</td>
@@ -839,7 +853,7 @@
         }
       }
 
-      // 2B. DATA KEUANGAN SERVICE (SERVICE)
+      // 2B. DATA KEUANGAN SERVICE (SHEET SERVICE)
       if (data.keuanganService) {
         const ks = data.keuanganService;
         document.getElementById("ksTotalPenjualan").innerText = formatRupiah(ks.totalPenjualan);
