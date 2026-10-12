@@ -103,13 +103,6 @@
     .card-head { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
     .card.main-card .card-head { color: #fecaca; }
     
-    .card-icon {
-      width: 26px; height: 26px; border-radius: 6px; background: #f8fafc; border: 1px solid #f1f5f9;
-      display: flex; align-items: center; justify-content: center; color: #dc2626; flex-shrink: 0;
-    }
-    .card.main-card .card-icon { background: rgba(255, 255, 255, 0.2); border: none; color: #ffffff; }
-    .card-icon svg { width: 15px; height: 15px; fill: currentColor; }
-
     .card-val { font-size: 17px; font-weight: 900; color: #0f172a; line-height: 1.2; margin-top: 2px; }
     .card.main-card .card-val { color: #ffffff; }
     
@@ -264,7 +257,7 @@
 
     <div class="content">
 
-      <!-- TAB 1: FORM KEBERSIHAN TOKO (SUBMIT INDIVIDUAL PER AREA) -->
+      <!-- TAB 1: FORM KEBERSIHAN TOKO -->
       <div id="kebersihan" class="tab-page active">
         <div style="background:#fef2f2; border:1px solid #fecaca; padding:12px; border-radius:8px; margin-bottom:16px;">
           <h3 style="font-size:14px; color:#dc2626;">Laporan Kebersihan Harian (4 Area Wajib)</h3>
@@ -709,7 +702,6 @@
       }
     }
 
-    // FUNGSI KIRIM INDIVIDUAL PER AREA
     function kirimLaporanArea(areaIdx, areaTitle) {
       if (!currentUser) return;
 
@@ -902,23 +894,42 @@
         }
       }
 
-      // 4. RIWAYAT KEBERSIHAN
+      // 4. RIWAYAT KEBERSIHAN (DILENGKAPI FILTER PER NAMA AKUN)
       if (data.kebersihan && data.kebersihan.riwayat) {
-        document.getElementById("tblRiwayatKebersihan").innerHTML = data.kebersihan.riwayat.map(r => `
-          <tr>
-            <td><b>${r.tgl}</b></td>
-            <td><b>${r.nama}</b></td>
-            <td><b>${r.area}</b></td>
-            <td>
-              <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${r.denda > 0 ? '#fee2e2' : '#dcfce7'}; color:${r.denda > 0 ? '#dc2626' : '#15803d'};">
-                ${r.status}
-              </span>
-            </td>
-            <td style="color:${r.denda > 0 ? '#dc2626' : 'inherit'}; font-weight:${r.denda > 0 ? 'bold' : 'normal'};">
-              Rp ${r.denda.toLocaleString('id-ID')}
-            </td>
-          </tr>
-        `).join('');
+        let filteredRiwayat = data.kebersihan.riwayat;
+
+        // Filter riwayat hanya sesuai akun yang sedang login (kecuali ADMIN)
+        if (currentUser && currentUser.role !== "ADMIN") {
+          filteredRiwayat = filteredRiwayat.filter(r => 
+            String(r.nama).trim().toUpperCase() === String(currentUser.nama).trim().toUpperCase()
+          );
+        }
+
+        if (filteredRiwayat.length === 0) {
+          document.getElementById("tblRiwayatKebersihan").innerHTML = `
+            <tr><td colspan="5" style="text-align:center;">Belum ada riwayat laporan kebersihan untuk akun ini.</td></tr>
+          `;
+        } else {
+          document.getElementById("tblRiwayatKebersihan").innerHTML = filteredRiwayat.map(r => {
+            let displayTgl = String(r.tgl).replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
+
+            return `
+              <tr>
+                <td><b>${displayTgl}</b></td>
+                <td><b>${r.nama}</b></td>
+                <td><b>${r.area}</b></td>
+                <td>
+                  <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${r.denda > 0 ? '#fee2e2' : '#dcfce7'}; color:${r.denda > 0 ? '#dc2626' : '#15803d'};">
+                    ${r.status}
+                  </span>
+                </td>
+                <td style="color:${r.denda > 0 ? '#dc2626' : 'inherit'}; font-weight:${r.denda > 0 ? 'bold' : 'normal'};">
+                  Rp ${r.denda.toLocaleString('id-ID')}
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
       }
 
       // 5. DASHBOARD KPI KEBERSIHAN
