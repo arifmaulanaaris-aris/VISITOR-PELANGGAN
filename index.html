@@ -357,12 +357,13 @@
                   <th>Tanggal & Jam</th>
                   <th>Nama Staff</th>
                   <th>Nama Area</th>
+                  <th>Foto</th>
                   <th>Status</th>
                   <th>Denda (Rp)</th>
                 </tr>
               </thead>
               <tbody id="tblRiwayatKebersihan">
-                <tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>
+                <tr><td colspan="6" style="text-align:center;">Memuat data...</td></tr>
               </tbody>
             </table>
           </div>
@@ -702,7 +703,19 @@
       }
     }
 
-    function kirimLaporanArea(areaIdx, areaTitle) {
+    // Helper membaca file sebagai Base64
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) resolve(null);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // Fungsi Kirim Area Berdasarkan Base64 & Upload ke Google Drive
+    async function kirimLaporanArea(areaIdx, areaTitle) {
       if (!currentUser) return;
 
       const fileB = document.getElementById(`file_a${areaIdx}_b`).files[0];
@@ -715,42 +728,47 @@
 
       const btn = document.getElementById(`btn_submit_a${areaIdx}`);
       btn.disabled = true;
-      btn.innerText = "⏳ Mengirim Laporan...";
+      btn.innerText = "⏳ Mengunggah Foto & Mengirim Laporan...";
 
-      const payload = {
-        action: "simpanKebersihanArea",
-        username: currentUser.username,
-        namaStaf: currentUser.nama,
-        namaArea: areaTitle,
-        hasBefore: !!fileB,
-        hasAfter: !!fileA
-      };
+      try {
+        const base64B = await fileToBase64(fileB);
+        const base64A = await fileToBase64(fileA);
 
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }).then(() => {
-        alert(`Laporan ${areaTitle} berhasil terkirim!`);
-        
-        const statusDiv = document.getElementById(`status_a${areaIdx}`);
-        statusDiv.style.display = "block";
-        if (fileB && fileA) {
-          statusDiv.className = "area-status-badge status-success";
-          statusDiv.innerText = `✓ ${areaTitle} Selesai Lengkap (Foto Before & After)`;
-        } else {
-          statusDiv.className = "area-status-badge status-warning";
-          statusDiv.innerText = `⚠️ ${areaTitle} Terkirim (Foto Tidak Lengkap - Denda Rp 15.000)`;
-        }
-        btn.innerText = `✓ ${areaTitle} Sudah Dikirim`;
-        
-        fetchStats();
-      }).catch(err => {
-        alert("Gagal mengirim laporan. Silakan coba lagi.");
+        const payload = {
+          action: "simpanKebersihanArea",
+          username: currentUser.username,
+          namaStaf: currentUser.nama,
+          namaArea: areaTitle,
+          base64Before: base64B,
+          base64After: base64A
+        };
+
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }).then(() => {
+          alert(`Laporan ${areaTitle} berhasil terkirim!`);
+          
+          const statusDiv = document.getElementById(`status_a${areaIdx}`);
+          statusDiv.style.display = "block";
+          if (fileB && fileA) {
+            statusDiv.className = "area-status-badge status-success";
+            statusDiv.innerText = `✓ ${areaTitle} Selesai Lengkap (Foto Before & After)`;
+          } else {
+            statusDiv.className = "area-status-badge status-warning";
+            statusDiv.innerText = `⚠️ ${areaTitle} Terkirim (Foto Tidak Lengkap - Denda Rp 15.000)`;
+          }
+          btn.innerText = `✓ ${areaTitle} Sudah Dikirim`;
+          
+          fetchStats();
+        });
+      } catch (err) {
+        alert("Gagal memproses foto. Silakan coba lagi.");
         btn.disabled = false;
         btn.innerText = `🚀 Kirim Laporan Area ${areaIdx}`;
-      });
+      }
     }
 
     function fetchStats() {
@@ -894,11 +912,10 @@
         }
       }
 
-      // 4. RIWAYAT KEBERSIHAN (DILENGKAPI FILTER PER NAMA AKUN)
+      // 4. RIWAYAT KEBERSIHAN (FILTER PER NAMA AKUN & TAMPILKAN TOMBOL FOTO)
       if (data.kebersihan && data.kebersihan.riwayat) {
         let filteredRiwayat = data.kebersihan.riwayat;
 
-        // Filter riwayat hanya sesuai akun yang sedang login (kecuali ADMIN)
         if (currentUser && currentUser.role !== "ADMIN") {
           filteredRiwayat = filteredRiwayat.filter(r => 
             String(r.nama).trim().toUpperCase() === String(currentUser.nama).trim().toUpperCase()
@@ -907,17 +924,26 @@
 
         if (filteredRiwayat.length === 0) {
           document.getElementById("tblRiwayatKebersihan").innerHTML = `
-            <tr><td colspan="5" style="text-align:center;">Belum ada riwayat laporan kebersihan untuk akun ini.</td></tr>
+            <tr><td colspan="6" style="text-align:center;">Belum ada riwayat laporan kebersihan untuk akun ini.</td></tr>
           `;
         } else {
           document.getElementById("tblRiwayatKebersihan").innerHTML = filteredRiwayat.map(r => {
             let displayTgl = String(r.tgl).replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
+
+            let linkBeforeBtn = (r.urlBefore && r.urlBefore.indexOf('http') !== -1) 
+              ? `<a href="${r.urlBefore}" target="_blank" style="padding: 2px 6px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Before</a>` 
+              : `<span style="color:#94a3b8; font-size:10px;">Tidak Ada</span>`;
+
+            let linkAfterBtn = (r.urlAfter && r.urlAfter.indexOf('http') !== -1) 
+              ? `<a href="${r.urlAfter}" target="_blank" style="padding: 2px 6px; background:#dcfce7; color:#15803d; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ After</a>` 
+              : `<span style="color:#94a3b8; font-size:10px;">Tidak Ada</span>`;
 
             return `
               <tr>
                 <td><b>${displayTgl}</b></td>
                 <td><b>${r.nama}</b></td>
                 <td><b>${r.area}</b></td>
+                <td>${linkBeforeBtn} &nbsp; ${linkAfterBtn}</td>
                 <td>
                   <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${r.denda > 0 ? '#fee2e2' : '#dcfce7'}; color:${r.denda > 0 ? '#dc2626' : '#15803d'};">
                     ${r.status}
