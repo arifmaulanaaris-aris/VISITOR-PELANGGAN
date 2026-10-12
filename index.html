@@ -143,6 +143,21 @@
     .btn-cam { background: #dc2626; color: white; border: none; padding: 8px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 6px; }
     .preview-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-top: 8px; display: none; }
 
+    /* TOMBOL & BADGE SUBMIT PER AREA */
+    .btn-area-submit {
+      width: 100%; background: #dc2626; color: white; border: none; padding: 10px;
+      font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 12px;
+      transition: background 0.2s;
+    }
+    .btn-area-submit:hover { background: #b91c1c; }
+    .btn-area-submit:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .area-status-badge {
+      margin-top: 8px; padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-align: center; display: none;
+    }
+    .status-success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .status-warning { background: #fef9c3; color: #a16207; border: 1px solid #fef08a; }
+
     /* BADGES */
     .badge-status { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; display: inline-block; }
     .badge-green { background: #dcfce7; color: #15803d; }
@@ -249,13 +264,14 @@
 
     <div class="content">
 
-      <!-- TAB 1: FORM KEBERSIHAN TOKO (LIVE CAMERA) -->
+      <!-- TAB 1: FORM KEBERSIHAN TOKO (SUBMIT INDIVIDUAL PER AREA) -->
       <div id="kebersihan" class="tab-page active">
         <div style="background:#fef2f2; border:1px solid #fecaca; padding:12px; border-radius:8px; margin-bottom:16px;">
           <h3 style="font-size:14px; color:#dc2626;">Laporan Kebersihan Harian (4 Area Wajib)</h3>
-          <p style="font-size:11px; color:#7f1d1d; margin-top:2px;">Wajib foto kamera langsung (Before & After). Jika terlewat 1 area, dikenakan denda otomatis Rp 15.000!</p>
+          <p style="font-size:11px; color:#7f1d1d; margin-top:2px;">Setiap area dapat dikirim satu per satu saat selesai dibersihkan. Foto wajib kamera langsung (Before & After). Jika dikirim tanpa foto lengkap, dikenakan denda Rp 15.000 per area.</p>
         </div>
 
+        <!-- AREA 1 -->
         <div class="area-card">
           <div class="area-title">1. Area Depan</div>
           <div class="cam-grid">
@@ -272,8 +288,11 @@
               <img id="prev_a1_a" class="preview-img">
             </div>
           </div>
+          <button id="btn_submit_a1" class="btn-area-submit" onclick="kirimLaporanArea(1, '1. Area Depan')">🚀 Kirim Laporan Area 1</button>
+          <div id="status_a1" class="area-status-badge"></div>
         </div>
 
+        <!-- AREA 2 -->
         <div class="area-card">
           <div class="area-title">2. Area Display</div>
           <div class="cam-grid">
@@ -290,8 +309,11 @@
               <img id="prev_a2_a" class="preview-img">
             </div>
           </div>
+          <button id="btn_submit_a2" class="btn-area-submit" onclick="kirimLaporanArea(2, '2. Area Display')">🚀 Kirim Laporan Area 2</button>
+          <div id="status_a2" class="area-status-badge"></div>
         </div>
 
+        <!-- AREA 3 -->
         <div class="area-card">
           <div class="area-title">3. Meja Masing-masing</div>
           <div class="cam-grid">
@@ -308,8 +330,11 @@
               <img id="prev_a3_a" class="preview-img">
             </div>
           </div>
+          <button id="btn_submit_a3" class="btn-area-submit" onclick="kirimLaporanArea(3, '3. Meja Masing-masing')">🚀 Kirim Laporan Area 3</button>
+          <div id="status_a3" class="area-status-badge"></div>
         </div>
 
+        <!-- AREA 4 -->
         <div class="area-card">
           <div class="area-title">4. Lantai Toko, Toilet & Gudang</div>
           <div class="cam-grid">
@@ -326,11 +351,9 @@
               <img id="prev_a4_a" class="preview-img">
             </div>
           </div>
+          <button id="btn_submit_a4" class="btn-area-submit" onclick="kirimLaporanArea(4, '4. Lantai Toko, Toilet & Gudang')">🚀 Kirim Laporan Area 4</button>
+          <div id="status_a4" class="area-status-badge"></div>
         </div>
-
-        <button onclick="kirimLaporanKebersihan()" style="width:100%; background:#dc2626; color:white; border:none; padding:14px; font-size:14px; font-weight:bold; border-radius:8px; cursor:pointer;">
-          🚀 Kirim Laporan Kebersihan Hari Ini
-        </button>
 
         <div style="margin-top:24px;">
           <h4 style="font-size:13px; margin-bottom:8px;">Riwayat Kebersihan & Rekap Denda Staff</h4>
@@ -340,7 +363,7 @@
                 <tr>
                   <th>Tanggal & Jam</th>
                   <th>Nama Staff</th>
-                  <th>Area Selesai</th>
+                  <th>Nama Area</th>
                   <th>Status</th>
                   <th>Denda (Rp)</th>
                 </tr>
@@ -362,12 +385,12 @@
             <div class="card-avg">Persentase Kelengkapan Laporan</div>
           </div>
           <div class="card">
-            <div class="card-top-row"><span class="card-head">Total Laporan Masuk</span></div>
+            <div class="card-top-row"><span class="card-head">Total Area Dikirim</span></div>
             <div class="card-val" id="kpiTotalLaporan">0</div>
-            <div class="card-avg">Laporan Harian Staf</div>
+            <div class="card-avg">Laporan Area Masuk</div>
           </div>
           <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
-            <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Area Terlewat</span></div>
+            <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Area Tidak Lengkap</span></div>
             <div class="card-val" id="kpiAreaTerlewat" style="color: #dc2626;">0 Area</div>
             <div class="card-avg">Akumulasi Bulan Ini</div>
           </div>
@@ -386,8 +409,8 @@
                 <tr>
                   <th>Rank</th>
                   <th>Nama Staf</th>
-                  <th>Jumlah Laporan</th>
-                  <th>Area Terlewat</th>
+                  <th>Area Dikirim</th>
+                  <th>Area Tidak Lengkap</th>
                   <th>% Kedisiplinan</th>
                   <th>Total Denda (Rp)</th>
                 </tr>
@@ -628,17 +651,13 @@
     function applyUserAccess() {
       document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
       
-      // KONTROL HAK AKSES PERSIS BERDASARKAN SHEET AKUN
       document.getElementById("nav-penjualan").style.display = currentUser.akses.penjualan ? "flex" : "none";
       document.getElementById("nav-keuangan-mtk").style.display = currentUser.akses.keuangan ? "flex" : "none";
       document.getElementById("nav-marketing").style.display = currentUser.akses.penjualan ? "flex" : "none";
       document.getElementById("nav-siplah").style.display = currentUser.akses.siplah ? "flex" : "none";
       document.getElementById("nav-kebersihan").style.display = currentUser.akses.kebersihan ? "flex" : "none";
-      
-      // PENAMBAHAN AKSES KHUSUS DASHBOARD KPI KEBERSIHAN (KOLOM I)
       document.getElementById("nav-kpi-kebersihan").style.display = currentUser.akses.kpiKebersihan ? "flex" : "none";
 
-      // Tab Pertama yang Terbuka Saat Login Sesuai Izin
       if (currentUser.akses.kebersihan) {
         switchTab('kebersihan', document.getElementById("nav-kebersihan"));
       } else if (currentUser.akses.kpiKebersihan) {
@@ -690,21 +709,29 @@
       }
     }
 
-    function kirimLaporanKebersihan() {
+    // FUNGSI KIRIM INDIVIDUAL PER AREA
+    function kirimLaporanArea(areaIdx, areaTitle) {
       if (!currentUser) return;
 
+      const fileB = document.getElementById(`file_a${areaIdx}_b`).files[0];
+      const fileA = document.getElementById(`file_a${areaIdx}_a`).files[0];
+
+      if (!fileB && !fileA) {
+        alert(`Harap ambil minimal 1 foto kamera (Before atau After) untuk ${areaTitle}!`);
+        return;
+      }
+
+      const btn = document.getElementById(`btn_submit_a${areaIdx}`);
+      btn.disabled = true;
+      btn.innerText = "⏳ Mengirim Laporan...";
+
       const payload = {
-        action: "simpanKebersihan",
+        action: "simpanKebersihanArea",
         username: currentUser.username,
         namaStaf: currentUser.nama,
-        area1_before: !!document.getElementById("file_a1_b").files[0],
-        area1_after: !!document.getElementById("file_a1_a").files[0],
-        area2_before: !!document.getElementById("file_a2_b").files[0],
-        area2_after: !!document.getElementById("file_a2_a").files[0],
-        area3_before: !!document.getElementById("file_a3_b").files[0],
-        area3_after: !!document.getElementById("file_a3_a").files[0],
-        area4_before: !!document.getElementById("file_a4_b").files[0],
-        area4_after: !!document.getElementById("file_a4_a").files[0]
+        namaArea: areaTitle,
+        hasBefore: !!fileB,
+        hasAfter: !!fileA
       };
 
       fetch(SCRIPT_URL, {
@@ -713,8 +740,24 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       }).then(() => {
-        alert("Laporan Kebersihan berhasil terkirim!");
-        window.location.reload();
+        alert(`Laporan ${areaTitle} berhasil terkirim!`);
+        
+        const statusDiv = document.getElementById(`status_a${areaIdx}`);
+        statusDiv.style.display = "block";
+        if (fileB && fileA) {
+          statusDiv.className = "area-status-badge status-success";
+          statusDiv.innerText = `✓ ${areaTitle} Selesai Lengkap (Foto Before & After)`;
+        } else {
+          statusDiv.className = "area-status-badge status-warning";
+          statusDiv.innerText = `⚠️ ${areaTitle} Terkirim (Foto Tidak Lengkap - Denda Rp 15.000)`;
+        }
+        btn.innerText = `✓ ${areaTitle} Sudah Dikirim`;
+        
+        fetchStats();
+      }).catch(err => {
+        alert("Gagal mengirim laporan. Silakan coba lagi.");
+        btn.disabled = false;
+        btn.innerText = `🚀 Kirim Laporan Area ${areaIdx}`;
       });
     }
 
@@ -865,7 +908,7 @@
           <tr>
             <td><b>${r.tgl}</b></td>
             <td><b>${r.nama}</b></td>
-            <td>${r.area}</td>
+            <td><b>${r.area}</b></td>
             <td>
               <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${r.denda > 0 ? '#fee2e2' : '#dcfce7'}; color:${r.denda > 0 ? '#dc2626' : '#15803d'};">
                 ${r.status}
@@ -897,7 +940,7 @@
           <tr>
             <td><b>#${idx + 1}</b></td>
             <td><b>${s.nama}</b></td>
-            <td>${s.totalLapor} Kali</td>
+            <td>${s.totalLapor} Laporan</td>
             <td style="color:${s.areaTerlewat > 0 ? '#dc2626' : '#15803d'}; font-weight:bold;">${s.areaTerlewat} Area</td>
             <td><span class="badge-status ${parseFloat(s.pctDisiplin) >= 90 ? 'badge-green' : 'badge-red'}">${s.pctDisiplin}</span></td>
             <td style="color:${s.totalDenda > 0 ? '#dc2626' : 'inherit'}; font-weight:bold;">Rp ${s.totalDenda.toLocaleString('id-ID')}</td>
