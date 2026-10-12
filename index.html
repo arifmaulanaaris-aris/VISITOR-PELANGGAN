@@ -628,15 +628,21 @@
     function applyUserAccess() {
       document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
       
+      // KONTROL HAK AKSES PERSIS BERDASARKAN SHEET AKUN
       document.getElementById("nav-penjualan").style.display = currentUser.akses.penjualan ? "flex" : "none";
       document.getElementById("nav-keuangan-mtk").style.display = currentUser.akses.keuangan ? "flex" : "none";
       document.getElementById("nav-marketing").style.display = currentUser.akses.penjualan ? "flex" : "none";
       document.getElementById("nav-siplah").style.display = currentUser.akses.siplah ? "flex" : "none";
       document.getElementById("nav-kebersihan").style.display = currentUser.akses.kebersihan ? "flex" : "none";
-      document.getElementById("nav-kpi-kebersihan").style.display = currentUser.akses.kebersihan ? "flex" : "none";
+      
+      // PENAMBAHAN AKSES KHUSUS DASHBOARD KPI KEBERSIHAN (KOLOM I)
+      document.getElementById("nav-kpi-kebersihan").style.display = currentUser.akses.kpiKebersihan ? "flex" : "none";
 
+      // Tab Pertama yang Terbuka Saat Login Sesuai Izin
       if (currentUser.akses.kebersihan) {
         switchTab('kebersihan', document.getElementById("nav-kebersihan"));
+      } else if (currentUser.akses.kpiKebersihan) {
+        switchTab('kpi-kebersihan-tab', document.getElementById("nav-kpi-kebersihan"));
       } else if (currentUser.akses.penjualan) {
         switchTab('penjualan', document.getElementById("nav-penjualan"));
       }
