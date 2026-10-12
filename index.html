@@ -3,18 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>mahadewa.id - Dashboard & Kebersihan Toko</title>
+  <title>mahadewa.id - Executive Dashboard & Kebersihan Toko</title>
   
+  <!-- Google Font: Roboto -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    * { box-sizing: border-box; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+    * { 
+      box-sizing: border-box; 
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      margin: 0; 
+      padding: 0; 
+    }
+    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; -webkit-tap-highlight-color: transparent; }
 
-    /* OVERLAY LOGIN PER AKUN */
+    /* OVERLAY LOGIN */
     #loginOverlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(248, 250, 252, 0.98); backdrop-filter: blur(8px);
@@ -24,18 +32,20 @@
     .login-card {
       background: #ffffff; width: 100%; max-width: 360px;
       padding: 32px 24px; border-radius: 12px;
-      border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.05); text-align: center;
+      border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03); text-align: center;
     }
-    .login-title { font-size: 22px; font-weight: 900; color: #dc2626; }
-    .login-sub-brand { font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 16px; text-transform: uppercase; }
+    .login-title { font-size: 22px; font-weight: 900; color: #dc2626; line-height: 1; }
+    .login-sub-brand { font-size: 11px; font-weight: 700; color: #64748b; margin-top: 2px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
     .login-input {
       width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px;
       font-size: 14px; margin-bottom: 10px; outline: none; background: #f8fafc;
     }
+    .login-input:focus { border-color: #dc2626; background: #fff; }
     .btn-login {
       width: 100%; background: #dc2626; color: white; border: none; padding: 10px;
-      font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer;
+      font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.2s;
     }
+    .btn-login:hover { background: #b91c1c; }
     .login-error { color: #dc2626; font-size: 11px; margin-top: 8px; font-weight: 700; display: none; }
 
     /* HEADER */
@@ -43,42 +53,115 @@
       background: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;
       border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100;
     }
-    .brand-name { font-size: 18px; font-weight: 900; color: #dc2626; }
-    .page-title-badge { font-size: 13px; font-weight: 700; color: #334155; margin-left: 12px; border-left: 2px solid #e2e8f0; padding-left: 12px; }
+    .brand-section { display: flex; align-items: center; gap: 8px; }
+    .brand-name { font-size: 18px; font-weight: 900; color: #dc2626; line-height: 1; }
+    .brand-sub { font-size: 10px; color: #64748b; font-weight: 700; display: block; margin-top: 2px; }
+    .page-title-badge { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #334155; margin-left: 12px; border-left: 2px solid #e2e8f0; padding-left: 12px; }
     
+    .header-user { display: flex; align-items: center; gap: 6px; }
+    .user-name { font-size: 12px; color: #64748b; font-weight: 700; margin-right: 4px; }
+    .btn-badge-red { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .btn-badge-gray { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
+
+    /* LAYOUT & SIDEBAR */
     .container { display: flex; flex: 1; }
     .sidebar { width: 190px; padding: 16px 12px; background: #ffffff; border-right: 1px solid #e2e8f0; flex-shrink: 0; }
     .menu-item {
       display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border-radius: 6px;
       border: none; background: transparent; font-size: 13px; font-weight: 700; color: #64748b; cursor: pointer; margin-bottom: 4px; text-align: left;
+      transition: all 0.2s;
     }
+    .menu-item:hover { background: #f8fafc; color: #0f172a; }
     .menu-item.active { background: #dc2626; color: white; }
+    .menu-item svg { fill: currentColor; width: 16px; height: 16px; }
 
-    .content { flex: 1; padding: 20px 24px; width: 100%; }
+    /* DROPDOWN SIDEBAR KEUANGAN */
+    .dropdown-container { display: flex; flex-direction: column; }
+    .dropdown-btn { justify-content: space-between; }
+    .arrow-icon { width: 14px; height: 14px; transition: transform 0.3s ease; fill: currentColor; }
+    .dropdown-container.open .arrow-icon { transform: rotate(180deg); }
+    .submenu {
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;
+      display: flex; flex-direction: column; padding-left: 12px;
+    }
+    .dropdown-container.open .submenu { max-height: 200px; }
+    .submenu .menu-item { font-size: 12px; padding: 6px 10px; margin-top: 2px; }
+
+    .content { flex: 1; padding: 20px 24px; width: 100%; overflow-x: hidden; }
     .tab-page { display: none; }
     .tab-page.active { display: block; }
 
-    /* CARD KEBERSIHAN KAMERA LIVE */
-    .area-card {
-      background: #ffffff; border-radius: 10px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 16px;
+    /* KPI CARDS */
+    .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+    .finance-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .card { 
+      background: #ffffff; border-radius: 8px; padding: 12px 14px; 
+      border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;
     }
+    .card.main-card { background: #dc2626; color: white; border: none; }
+    .card-top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .card-head { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card.main-card .card-head { color: #fecaca; }
+    
+    .card-icon {
+      width: 26px; height: 26px; border-radius: 6px; background: #f8fafc; border: 1px solid #f1f5f9;
+      display: flex; align-items: center; justify-content: center; color: #dc2626; flex-shrink: 0;
+    }
+    .card.main-card .card-icon { background: rgba(255, 255, 255, 0.2); border: none; color: #ffffff; }
+    .card-icon svg { width: 15px; height: 15px; fill: currentColor; }
+
+    .card-val { font-size: 17px; font-weight: 900; color: #0f172a; line-height: 1.2; margin-top: 2px; }
+    .card.main-card .card-val { color: #ffffff; }
+    
+    .card-avg { font-size: 10px; font-weight: 500; color: #64748b; margin-top: 6px; padding-top: 4px; border-top: 1px dashed #f1f5f9; }
+    .card.main-card .card-avg { color: #fee2e2; border-top-color: rgba(255,255,255,0.2); }
+
+    /* DASHBOARD PANELS */
+    .sales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .box-panel { 
+      background: #ffffff; border-radius: 8px; padding: 16px; 
+      border: 1px solid #e2e8f0; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .box-panel.full-width { grid-column: span 2; }
+    .panel-header { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .chart-scroll-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .chart-wrapper { position: relative; width: 100%; height: 220px; min-width: 300px; }
+
+    /* TABEL CLEAN UI */
+    .table-container { height: 300px; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; font-size: 12px; }
+    .custom-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+    .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10; white-space: nowrap; }
+    .custom-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; white-space: nowrap; }
+    .custom-table tr:hover td { background: #f8fafc; }
+
+    /* CARD KEBERSIHAN KAMERA LIVE */
+    .area-card { background: #ffffff; border-radius: 10px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 16px; }
     .area-title { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 10px; }
     .cam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .cam-box { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 10px; text-align: center; }
-    .btn-cam {
-      background: #dc2626; color: white; border: none; padding: 8px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 6px;
-    }
+    .btn-cam { background: #dc2626; color: white; border: none; padding: 8px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 6px; }
     .preview-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-top: 8px; display: none; }
 
-    /* TABLE */
-    .table-container { height: 320px; overflow-y: auto; overflow-x: auto; }
-    .custom-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; }
-    .custom-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+    /* BADGES */
+    .badge-status { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; display: inline-block; }
+    .badge-green { background: #dcfce7; color: #15803d; }
+    .badge-yellow { background: #fef9c3; color: #a16207; }
+    .badge-red { background: #fee2e2; color: #b91c1c; }
 
     @media (max-width: 768px) {
+      header { padding: 10px 14px; }
       .container { flex-direction: column; }
-      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 4px; overflow-x: auto; padding: 8px; }
+      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px; border-right: none; border-bottom: 1px solid #e2e8f0; overflow-x: auto; background: #fff; position: sticky; top: 0; z-index: 90; }
+      .menu-item { margin-bottom: 0; justify-content: center; padding: 8px 12px; flex-shrink: 0; font-size: 12px; }
+      .content { padding: 12px; }
+      
+      .top-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .finance-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .card.main-card { grid-column: span 2; }
+      .sales-grid { grid-template-columns: 1fr; gap: 12px; }
+      .box-panel.full-width { grid-column: span 1; }
+      .user-name { display: none; }
       .cam-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -91,7 +174,7 @@
       <div class="login-title">mahadewa.id</div>
       <div class="login-sub-brand">Cab. Palopo</div>
       <input type="text" id="userInput" class="login-input" placeholder="Username (contoh: wiki)">
-      <input type="password" id="passInput" class="login-input" placeholder="Password">
+      <input type="password" id="passInput" class="login-input" placeholder="Password" onkeyup="checkEnterKey(event)">
       <button class="btn-login" onclick="performLogin()">Masuk System</button>
       <div id="loginError" class="login-error">Username / Password Salah!</div>
     </div>
@@ -99,23 +182,64 @@
 
   <!-- HEADER -->
   <header>
-    <div>
-      <span class="brand-name">mahadewa.id</span>
-      <span class="page-title-badge" id="headerPageTitle">Kebersihan Toko</span>
+    <div class="brand-section">
+      <div>
+        <span class="brand-name">mahadewa.id</span>
+        <span class="brand-sub">Cab. Palopo</span>
+      </div>
+      <div class="page-title-badge" id="headerPageTitle">Kebersihan Toko</div>
     </div>
-    <div>
-      <span id="userBadge" style="font-size:12px; font-weight:bold; color:#64748b; margin-right:8px;">Guest</span>
-      <button onclick="handleLogout()" style="padding:4px 8px; border-radius:4px; border:1px solid #cbd5e1; font-size:11px; cursor:pointer;">Keluar</button>
+    <div class="header-user">
+      <span class="user-name" id="userBadge">Guest</span>
+      <button class="btn-badge-gray" onclick="fetchStats()">🔄 Refresh</button>
+      <button class="btn-badge-red" onclick="showProfile()">Profil</button>
+      <button class="btn-badge-gray" onclick="handleLogout()">Keluar</button>
     </div>
   </header>
 
   <div class="container">
-    <!-- SIDEBAR WITH ACCESS CONTROL -->
+    <!-- SIDEBAR NAVIGATION -->
     <div class="sidebar" id="sidebarMenu">
-      <button id="nav-kebersihan" class="menu-item active" onclick="switchTab('kebersihan', this)">Kebersihan Toko</button>
-      <button id="nav-penjualan" class="menu-item" onclick="switchTab('penjualan', this)">Penjualan</button>
-      <button id="nav-keuangan-mtk" class="menu-item" onclick="switchTab('keuangan-mtk', this)">Keuangan MTK</button>
-      <button id="nav-siplah" class="menu-item" onclick="switchTab('siplah-tertunda', this)">SIPLah</button>
+      <button id="nav-kebersihan" class="menu-item active" onclick="switchTab('kebersihan', this)">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        Kebersihan Toko
+      </button>
+
+      <button id="nav-penjualan" class="menu-item" onclick="switchTab('penjualan', this)">
+        <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+        Penjualan
+      </button>
+
+      <!-- DROPDOWN KEUANGAN -->
+      <div class="dropdown-container" id="keuanganDropdown">
+        <button id="nav-keuangan-mtk" class="menu-item dropdown-btn" onclick="toggleDropdown('keuanganDropdown')">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            Keuangan
+          </div>
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </button>
+        <div class="submenu">
+          <button class="menu-item" onclick="switchTab('keuangan-mtk-tab', this)">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            Keuangan MTK
+          </button>
+          <button class="menu-item" onclick="switchTab('keuangan-service-tab', this)">
+            <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.6C.4 7 1 10 2.9 12c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.3z"/></svg>
+            Keuangan Service
+          </button>
+        </div>
+      </div>
+
+      <button id="nav-marketing" class="menu-item" onclick="switchTab('marketing-perf', this)">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+        Marketing
+      </button>
+
+      <button id="nav-siplah" class="menu-item" onclick="switchTab('siplah-tertunda', this)">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+        SIPLah Tertunda
+      </button>
     </div>
 
     <div class="content">
@@ -127,7 +251,6 @@
           <p style="font-size:11px; color:#7f1d1d; margin-top:2px;">Wajib foto kamera langsung (Before & After). Jika terlewat 1 area, dikenakan denda otomatis Rp 15.000!</p>
         </div>
 
-        <!-- AREA 1 -->
         <div class="area-card">
           <div class="area-title">1. Teras Depan & Pintu Kaca</div>
           <div class="cam-grid">
@@ -146,7 +269,6 @@
           </div>
         </div>
 
-        <!-- AREA 2 -->
         <div class="area-card">
           <div class="area-title">2. Area Display & Etalase Produk</div>
           <div class="cam-grid">
@@ -165,7 +287,6 @@
           </div>
         </div>
 
-        <!-- AREA 3 -->
         <div class="area-card">
           <div class="area-title">3. Meja Kasir & Meja Kerja/Teknisi</div>
           <div class="cam-grid">
@@ -184,7 +305,6 @@
           </div>
         </div>
 
-        <!-- AREA 4 -->
         <div class="area-card">
           <div class="area-title">4. Lantai Toko, Toilet & Gudang</div>
           <div class="cam-grid">
@@ -228,15 +348,181 @@
         </div>
       </div>
 
-      <!-- TAB DASHBOARD LAINNYA -->
+      <!-- TAB 2: PENJUALAN -->
       <div id="penjualan" class="tab-page">
-        <h3>Halaman Dashboard Penjualan</h3>
+        <div class="top-cards">
+          <div class="card main-card">
+            <div class="card-top-row"><span class="card-head">Pencapaian Toko</span></div>
+            <div class="card-val" id="pPencapaianToko">Rp 0</div>
+            <div class="card-avg" id="pPencapaianTokoAvg">Avg: Rp 0 / hari</div>
+          </div>
+          <div class="card">
+            <div class="card-top-row"><span class="card-head">Total Invoice</span></div>
+            <div class="card-val" id="pTotalInv">0</div>
+            <div class="card-avg" id="pTotalInvAvg">Avg: 0 inv / hari</div>
+          </div>
+          <div class="card">
+            <div class="card-top-row"><span class="card-head">Marketing</span></div>
+            <div class="card-val" id="pMktVal">Rp 0</div>
+            <div class="card-avg" id="pMktValAvg">Avg: Rp 0 / hari</div>
+          </div>
+          <div class="card">
+            <div class="card-top-row"><span class="card-head">Admin</span></div>
+            <div class="card-val" id="pAdmVal">Rp 0</div>
+            <div class="card-avg" id="pAdmValAvg">Avg: Rp 0 / hari</div>
+          </div>
+          <div class="card">
+            <div class="card-top-row"><span class="card-head">Teknisi</span></div>
+            <div class="card-val" id="pTekVal">Rp 0</div>
+            <div class="card-avg" id="pTekValAvg">Avg: Rp 0 / hari</div>
+          </div>
+        </div>
+
+        <div class="sales-grid">
+          <div class="box-panel full-width">
+            <div class="panel-header"><span>Daily Results (Omzet Harian)</span></div>
+            <div class="chart-scroll-wrapper"><div class="chart-wrapper"><canvas id="barDailyChart"></canvas></div></div>
+          </div>
+          <div class="box-panel">
+            <div class="panel-header"><span>Performa Penjualan Mingguan</span></div>
+            <div class="chart-scroll-wrapper"><div class="chart-wrapper"><canvas id="barWeeklyChart"></canvas></div></div>
+          </div>
+          <div class="box-panel">
+            <div class="panel-header"><span>Performa Penjualan Bulanan</span></div>
+            <div class="table-container" style="height: 220px;">
+              <table class="custom-table">
+                <thead><tr><th>Bulan</th><th>Total Omzet</th></tr></thead>
+                <tbody id="tblMonthlyPerf"><tr><td colspan="2" style="text-align:center;">Memuat data...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="box-panel">
+            <div class="panel-header"><span>Pencapaian By Brand</span></div>
+            <div class="chart-wrapper"><canvas id="pieBrandChart"></canvas></div>
+          </div>
+          <div class="box-panel">
+            <div class="panel-header"><span>Pencapaian By Department</span></div>
+            <div class="chart-wrapper"><canvas id="barDeptChart"></canvas></div>
+          </div>
+          <div class="box-panel full-width">
+            <div class="panel-header">
+              <span>Top Best Seller Product</span>
+              <select id="bestSellerFilter" onchange="changeBestSellerSort(this.value)" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 11px;">
+                <option value="omzet">By Omzet (Rp)</option>
+                <option value="qty">By Qty (Pcs)</option>
+              </select>
+            </div>
+            <div class="table-container" style="height: 320px;">
+              <table class="custom-table">
+                <thead><tr><th>Rank</th><th>Nama Produk</th><th>Qty</th><th>Total Omzet</th></tr></thead>
+                <tbody id="tblBestSeller"><tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-      <div id="keuangan-mtk" class="tab-page">
-        <h3>Halaman Keuangan MTK</h3>
+
+      <!-- TAB 3A: KEUANGAN MTK -->
+      <div id="keuangan-mtk-tab" class="tab-page">
+        <div class="finance-cards" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="card main-card" style="grid-column: span 2;">
+            <div class="card-top-row"><span class="card-head">Total Penjualan (KASIR)</span></div>
+            <div class="card-val" id="kTotalPenjualan">Rp 0</div>
+          </div>
+          <div class="card"><div class="card-top-row"><span class="card-head">Transfer</span></div><div class="card-val" id="kTotalTransfer">Rp 0</div></div>
+          <div class="card"><div class="card-top-row"><span class="card-head">QRIS / EDC</span></div><div class="card-val" id="kTotalQrisEdc">Rp 0</div></div>
+          <div class="card"><div class="card-top-row"><span class="card-head">Pembiayaan</span></div><div class="card-val" id="kTotalPembiayaan">Rp 0</div></div>
+          <div class="card" style="border-color: #cbd5e1; background: #f8fafc;"><div class="card-top-row"><span class="card-head" style="color: #0284c7;">Pembayaran TNT</span></div><div class="card-val" id="kTotalTnt" style="color: #0369a1;">Rp 0</div></div>
+          <div class="card"><div class="card-top-row"><span class="card-head">DP / PP</span></div><div class="card-val" id="kTotalDpPp">Rp 0</div></div>
+          <div class="card"><div class="card-top-row"><span class="card-head">Tunai</span></div><div class="card-val" id="kTotalTunai">Rp 0</div></div>
+          <div class="card" style="border-color: #fca5a5; background: #fff5f5;"><div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Piutang</span></div><div class="card-val" id="kTotalPiutang" style="color: #dc2626;">Rp 0</div></div>
+        </div>
+
+        <div class="box-panel full-width">
+          <div class="panel-header"><span>Breakdown Keuangan Harian MTK (Sheet KASIR)</span></div>
+          <div class="table-container" style="height: 360px;">
+            <table class="custom-table">
+              <thead><tr><th>Tanggal</th><th>Total Penjualan</th><th>Transfer</th><th>QRIS / EDC</th><th>Pembiayaan</th><th>TNT</th><th>DP / PP</th><th>Tunai</th><th>Piutang</th></tr></thead>
+              <tbody id="tblKeuanganHarian"><tr><td colspan="9" style="text-align:center;">Memuat data...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
+      <!-- TAB 3B: KEUANGAN SERVICE -->
+      <div id="keuangan-service-tab" class="tab-page">
+        <div class="finance-cards">
+          <div class="card main-card" style="grid-column: span 2;">
+            <div class="card-top-row"><span class="card-head">Total Pendapatan Service</span></div>
+            <div class="card-val" id="ksTotalPenjualan">Rp 0</div>
+          </div>
+          <div class="card"><div class="card-top-row"><span class="card-head">Transfer Service</span></div><div class="card-val" id="ksTotalTransfer">Rp 0</div></div>
+          <div class="card"><div class="card-top-row"><span class="card-head">QRIS / EDC Service</span></div><div class="card-val" id="ksTotalQrisEdc">Rp 0</div></div>
+          <div class="card"><div class="card-top-row"><span class="card-head">Pembiayaan Service</span></div><div class="card-val" id="ksTotalPembiayaan">Rp 0</div></div>
+          <div class="card"><div class="card-top-row"><span class="card-head">DP / PP Service</span></div><div class="card-val" id="ksTotalDpPp">Rp 0</div></div>
+          <div class="card"><div class="card-top-row"><span class="card-head">Tunai Service</span></div><div class="card-val" id="ksTotalTunai">Rp 0</div></div>
+          <div class="card" style="border-color: #fca5a5; background: #fff5f5;"><div class="card-top-row"><span class="card-head" style="color: #dc2626;">Piutang Service</span></div><div class="card-val" id="ksTotalPiutang" style="color: #dc2626;">Rp 0</div></div>
+        </div>
+
+        <div class="box-panel full-width">
+          <div class="panel-header"><span>Breakdown Keuangan Harian (Sheet SERVICE)</span></div>
+          <div class="table-container" style="height: 360px;">
+            <table class="custom-table">
+              <thead><tr><th>Tanggal</th><th>Total Penjualan</th><th>Transfer</th><th>QRIS / EDC</th><th>Pembiayaan</th><th>DP / PP</th><th>Tunai</th><th>Piutang</th></tr></thead>
+              <tbody id="tblKeuanganServiceHarian"><tr><td colspan="8" style="text-align:center;">Memuat data...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: MARKETING PERFORMANCE -->
+      <div id="marketing-perf" class="tab-page">
+        <div class="box-panel full-width" style="margin-bottom:16px;">
+          <div class="panel-header"><span>Perbandingan Revenue & Proyeksi Marketing</span></div>
+          <div class="chart-scroll-wrapper"><div class="chart-wrapper" style="height: 260px;"><canvas id="barMktPerfChart"></canvas></div></div>
+        </div>
+        <div class="box-panel full-width">
+          <div class="panel-header"><span>Tabel Kinerja Personal Marketing</span></div>
+          <div class="table-container" style="height: 320px;">
+            <table class="custom-table">
+              <thead><tr><th>Personal</th><th>Pencapaian (ACH)</th><th>Target / Bln</th><th>Target Sisa / Hari</th><th>% ACH</th><th>Avg / Hari</th><th>Proyeksi Run Rate</th><th>% Proyeksi</th></tr></thead>
+              <tbody id="tblMktPerf"><tr><td colspan="8" style="text-align:center;">Memuat data...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: SIPLAH TERTUNDA -->
       <div id="siplah-tertunda" class="tab-page">
-        <h3>Halaman SIPLah Tertunda</h3>
+        <div class="top-cards" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="card main-card">
+            <div class="card-top-row"><span class="card-head">Total SIPLah Tertunda</span></div>
+            <div class="card-val" id="sipTotalNilai">Rp 0</div>
+          </div>
+          <div class="card"><div class="card-top-row"><span class="card-head">Total Harga JL MSK</span></div><div class="card-val" id="sipTotalMsk">Rp 0</div></div>
+          <div class="card"><div class="card-top-row"><span class="card-head">Total Transaksi / Sekolah</span></div><div class="card-val" id="sipTotalTrx">0</div></div>
+        </div>
+
+        <div class="sales-grid">
+          <div class="box-panel full-width">
+            <div class="panel-header"><span>Rekap Piutang SIPLah Per Marketing</span></div>
+            <div class="table-container" style="height: 240px;">
+              <table class="custom-table">
+                <thead><tr><th>Marketing</th><th>Jml Sekolah</th><th>Total Keseluruhan</th><th>Harga JL MSK</th></tr></thead>
+                <tbody id="tblSiplahMkt"><tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="box-panel full-width">
+            <div class="panel-header"><span>Rincian Seluruh Transaksi SIPLah Tertunda</span></div>
+            <div class="table-container" style="height: 380px;">
+              <table class="custom-table">
+                <thead><tr><th>No. Dok</th><th>SO MSK</th><th>Harga JL MSK</th><th>Nama Sekolah / User</th><th>Catatan</th><th>Posisi Uang</th><th>Marketing</th></tr></thead>
+                <tbody id="tblSiplahDetail"><tr><td colspan="7" style="text-align:center;">Memuat rincian data...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -244,9 +530,15 @@
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwcYRAGdOrZ1rY9z5oGxQ04qUOgl-uwmxHL4gm0a4XP_aYWnjVMj4K5la0SCViFDjy_sw/exec";
+    const PALETTE_RED = '#dc2626';
+    const PALETTE_PIE = ['#dc2626', '#475569', '#cbd5e1', '#0f172a', '#94a3b8', '#64748b', '#e2e8f0'];
+
     let currentUser = null;
+    let barDailyInst = null, barWeeklyInst = null, pieBrandInst = null, barDeptInst = null, barMktPerfInst = null;
+    let rawBestSellerData = [];
 
     window.addEventListener("DOMContentLoaded", () => {
+      initCharts();
       const savedUser = localStorage.getItem("currentUser");
       if (savedUser) {
         currentUser = JSON.parse(savedUser);
@@ -256,6 +548,8 @@
         document.getElementById("loginOverlay").style.display = "flex";
       }
     });
+
+    function checkEnterKey(e) { if (e.key === "Enter") performLogin(); }
 
     function performLogin() {
       const u = document.getElementById("userInput").value;
@@ -282,12 +576,17 @@
     function applyUserAccess() {
       document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
       
-      document.getElementById("nav-penjualan").style.display = currentUser.akses.penjualan ? "block" : "none";
-      document.getElementById("nav-keuangan-mtk").style.display = currentUser.akses.keuangan ? "block" : "none";
-      document.getElementById("nav-siplah").style.display = currentUser.akses.siplah ? "block" : "none";
-      document.getElementById("nav-kebersihan").style.display = currentUser.akses.kebersihan ? "block" : "none";
+      document.getElementById("nav-penjualan").style.display = currentUser.akses.penjualan ? "flex" : "none";
+      document.getElementById("nav-keuangan-mtk").style.display = currentUser.akses.keuangan ? "flex" : "none";
+      document.getElementById("nav-marketing").style.display = currentUser.akses.penjualan ? "flex" : "none";
+      document.getElementById("nav-siplah").style.display = currentUser.akses.siplah ? "flex" : "none";
+      document.getElementById("nav-kebersihan").style.display = currentUser.akses.kebersihan ? "flex" : "none";
 
-      switchTab('kebersihan', document.getElementById("nav-kebersihan"));
+      if (currentUser.akses.kebersihan) {
+        switchTab('kebersihan', document.getElementById("nav-kebersihan"));
+      } else if (currentUser.akses.penjualan) {
+        switchTab('penjualan', document.getElementById("nav-penjualan"));
+      }
       fetchStats();
     }
 
@@ -296,11 +595,27 @@
       window.location.reload();
     }
 
+    function toggleDropdown(containerId) {
+      document.getElementById(containerId).classList.toggle('open');
+    }
+
     function switchTab(tabId, btn) {
       document.querySelectorAll('.tab-page').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
+      
+      const targetTab = document.getElementById(tabId);
+      if(targetTab) targetTab.classList.add('active');
       if(btn) btn.classList.add('active');
+
+      const titleMap = { 
+        'kebersihan': 'Kebersihan Toko',
+        'penjualan': 'Penjualan', 
+        'keuangan-mtk-tab': 'Keuangan MTK', 
+        'keuangan-service-tab': 'Keuangan Service', 
+        'marketing-perf': 'Marketing', 
+        'siplah-tertunda': 'SIPLah Tertunda' 
+      };
+      document.getElementById("headerPageTitle").innerText = titleMap[tabId] || 'Dashboard';
     }
 
     function previewCam(input, prevId) {
@@ -350,7 +665,147 @@
       document.body.removeChild(script);
     }
 
+    function formatRupiah(val) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
+    }
+
+    function formatShortRupiah(val) {
+      if (val >= 1000000000) return (val / 1000000000).toFixed(1) + 'M';
+      if (val >= 1000000) return (val / 1000000).toFixed(0) + 'Jt';
+      return val;
+    }
+
     function renderUI(data) {
+      if (!data) return;
+
+      // 1. DATA PENJUALAN
+      if (data.sales) {
+        const s = data.sales;
+        if (s.kpi) {
+          document.getElementById("pPencapaianToko").innerText = formatRupiah(s.kpi.pencapaianToko);
+          document.getElementById("pTotalInv").innerText = s.kpi.totalInvoice || 0;
+          document.getElementById("pMktVal").innerText = formatRupiah(s.kpi.pencapaianMarketing);
+          document.getElementById("pAdmVal").innerText = formatRupiah(s.kpi.pencapaianAdmin);
+          document.getElementById("pTekVal").innerText = formatRupiah(s.kpi.pencapaianTeknisi);
+        }
+
+        if (s.dailyResults && barDailyInst) {
+          barDailyInst.data.labels = s.dailyResults.map(d => d.tgl);
+          barDailyInst.data.datasets[0].data = s.dailyResults.map(d => d.omzet);
+          barDailyInst.update();
+        }
+
+        if (s.weeklyResults && barWeeklyInst) {
+          barWeeklyInst.data.labels = s.weeklyResults.map(w => w.minggum);
+          barWeeklyInst.data.datasets[0].data = s.weeklyResults.map(w => w.omzet);
+          barWeeklyInst.update();
+        }
+
+        if (s.monthlyPerformance && s.monthlyPerformance.length > 0) {
+          document.getElementById("tblMonthlyPerf").innerHTML = s.monthlyPerformance.map(m => `
+            <tr><td><b>${m.bulan}</b></td><td><b>${formatRupiah(m.omzet)}</b></td></tr>
+          `).join('');
+        }
+
+        if (s.byBrand && pieBrandInst) {
+          pieBrandInst.data.labels = s.byBrand.map(b => b.brand);
+          pieBrandInst.data.datasets[0].data = s.byBrand.map(b => b.unit);
+          pieBrandInst.update();
+        }
+
+        if (s.byDept && barDeptInst) {
+          barDeptInst.data.labels = s.byDept.map(d => d.dept);
+          barDeptInst.data.datasets[0].data = s.byDept.map(d => d.nilai);
+          barDeptInst.update();
+        }
+
+        if (s.bestSeller && s.bestSeller.length > 0) {
+          rawBestSellerData = s.bestSeller;
+          renderBestSellerTable('omzet');
+        }
+
+        if (s.mktPerformance && s.mktPerformance.length > 0) {
+          renderMktPerformance(s.mktPerformance);
+        }
+      }
+
+      // 2A. DATA KEUANGAN MTK (KASIR)
+      if (data.keuangan) {
+        const k = data.keuangan;
+        document.getElementById("kTotalPenjualan").innerText = formatRupiah(k.totalPenjualan);
+        document.getElementById("kTotalTransfer").innerText = formatRupiah(k.totalTransfer);
+        document.getElementById("kTotalQrisEdc").innerText = formatRupiah(k.totalQrisEdc);
+        document.getElementById("kTotalPembiayaan").innerText = formatRupiah(k.totalPembiayaan);
+        document.getElementById("kTotalTnt").innerText = formatRupiah(k.totalTnt || 0);
+        document.getElementById("kTotalDpPp").innerText = formatRupiah(k.totalDpPp);
+        document.getElementById("kTotalTunai").innerText = formatRupiah(k.totalTunai);
+        document.getElementById("kTotalPiutang").innerText = formatRupiah(k.totalPiutang);
+
+        if (k.breakdownHarian && k.breakdownHarian.length > 0) {
+          document.getElementById("tblKeuanganHarian").innerHTML = k.breakdownHarian.map(row => `
+            <tr>
+              <td><b>${row.tanggal}</b></td>
+              <td><b>${formatRupiah(row.total)}</b></td>
+              <td>${formatRupiah(row.transfer)}</td>
+              <td>${formatRupiah(row.qris)}</td>
+              <td>${formatRupiah(row.pembiayaan)}</td>
+              <td><b>${formatRupiah(row.tnt || 0)}</b></td>
+              <td>${formatRupiah(row.dppp)}</td>
+              <td>${formatRupiah(row.tunai)}</td>
+              <td style="color:${row.piutang > 0 ? '#dc2626' : 'inherit'};">${formatRupiah(row.piutang)}</td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      // 2B. DATA KEUANGAN SERVICE
+      if (data.keuanganService) {
+        const ks = data.keuanganService;
+        document.getElementById("ksTotalPenjualan").innerText = formatRupiah(ks.totalPenjualan);
+        document.getElementById("ksTotalTransfer").innerText = formatRupiah(ks.totalTransfer);
+        document.getElementById("ksTotalQrisEdc").innerText = formatRupiah(ks.totalQrisEdc);
+        document.getElementById("ksTotalPembiayaan").innerText = formatRupiah(ks.totalPembiayaan);
+        document.getElementById("ksTotalDpPp").innerText = formatRupiah(ks.totalDpPp);
+        document.getElementById("ksTotalTunai").innerText = formatRupiah(ks.totalTunai);
+        document.getElementById("ksTotalPiutang").innerText = formatRupiah(ks.totalPiutang);
+
+        if (ks.breakdownHarian && ks.breakdownHarian.length > 0) {
+          document.getElementById("tblKeuanganServiceHarian").innerHTML = ks.breakdownHarian.map(row => `
+            <tr>
+              <td><b>${row.tanggal}</b></td>
+              <td><b>${formatRupiah(row.total)}</b></td>
+              <td>${formatRupiah(row.transfer)}</td>
+              <td>${formatRupiah(row.qris)}</td>
+              <td>${formatRupiah(row.pembiayaan)}</td>
+              <td>${formatRupiah(row.dppp)}</td>
+              <td>${formatRupiah(row.tunai)}</td>
+              <td style="color:${row.piutang > 0 ? '#dc2626' : 'inherit'};">${formatRupiah(row.piutang)}</td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      // 3. SIPLAH TERTUNDA
+      if (data.siplah) {
+        const sp = data.siplah;
+        document.getElementById("sipTotalNilai").innerText = formatRupiah(sp.totalKeseluruhan);
+        document.getElementById("sipTotalMsk").innerText = formatRupiah(sp.totalHargaMsk);
+        document.getElementById("sipTotalTrx").innerText = sp.totalTransaksi + " Berkas";
+
+        if (sp.byMarketing) {
+          document.getElementById("tblSiplahMkt").innerHTML = sp.byMarketing.map(m => `
+            <tr><td><b>${m.nama}</b></td><td>${m.count} Sekolah</td><td><b>${formatRupiah(m.total)}</b></td><td>${formatRupiah(m.msk)}</td></tr>
+          `).join('');
+        }
+
+        if (sp.listDetail) {
+          document.getElementById("tblSiplahDetail").innerHTML = sp.listDetail.map(d => `
+            <tr><td><b>${d.noDok}</b></td><td><b>${d.soMsk}</b></td><td>${formatRupiah(d.hargaMsk)}</td><td><b>${d.user}</b></td><td><span class="badge-status badge-yellow">${d.catatan}</span></td><td>${d.posUang}</td><td><b>${d.marketing}</b></td></tr>
+          `).join('');
+        }
+      }
+
+      // 4. KEBERSIHAN
       if (data.kebersihan && data.kebersihan.riwayat) {
         document.getElementById("tblRiwayatKebersihan").innerHTML = data.kebersihan.riwayat.map(r => `
           <tr>
@@ -368,6 +823,94 @@
           </tr>
         `).join('');
       }
+    }
+
+    function renderBestSellerTable(sortBy) {
+      if (!rawBestSellerData) return;
+      let sortedList = [...rawBestSellerData];
+      if (sortBy === 'qty') sortedList.sort((a, b) => b.qty - a.qty);
+      else sortedList.sort((a, b) => b.total - a.total);
+
+      document.getElementById("tblBestSeller").innerHTML = sortedList.slice(0, 10).map((b, i) => `
+        <tr><td><b>#${i + 1}</b></td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td><b>${formatRupiah(b.total)}</b></td></tr>
+      `).join('');
+    }
+
+    function changeBestSellerSort(val) { renderBestSellerTable(val); }
+
+    function renderMktPerformance(list) {
+      var html = "";
+      var names = [], achData = [], targetData = [], runRateData = [];
+
+      list.forEach(item => {
+        names.push(item.nama); achData.push(item.ach); targetData.push(item.targetBln); runRateData.push(item.runRate);
+        var rawPct = parseFloat(item.pctRunRate || 0);
+        var pctVal = rawPct <= 10 ? rawPct * 100 : rawPct;
+        var badgeClass = pctVal < 90 ? "badge-red" : (pctVal < 100 ? "badge-yellow" : "badge-green");
+
+        html += `
+          <tr>
+            <td><b>${item.nama}</b></td><td>${formatRupiah(item.ach)}</td><td>${formatRupiah(item.targetBln)}</td>
+            <td style="color:${item.targetHari < 0 ? '#dc2626' : '#16a34a'}; font-weight:bold;">${formatRupiah(item.targetHari)}</td>
+            <td><b>${(item.pctAch * 100).toFixed(1)}%</b></td><td>${formatRupiah(item.avgHari)}</td><td><b>${formatRupiah(item.runRate)}</b></td>
+            <td><span class="badge-status ${badgeClass}">${(pctVal).toFixed(1)}%</span></td>
+          </tr>
+        `;
+      });
+      document.getElementById("tblMktPerf").innerHTML = html;
+
+      if (barMktPerfInst) {
+        barMktPerfInst.data.labels = names;
+        barMktPerfInst.data.datasets[0].data = achData;
+        barMktPerfInst.data.datasets[1].data = targetData;
+        barMktPerfInst.data.datasets[2].data = runRateData;
+        barMktPerfInst.update();
+      }
+    }
+
+    function initCharts() {
+      Chart.defaults.font.family = 'Roboto';
+
+      barDailyInst = new Chart(document.getElementById('barDailyChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: Array.from({length: 31}, (_, i) => i + 1), datasets: [{ data: [], backgroundColor: PALETTE_RED, borderRadius: 3 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+
+      barWeeklyInst = new Chart(document.getElementById('barWeeklyChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: ['W1', 'W2', 'W3', 'W4', 'W5'], datasets: [{ label: 'Omzet', data: [0, 0, 0, 0, 0], backgroundColor: '#0f172a', borderRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+
+      pieBrandInst = new Chart(document.getElementById('pieBrandChart').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE, borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '65%' }
+      });
+
+      barDeptInst = new Chart(document.getElementById('barDeptChart').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE, borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '65%' }
+      });
+
+      barMktPerfInst = new Chart(document.getElementById('barMktPerfChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: [],
+          datasets: [
+            { label: 'Pencapaian', data: [], backgroundColor: '#dc2626', borderRadius: 4 },
+            { label: 'Target', data: [], backgroundColor: '#cbd5e1', borderRadius: 4 },
+            { label: 'Proyeksi', data: [], backgroundColor: '#0f172a', borderRadius: 4 }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    function showProfile() {
+      alert(`=== PROFIL USER ===\n\nNama: ${currentUser ? currentUser.nama : '-'}\nUsername: ${currentUser ? currentUser.username : '-'}\nRole: ${currentUser ? currentUser.role : '-'}`);
     }
   </script>
 </body>
