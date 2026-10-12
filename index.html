@@ -205,6 +205,11 @@
         Kebersihan Toko
       </button>
 
+      <button id="nav-kpi-kebersihan" class="menu-item" onclick="switchTab('kpi-kebersihan-tab', this)">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+        Dashboard KPI Kebersihan
+      </button>
+
       <button id="nav-penjualan" class="menu-item" onclick="switchTab('penjualan', this)">
         <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
         Penjualan
@@ -348,7 +353,54 @@
         </div>
       </div>
 
-      <!-- TAB 2: PENJUALAN -->
+      <!-- TAB 2: DASHBOARD KPI KEBERSIHAN -->
+      <div id="kpi-kebersihan-tab" class="tab-page">
+        <div class="top-cards" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 20px;">
+          <div class="card main-card">
+            <div class="card-top-row"><span class="card-head">Clean Rate Toko</span></div>
+            <div class="card-val" id="kpiCleanRate">0%</div>
+            <div class="card-avg">Persentase Kelengkapan Laporan</div>
+          </div>
+          <div class="card">
+            <div class="card-top-row"><span class="card-head">Total Laporan Masuk</span></div>
+            <div class="card-val" id="kpiTotalLaporan">0</div>
+            <div class="card-avg">Laporan Harian Staf</div>
+          </div>
+          <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
+            <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Area Terlewat</span></div>
+            <div class="card-val" id="kpiAreaTerlewat" style="color: #dc2626;">0 Area</div>
+            <div class="card-avg">Akumulasi Bulan Ini</div>
+          </div>
+          <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
+            <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Denda Terkumpul</span></div>
+            <div class="card-val" id="kpiTotalDenda" style="color: #dc2626;">Rp 0</div>
+            <div class="card-avg">Potongan Gaji / Insentif</div>
+          </div>
+        </div>
+
+        <div class="box-panel full-width">
+          <div class="panel-header"><span>Leaderboard Performa & Kedisiplinan Staf Kebersihan</span></div>
+          <div class="table-container" style="height: 320px;">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Nama Staf</th>
+                  <th>Jumlah Laporan</th>
+                  <th>Area Terlewat</th>
+                  <th>% Kedisiplinan</th>
+                  <th>Total Denda (Rp)</th>
+                </tr>
+              </thead>
+              <tbody id="tblKpiStaffKebersihan">
+                <tr><td colspan="6" style="text-align:center;">Memuat data KPI...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: PENJUALAN -->
       <div id="penjualan" class="tab-page">
         <div class="top-cards">
           <div class="card main-card">
@@ -422,7 +474,7 @@
         </div>
       </div>
 
-      <!-- TAB 3A: KEUANGAN MTK -->
+      <!-- TAB 4A: KEUANGAN MTK -->
       <div id="keuangan-mtk-tab" class="tab-page">
         <div class="finance-cards" style="grid-template-columns: repeat(4, 1fr);">
           <div class="card main-card" style="grid-column: span 2;">
@@ -449,7 +501,7 @@
         </div>
       </div>
 
-      <!-- TAB 3B: KEUANGAN SERVICE -->
+      <!-- TAB 4B: KEUANGAN SERVICE -->
       <div id="keuangan-service-tab" class="tab-page">
         <div class="finance-cards">
           <div class="card main-card" style="grid-column: span 2;">
@@ -475,7 +527,7 @@
         </div>
       </div>
 
-      <!-- TAB 4: MARKETING PERFORMANCE -->
+      <!-- TAB 5: MARKETING PERFORMANCE -->
       <div id="marketing-perf" class="tab-page">
         <div class="box-panel full-width" style="margin-bottom:16px;">
           <div class="panel-header"><span>Perbandingan Revenue & Proyeksi Marketing</span></div>
@@ -492,7 +544,7 @@
         </div>
       </div>
 
-      <!-- TAB 5: SIPLAH TERTUNDA -->
+      <!-- TAB 6: SIPLAH TERTUNDA -->
       <div id="siplah-tertunda" class="tab-page">
         <div class="top-cards" style="grid-template-columns: repeat(3, 1fr);">
           <div class="card main-card">
@@ -581,6 +633,7 @@
       document.getElementById("nav-marketing").style.display = currentUser.akses.penjualan ? "flex" : "none";
       document.getElementById("nav-siplah").style.display = currentUser.akses.siplah ? "flex" : "none";
       document.getElementById("nav-kebersihan").style.display = currentUser.akses.kebersihan ? "flex" : "none";
+      document.getElementById("nav-kpi-kebersihan").style.display = currentUser.akses.kebersihan ? "flex" : "none";
 
       if (currentUser.akses.kebersihan) {
         switchTab('kebersihan', document.getElementById("nav-kebersihan"));
@@ -609,6 +662,7 @@
 
       const titleMap = { 
         'kebersihan': 'Kebersihan Toko',
+        'kpi-kebersihan-tab': 'Dashboard KPI Kebersihan',
         'penjualan': 'Penjualan', 
         'keuangan-mtk-tab': 'Keuangan MTK', 
         'keuangan-service-tab': 'Keuangan Service', 
@@ -667,12 +721,6 @@
 
     function formatRupiah(val) {
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
-    }
-
-    function formatShortRupiah(val) {
-      if (val >= 1000000000) return (val / 1000000000).toFixed(1) + 'M';
-      if (val >= 1000000) return (val / 1000000).toFixed(0) + 'Jt';
-      return val;
     }
 
     function renderUI(data) {
@@ -805,7 +853,7 @@
         }
       }
 
-      // 4. KEBERSIHAN
+      // 4. RIWAYAT KEBERSIHAN
       if (data.kebersihan && data.kebersihan.riwayat) {
         document.getElementById("tblRiwayatKebersihan").innerHTML = data.kebersihan.riwayat.map(r => `
           <tr>
@@ -820,6 +868,33 @@
             <td style="color:${r.denda > 0 ? '#dc2626' : 'inherit'}; font-weight:${r.denda > 0 ? 'bold' : 'normal'};">
               Rp ${r.denda.toLocaleString('id-ID')}
             </td>
+          </tr>
+        `).join('');
+      }
+
+      // 5. DASHBOARD KPI KEBERSIHAN
+      if (data.kpiKebersihan) {
+        renderKpiKebersihan(data.kpiKebersihan);
+      }
+    }
+
+    function renderKpiKebersihan(data) {
+      if (!data || !data.summary) return;
+
+      document.getElementById("kpiCleanRate").innerText = data.summary.overallCleanRate || "0%";
+      document.getElementById("kpiTotalLaporan").innerText = data.summary.totalLaporan || 0;
+      document.getElementById("kpiAreaTerlewat").innerText = (data.summary.totalAreaTerlewat || 0) + " Area";
+      document.getElementById("kpiTotalDenda").innerText = "Rp " + (data.summary.totalDendaToko || 0).toLocaleString('id-ID');
+
+      if (data.staffStats && data.staffStats.length > 0) {
+        document.getElementById("tblKpiStaffKebersihan").innerHTML = data.staffStats.map((s, idx) => `
+          <tr>
+            <td><b>#${idx + 1}</b></td>
+            <td><b>${s.nama}</b></td>
+            <td>${s.totalLapor} Kali</td>
+            <td style="color:${s.areaTerlewat > 0 ? '#dc2626' : '#15803d'}; font-weight:bold;">${s.areaTerlewat} Area</td>
+            <td><span class="badge-status ${parseFloat(s.pctDisiplin) >= 90 ? 'badge-green' : 'badge-red'}">${s.pctDisiplin}</span></td>
+            <td style="color:${s.totalDenda > 0 ? '#dc2626' : 'inherit'}; font-weight:bold;">Rp ${s.totalDenda.toLocaleString('id-ID')}</td>
           </tr>
         `).join('');
       }
