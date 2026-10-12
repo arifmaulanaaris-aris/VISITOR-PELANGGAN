@@ -912,7 +912,7 @@
         }
       }
 
-      // 4. RIWAYAT KEBERSIHAN (FILTER PER NAMA AKUN & VALIDASI LINK URL FOTO)
+      // 4. RIWAYAT KEBERSIHAN (FILTER PER NAMA AKUN & SINKRONISASI KARTU AREA)
       if (data.kebersihan && data.kebersihan.riwayat) {
         let filteredRiwayat = data.kebersihan.riwayat;
 
@@ -922,6 +922,63 @@
           );
         }
 
+        // --- SINKRONISASI KARTU AREA BERDASARKAN LAPORAN HARI INI ---
+        const todayDate = new Date();
+
+        [1, 2, 3, 4].forEach(idx => {
+          let todayReport = filteredRiwayat.find(r => {
+            let isUser = currentUser && String(r.nama).trim().toUpperCase() === String(currentUser.nama).trim().toUpperCase();
+            let isAreaMatch = String(r.area).startsWith(String(idx));
+            
+            let isToday = false;
+            if (r.tgl) {
+              let datePart = String(r.tgl).split(' ')[0];
+              let parts = datePart.split('/');
+              if (parts.length === 3) {
+                let day = parseInt(parts[0], 10);
+                let month = parseInt(parts[1], 10) - 1;
+                let year = parseInt(parts[2], 10);
+                isToday = (day === todayDate.getDate() && 
+                           month === todayDate.getMonth() && 
+                           year === todayDate.getFullYear());
+              }
+            }
+            return isUser && isAreaMatch && isToday;
+          });
+
+          const btn = document.getElementById(`btn_submit_a${idx}`);
+          const statusDiv = document.getElementById(`status_a${idx}`);
+          const imgB = document.getElementById(`prev_a${idx}_b`);
+          const imgA = document.getElementById(`prev_a${idx}_a`);
+
+          if (todayReport) {
+            if (todayReport.urlBefore && String(todayReport.urlBefore).trim().toLowerCase().startsWith('http')) {
+              imgB.src = todayReport.urlBefore;
+              imgB.style.display = 'block';
+            }
+            if (todayReport.urlAfter && String(todayReport.urlAfter).trim().toLowerCase().startsWith('http')) {
+              imgA.src = todayReport.urlAfter;
+              imgA.style.display = 'block';
+            }
+
+            if (statusDiv) {
+              statusDiv.style.display = "block";
+              if (todayReport.denda > 0) {
+                statusDiv.className = "area-status-badge status-warning";
+                statusDiv.innerText = `⚠️ ${todayReport.area} Terkirim (Foto Tidak Lengkap - Denda Rp 15.000)`;
+              } else {
+                statusDiv.className = "area-status-badge status-success";
+                statusDiv.innerText = `✓ ${todayReport.area} Selesai Lengkap Hari Ini`;
+              }
+            }
+
+            if (btn) {
+              btn.innerText = `✓ Area ${idx} Sudah Dikirim Hari Ini`;
+            }
+          }
+        });
+
+        // --- RENDER TABEL RIWAYAT ---
         if (filteredRiwayat.length === 0) {
           document.getElementById("tblRiwayatKebersihan").innerHTML = `
             <tr><td colspan="6" style="text-align:center;">Belum ada riwayat laporan kebersihan untuk akun ini.</td></tr>
@@ -930,7 +987,6 @@
           document.getElementById("tblRiwayatKebersihan").innerHTML = filteredRiwayat.map(r => {
             let displayTgl = String(r.tgl).replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
 
-            // Validasi link URL: Hanya aktifkan tombol jika diawali http/https
             let isUrlBefore = r.urlBefore && String(r.urlBefore).trim().toLowerCase().startsWith('http');
             let isUrlAfter = r.urlAfter && String(r.urlAfter).trim().toLowerCase().startsWith('http');
 
