@@ -285,10 +285,15 @@
             <select id="selDivisiArea" onchange="changeDivisiArea(this.value)" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #dc2626; font-size: 12px; font-weight: bold; background: white; color: #dc2626; outline: none; cursor: pointer;">
               <option value="TEKNISI">🔧 Teknisi / Service</option>
               <option value="KASIR">💳 Kasir</option>
-              <option value="ADMIN">💻 Admin</option>
-              <option value="MARKETING">📢 Marketing</option>
+              <option value="ADMIN 01">💻 Admin 01</option>
+              <option value="ADMIN 02">💻 Admin 02</option>
+              <option value="MARKETING 01">📢 Marketing 01</option>
+              <option value="MARKETING 02">📢 Marketing 02</option>
+              <option value="MARKETING 03">📢 Marketing 03</option>
               <option value="GUDANG">📦 Gudang / Logistik</option>
-              <option value="DEFAULT">🏢 Umum / Toko</option>
+              <option value="Promotor Pembiayaan">🤝 Promotor Pembiayaan</option>
+              <option value="Promotor HP">📱 Promotor HP</option>
+              <option value="Promotor INFINIX">📱 Promotor INFINIX</option>
             </select>
           </div>
         </div>
@@ -320,12 +325,17 @@
             <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
               <input type="text" id="newStaffName" placeholder="Username / Nama Staf (contoh: wiki)" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:4px; font-size:11px; flex:1; min-width:140px;">
               <select id="newStaffDivisi" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:4px; font-size:11px;">
-                <option value="TEKNISI">Teknisi / Service</option>
-                <option value="KASIR">Kasir</option>
-                <option value="ADMIN">Admin</option>
-                <option value="MARKETING">Marketing</option>
-                <option value="GUDANG">Gudang / Logistik</option>
-                <option value="DEFAULT">Umum / Toko</option>
+                <option value="TEKNISI">🔧 Teknisi / Service</option>
+                <option value="KASIR">💳 Kasir</option>
+                <option value="ADMIN 01">💻 Admin 01</option>
+                <option value="ADMIN 02">💻 Admin 02</option>
+                <option value="MARKETING 01">📢 Marketing 01</option>
+                <option value="MARKETING 02">📢 Marketing 02</option>
+                <option value="MARKETING 03">📢 Marketing 03</option>
+                <option value="GUDANG">📦 Gudang / Logistik</option>
+                <option value="Promotor Pembiayaan">🤝 Promotor Pembiayaan</option>
+                <option value="Promotor HP">📱 Promotor HP</option>
+                <option value="Promotor INFINIX">📱 Promotor INFINIX</option>
               </select>
               <button onclick="addNewStaffMapping()" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">+ Simpan Pemetaan Staf</button>
             </div>
@@ -667,11 +677,11 @@
       "suci": "KASIR",
       "ansar": "TEKNISI",
       "rio": "GUDANG",
-      "rahmi": "ADMIN",
-      "fani": "ADMIN",
-      "amaluddin": "MARKETING",
-      "yuni": "MARKETING",
-      "nuraeni": "MARKETING"
+      "rahmi": "ADMIN 01",
+      "fani": "ADMIN 02",
+      "amaluddin": "MARKETING 01",
+      "yuni": "MARKETING 02",
+      "nuraeni": "MARKETING 03"
     };
 
     function getStaffMapping() {
@@ -688,7 +698,7 @@
 
     let currentUser = null;
     let latestData = null;
-    let currentDivisiCode = "DEFAULT";
+    let currentDivisiCode = "TEKNISI";
     let barDailyInst = null, barWeeklyInst = null, pieBrandInst = null, barDeptInst = null, barMktPerfInst = null;
     let rawBestSellerData = [];
 
@@ -749,10 +759,10 @@
         // PERIKSA BERDASARKAN STRING ROLE
         if (roleUpper.includes("TEKNISI")) currentDivisiCode = "TEKNISI";
         else if (roleUpper.includes("KASIR")) currentDivisiCode = "KASIR";
-        else if (roleUpper.includes("ADMIN")) currentDivisiCode = "ADMIN";
-        else if (roleUpper.includes("MARKETING")) currentDivisiCode = "MARKETING";
+        else if (roleUpper.includes("ADMIN")) currentDivisiCode = "ADMIN 01";
+        else if (roleUpper.includes("MARKETING")) currentDivisiCode = "MARKETING 01";
         else if (roleUpper.includes("GUDANG")) currentDivisiCode = "GUDANG";
-        else currentDivisiCode = "DEFAULT";
+        else currentDivisiCode = "TEKNISI";
       }
 
       const selDiv = document.getElementById("selDivisiArea");
@@ -794,10 +804,15 @@
               <select onchange="updateStaffMapping('${uname}', this.value)" style="padding:4px 8px; border-radius:4px; border:1px solid #cbd5e1; font-size:11px; font-weight:bold;">
                 <option value="TEKNISI" ${div === 'TEKNISI' ? 'selected' : ''}>🔧 Teknisi / Service</option>
                 <option value="KASIR" ${div === 'KASIR' ? 'selected' : ''}>💳 Kasir</option>
-                <option value="ADMIN" ${div === 'ADMIN' ? 'selected' : ''}>💻 Admin</option>
-                <option value="MARKETING" ${div === 'MARKETING' ? 'selected' : ''}>📢 Marketing</option>
+                <option value="ADMIN 01" ${div === 'ADMIN 01' ? 'selected' : ''}>💻 Admin 01</option>
+                <option value="ADMIN 02" ${div === 'ADMIN 02' ? 'selected' : ''}>💻 Admin 02</option>
+                <option value="MARKETING 01" ${div === 'MARKETING 01' ? 'selected' : ''}>📢 Marketing 01</option>
+                <option value="MARKETING 02" ${div === 'MARKETING 02' ? 'selected' : ''}>📢 Marketing 02</option>
+                <option value="MARKETING 03" ${div === 'MARKETING 03' ? 'selected' : ''}>📢 Marketing 03</option>
                 <option value="GUDANG" ${div === 'GUDANG' ? 'selected' : ''}>📦 Gudang / Logistik</option>
-                <option value="DEFAULT" ${div === 'DEFAULT' ? 'selected' : ''}>🏢 Umum / Toko</option>
+                <option value="Promotor Pembiayaan" ${div === 'Promotor Pembiayaan' ? 'selected' : ''}>🤝 Promotor Pembiayaan</option>
+                <option value="Promotor HP" ${div === 'Promotor HP' ? 'selected' : ''}>📱 Promotor HP</option>
+                <option value="Promotor INFINIX" ${div === 'Promotor INFINIX' ? 'selected' : ''}>📱 Promotor INFINIX</option>
               </select>
             </td>
             <td>
@@ -854,7 +869,7 @@
     }
 
     function renderAreaCards(divisiCode) {
-      const areaList = MAPPING_AREA_DIVISI[divisiCode] || MAPPING_AREA_DIVISI["DEFAULT"];
+      const areaList = MAPPING_AREA_DIVISI[divisiCode] || MAPPING_AREA_DIVISI["TEKNISI"];
       let html = "";
 
       areaList.forEach((areaName, idx) => {
@@ -1146,7 +1161,7 @@
 
         // SINKRONISASI KARTU AREA BERDASARKAN LAPORAN HARI INI
         const todayDate = new Date();
-        const activeAreaList = MAPPING_AREA_DIVISI[currentDivisiCode] || MAPPING_AREA_DIVISI["DEFAULT"];
+        const activeAreaList = MAPPING_AREA_DIVISI[currentDivisiCode] || MAPPING_AREA_DIVISI["TEKNISI"];
 
         activeAreaList.forEach((areaFullName, idx) => {
           let areaNum = idx + 1;
