@@ -397,7 +397,7 @@
 
         <div class="box-panel full-width">
           <div class="panel-header"><span>Leaderboard Performa & Kedisiplinan Staf Kebersihan</span></div>
-          <div class="table-container" style="height: 320px;">
+          <div class="table-container" style="height: auto; max-height: 400px;">
             <table class="custom-table">
               <thead>
                 <tr>
@@ -603,6 +603,7 @@
     const PALETTE_PIE = ['#dc2626', '#475569', '#cbd5e1', '#0f172a', '#94a3b8', '#64748b', '#e2e8f0'];
 
     let currentUser = null;
+    let latestData = null; // Menyimpan data global dari backend
     let barDailyInst = null, barWeeklyInst = null, pieBrandInst = null, barDeptInst = null, barMktPerfInst = null;
     let rawBestSellerData = [];
 
@@ -703,7 +704,6 @@
       }
     }
 
-    // Helper membaca file sebagai Base64
     function fileToBase64(file) {
       return new Promise((resolve, reject) => {
         if (!file) resolve(null);
@@ -714,7 +714,6 @@
       });
     }
 
-    // Fungsi Kirim Area Berdasarkan Base64 & Upload ke Google Drive
     async function kirimLaporanArea(areaIdx, areaTitle) {
       if (!currentUser) return;
 
@@ -784,6 +783,7 @@
 
     function renderUI(data) {
       if (!data) return;
+      latestData = data; // Simpan data global
 
       // 1. DATA PENJUALAN
       if (data.sales) {
@@ -912,7 +912,7 @@
         }
       }
 
-      // 4. RIWAYAT KEBERSIHAN (FILTER PER NAMA AKUN & SINKRONISASI KARTU AREA)
+      // 4. RIWAYAT KEBERSIHAN (FILTER PER AKUN & SINKRONISASI KARTU AREA)
       if (data.kebersihan && data.kebersihan.riwayat) {
         let filteredRiwayat = data.kebersihan.riwayat;
 
@@ -1024,6 +1024,52 @@
       }
     }
 
+    // Helper untuk mengambil HTML riwayat kebersihan per staf pada dropdown Leaderboard
+    function getStaffRiwayatHtml(namaStaf) {
+      if (!latestData || !latestData.kebersihan || !latestData.kebersihan.riwayat) {
+        return '<tr><td colspan="5" style="text-align:center;">Tidak ada data riwayat.</td></tr>';
+      }
+
+      let list = latestData.kebersihan.riwayat.filter(r => 
+        String(r.nama).trim().toUpperCase() === String(namaStaf).trim().toUpperCase()
+      );
+
+      if (list.length === 0) {
+        return '<tr><td colspan="5" style="text-align:center;">Belum ada riwayat laporan untuk staf ini.</td></tr>';
+      }
+
+      return list.map(r => {
+        let displayTgl = String(r.tgl).replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
+
+        let isUrlBefore = r.urlBefore && String(r.urlBefore).trim().toLowerCase().startsWith('http');
+        let isUrlAfter = r.urlAfter && String(r.urlAfter).trim().toLowerCase().startsWith('http');
+
+        let linkBeforeBtn = isUrlBefore 
+          ? `<a href="${r.urlBefore}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Before</a>` 
+          : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
+
+        let linkAfterBtn = isUrlAfter 
+          ? `<a href="${r.urlAfter}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#dcfce7; color:#15803d; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ After</a>` 
+          : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
+
+        return `
+          <tr>
+            <td><b>${displayTgl}</b></td>
+            <td><b>${r.area}</b></td>
+            <td>${linkBeforeBtn} &nbsp; ${linkAfterBtn}</td>
+            <td>
+              <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${r.denda > 0 ? '#fee2e2' : '#dcfce7'}; color:${r.denda > 0 ? '#dc2626' : '#15803d'};">
+                ${r.status}
+              </span>
+            </td>
+            <td style="color:${r.denda > 0 ? '#dc2626' : 'inherit'}; font-weight:${r.denda > 0 ? 'bold' : 'normal'};">
+              Rp ${r.denda.toLocaleString('id-ID')}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     function renderKpiKebersihan(data) {
       if (!data || !data.summary) return;
 
@@ -1033,16 +1079,64 @@
       document.getElementById("kpiTotalDenda").innerText = "Rp " + (data.summary.totalDendaToko || 0).toLocaleString('id-ID');
 
       if (data.staffStats && data.staffStats.length > 0) {
-        document.getElementById("tblKpiStaffKebersihan").innerHTML = data.staffStats.map((s, idx) => `
-          <tr>
-            <td><b>#${idx + 1}</b></td>
-            <td><b>${s.nama}</b></td>
-            <td>${s.totalLapor} Laporan</td>
-            <td style="color:${s.areaTerlewat > 0 ? '#dc2626' : '#15803d'}; font-weight:bold;">${s.areaTerlewat} Area</td>
-            <td><span class="badge-status ${parseFloat(s.pctDisiplin) >= 90 ? 'badge-green' : 'badge-red'}">${s.pctDisiplin}</span></td>
-            <td style="color:${s.totalDenda > 0 ? '#dc2626' : 'inherit'}; font-weight:bold;">Rp ${s.totalDenda.toLocaleString('id-ID')}</td>
-          </tr>
-        `).join('');
+        let html = "";
+        data.staffStats.forEach((s, idx) => {
+          html += `
+            <tr style="cursor: pointer;" onclick="toggleStaffDetail(${idx})" title="Klik untuk membuka / menutup detail riwayat">
+              <td><b>#${idx + 1}</b></td>
+              <td><b>${s.nama}</b></td>
+              <td>
+                <span style="color:#dc2626; font-weight:bold; text-decoration:underline;">
+                  ${s.totalLapor} Laporan ▾
+                </span>
+              </td>
+              <td style="color:${s.areaTerlewat > 0 ? '#dc2626' : '#15803d'}; font-weight:bold;">${s.areaTerlewat} Area</td>
+              <td><span class="badge-status ${parseFloat(s.pctDisiplin) >= 90 ? 'badge-green' : 'badge-red'}">${s.pctDisiplin}</span></td>
+              <td style="color:${s.totalDenda > 0 ? '#dc2626' : 'inherit'}; font-weight:bold;">Rp ${s.totalDenda.toLocaleString('id-ID')}</td>
+            </tr>
+            <tr id="detail-row-${idx}" style="display: none; background: #f8fafc;">
+              <td colspan="6" style="padding: 12px 16px;">
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <h5 style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">
+                      📋 Rincian Riwayat Kebersihan Staf: <span style="color:#dc2626;">${s.nama}</span>
+                    </h5>
+                    <span style="font-size:10px; color:#94a3b8;">Klik baris untuk menutup ▴</span>
+                  </div>
+                  <div class="table-container" style="height: auto; max-height: 220px; overflow-y: auto;">
+                    <table class="custom-table" style="font-size: 11px;">
+                      <thead>
+                        <tr>
+                          <th>Tanggal & Jam</th>
+                          <th>Nama Area</th>
+                          <th>Foto</th>
+                          <th>Status</th>
+                          <th>Denda (Rp)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${getStaffRiwayatHtml(s.nama)}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+        document.getElementById("tblKpiStaffKebersihan").innerHTML = html;
+      }
+    }
+
+    // Fungsi Toggle Buka / Tutup Dropdown Riwayat Per Staf
+    function toggleStaffDetail(idx) {
+      const row = document.getElementById(`detail-row-${idx}`);
+      if (row) {
+        if (row.style.display === "none" || row.style.display === "") {
+          row.style.display = "table-row";
+        } else {
+          row.style.display = "none";
+        }
       }
     }
 
