@@ -215,7 +215,7 @@
 
       <button id="nav-kpi-kebersihan" class="menu-item" onclick="switchTab('kpi-kebersihan-tab', this)">
         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-        Kebersihan
+        Dashboard KPI Kebersihan
       </button>
 
       <button id="nav-penjualan" class="menu-item" onclick="switchTab('penjualan', this)">
@@ -259,93 +259,29 @@
 
       <!-- TAB 1: FORM KEBERSIHAN TOKO -->
       <div id="kebersihan" class="tab-page active">
-        <div style="background:#fef2f2; border:1px solid #fecaca; padding:12px; border-radius:8px; margin-bottom:16px;">
-          <h3 style="font-size:14px; color:#dc2626;">Laporan Kebersihan Harian (4 Area Wajib)</h3>
-          <p style="font-size:11px; color:#7f1d1d; margin-top:2px;">Setiap area dapat dikirim satu per satu saat selesai dibersihkan. Foto wajib kamera langsung (Before & After). Jika dikirim tanpa foto lengkap, dikenakan denda Rp 15.000 per area.</p>
+        <div style="background:#fef2f2; border:1px solid #fecaca; padding:12px; border-radius:8px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h3 style="font-size:14px; color:#dc2626;">Laporan Kebersihan Harian</h3>
+            <p style="font-size:11px; color:#7f1d1d; margin-top:2px;">Area disesuaikan dengan divisi Anda. Pengiriman tanpa foto lengkap dikenakan denda Rp 15.000 per area.</p>
+          </div>
+          
+          <!-- PILIHAN DIVISI -->
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:12px; font-weight:bold; color:#dc2626;">Divisi Area:</label>
+            <select id="selDivisiArea" onchange="changeDivisiArea(this.value)" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #dc2626; font-size: 12px; font-weight: bold; background: white; color: #dc2626; outline: none; cursor: pointer;">
+              <option value="TEKNISI">🔧 Teknisi / Service</option>
+              <option value="KASIR">💳 Kasir</option>
+              <option value="ADMIN">💻 Admin</option>
+              <option value="MARKETING">📢 Marketing</option>
+              <option value="GUDANG">📦 Gudang / Logistik</option>
+              <option value="DEFAULT">🏢 Umum / Toko</option>
+            </select>
+          </div>
         </div>
 
-        <!-- AREA 1 -->
-        <div class="area-card">
-          <div class="area-title">1. Area Depan</div>
-          <div class="cam-grid">
-            <div class="cam-box">
-              <span style="font-size:11px; font-weight:bold;">Foto Before</span>
-              <input type="file" accept="image/*" capture="environment" id="file_a1_b" onchange="previewCam(this, 'prev_a1_b')" style="display:none;">
-              <button class="btn-cam" onclick="document.getElementById('file_a1_b').click()">Take Picture</button>
-              <img id="prev_a1_b" class="preview-img">
-            </div>
-            <div class="cam-box">
-              <span style="font-size:11px; font-weight:bold;">Foto After</span>
-              <input type="file" accept="image/*" capture="environment" id="file_a1_a" onchange="previewCam(this, 'prev_a1_a')" style="display:none;">
-              <button class="btn-cam" onclick="document.getElementById('file_a1_a').click()">Take Picture</button>
-              <img id="prev_a1_a" class="preview-img">
-            </div>
-          </div>
-          <button id="btn_submit_a1" class="btn-area-submit" onclick="kirimLaporanArea(1, '1. Area Depan')">SELESAI</button>
-          <div id="status_a1" class="area-status-badge"></div>
-        </div>
-
-        <!-- AREA 2 -->
-        <div class="area-card">
-          <div class="area-title">2. Area Display</div>
-          <div class="cam-grid">
-            <div class="cam-box">
-              <span style="font-size:11px; font-weight:bold;">Foto Before</span>
-              <input type="file" accept="image/*" capture="environment" id="file_a2_b" onchange="previewCam(this, 'prev_a2_b')" style="display:none;">
-              <button class="btn-cam" onclick="document.getElementById('file_a2_b').click()">Take Picture</button>
-              <img id="prev_a2_b" class="preview-img">
-            </div>
-            <div class="cam-box">
-              <span style="font-size:11px; font-weight:bold;">Foto After</span>
-              <input type="file" accept="image/*" capture="environment" id="file_a2_a" onchange="previewCam(this, 'prev_a2_a')" style="display:none;">
-              <button class="btn-cam" onclick="document.getElementById('file_a2_a').click()">Take Picture</button>
-              <img id="prev_a2_a" class="preview-img">
-            </div>
-          </div>
-          <button id="btn_submit_a2" class="btn-area-submit" onclick="kirimLaporanArea(2, '2. Area Display')">SELESAI</button>
-          <div id="status_a2" class="area-status-badge"></div>
-        </div>
-
-        <!-- AREA 3 -->
-        <div class="area-card">
-          <div class="area-title">3. Meja Masing-masing</div>
-          <div class="cam-grid">
-            <div class="cam-box">
-              <span style="font-size:11px; font-weight:bold;">Foto Before</span>
-              <input type="file" accept="image/*" capture="environment" id="file_a3_b" onchange="previewCam(this, 'prev_a3_b')" style="display:none;">
-              <button class="btn-cam" onclick="document.getElementById('file_a3_b').click()">Take Picture</button>
-              <img id="prev_a3_b" class="preview-img">
-            </div>
-            <div class="cam-box">
-              <span style="font-size:11px; font-weight:bold;">Foto After</span>
-              <input type="file" accept="image/*" capture="environment" id="file_a3_a" onchange="previewCam(this, 'prev_a3_a')" style="display:none;">
-              <button class="btn-cam" onclick="document.getElementById('file_a3_a').click()">Take Picture</button>
-              <img id="prev_a3_a" class="preview-img">
-            </div>
-          </div>
-          <button id="btn_submit_a3" class="btn-area-submit" onclick="kirimLaporanArea(3, '3. Meja Masing-masing')">SELESAI</button>
-          <div id="status_a3" class="area-status-badge"></div>
-        </div>
-
-        <!-- AREA 4 -->
-        <div class="area-card">
-          <div class="area-title">4. Lantai Toko, Toilet & Gudang</div>
-          <div class="cam-grid">
-            <div class="cam-box">
-              <span style="font-size:11px; font-weight:bold;">Foto Before</span>
-              <input type="file" accept="image/*" capture="environment" id="file_a4_b" onchange="previewCam(this, 'prev_a4_b')" style="display:none;">
-              <button class="btn-cam" onclick="document.getElementById('file_a4_b').click()">Take Picture</button>
-              <img id="prev_a4_b" class="preview-img">
-            </div>
-            <div class="cam-box">
-              <span style="font-size:11px; font-weight:bold;">Foto After</span>
-              <input type="file" accept="image/*" capture="environment" id="file_a4_a" onchange="previewCam(this, 'prev_a4_a')" style="display:none;">
-              <button class="btn-cam" onclick="document.getElementById('file_a4_a').click()">Take Picture</button>
-              <img id="prev_a4_a" class="preview-img">
-            </div>
-          </div>
-          <button id="btn_submit_a4" class="btn-area-submit" onclick="kirimLaporanArea(4, '4. Lantai Toko, Toilet & Gudang')">SELESAI</button>
-          <div id="status_a4" class="area-status-badge"></div>
+        <!-- CONTAINER AREA CARDS DINAMIS -->
+        <div id="areaCardsContainer">
+          <!-- Area Cards akan di-generate otomatis oleh JavaScript berdasarkan divisi -->
         </div>
 
         <div style="margin-top:24px;">
@@ -396,7 +332,7 @@
         </div>
 
         <div class="box-panel full-width">
-          <div class="panel-header"><span>Leaderboard Kebersihan Staff</span></div>
+          <div class="panel-header"><span>Leaderboard Performa & Kedisiplinan Staf Kebersihan</span></div>
           <div class="table-container" style="height: auto; max-height: 400px;">
             <table class="custom-table">
               <thead>
@@ -602,8 +538,49 @@
     const PALETTE_RED = '#dc2626';
     const PALETTE_PIE = ['#dc2626', '#475569', '#cbd5e1', '#0f172a', '#94a3b8', '#64748b', '#e2e8f0'];
 
+    // PEMETAAN AREA KEBERSIHAN PER DIVISI
+    const MAPPING_AREA_DIVISI = {
+      "TEKNISI": [
+        "1. Area Bench Service & Alat Kerja",
+        "2. Meja Kerja Teknisi",
+        "3. Rak Sparepart & Unit Customer",
+        "4. Lantai Area Service & Tempat Sampah"
+      ],
+      "KASIR": [
+        "1. Area Kasir & Counter Utama",
+        "2. Meja Kasir, Perangkat & EDC",
+        "3. Area Display Etalase Depan",
+        "4. Lantai Depan & Pintu Masuk Toko"
+      ],
+      "ADMIN": [
+        "1. Meja Kerja Admin & Laptop",
+        "2. Area Display & Brosur Toko",
+        "3. Meja Masing-masing",
+        "4. Lantai Toko & Gudang Admin"
+      ],
+      "MARKETING": [
+        "1. Meja Kerja Marketing & PC",
+        "2. Area Display Produk & Promosi",
+        "3. Area Konten / Studio",
+        "4. Lantai & Meja Kerja Bersama"
+      ],
+      "GUDANG": [
+        "1. Area Rak Stok Utama",
+        "2. Meja Packing & Unboxing",
+        "3. Transisi Barang Masuk/Keluar",
+        "4. Lantai Gudang & Toilet"
+      ],
+      "DEFAULT": [
+        "1. Area Depan Toko",
+        "2. Area Display Produk",
+        "3. Meja Masing-masing",
+        "4. Lantai Toko, Toilet & Gudang"
+      ]
+    };
+
     let currentUser = null;
-    let latestData = null; // Menyimpan data global dari backend
+    let latestData = null;
+    let currentDivisiCode = "DEFAULT";
     let barDailyInst = null, barWeeklyInst = null, pieBrandInst = null, barDeptInst = null, barMktPerfInst = null;
     let rawBestSellerData = [];
 
@@ -653,6 +630,18 @@
       document.getElementById("nav-kebersihan").style.display = currentUser.akses.kebersihan ? "flex" : "none";
       document.getElementById("nav-kpi-kebersihan").style.display = currentUser.akses.kpiKebersihan ? "flex" : "none";
 
+      // Set Divisi Default sesuai role/user
+      let roleUpper = String(currentUser.role || "").toUpperCase();
+      if (roleUpper.includes("TEKNISI")) currentDivisiCode = "TEKNISI";
+      else if (roleUpper.includes("KASIR")) currentDivisiCode = "KASIR";
+      else if (roleUpper.includes("ADMIN")) currentDivisiCode = "ADMIN";
+      else if (roleUpper.includes("MARKETING")) currentDivisiCode = "MARKETING";
+      else if (roleUpper.includes("GUDANG")) currentDivisiCode = "GUDANG";
+      else currentDivisiCode = "DEFAULT";
+
+      document.getElementById("selDivisiArea").value = currentDivisiCode;
+      renderAreaCards(currentDivisiCode);
+
       if (currentUser.akses.kebersihan) {
         switchTab('kebersihan', document.getElementById("nav-kebersihan"));
       } else if (currentUser.akses.kpiKebersihan) {
@@ -661,6 +650,44 @@
         switchTab('penjualan', document.getElementById("nav-penjualan"));
       }
       fetchStats();
+    }
+
+    function changeDivisiArea(divisiCode) {
+      currentDivisiCode = divisiCode;
+      renderAreaCards(divisiCode);
+      if (latestData) renderUI(latestData);
+    }
+
+    function renderAreaCards(divisiCode) {
+      const areaList = MAPPING_AREA_DIVISI[divisiCode] || MAPPING_AREA_DIVISI["DEFAULT"];
+      let html = "";
+
+      areaList.forEach((areaName, idx) => {
+        let areaNum = idx + 1;
+        html += `
+          <div class="area-card">
+            <div class="area-title">${areaName}</div>
+            <div class="cam-grid">
+              <div class="cam-box">
+                <span style="font-size:11px; font-weight:bold;">Foto Before</span>
+                <input type="file" accept="image/*" capture="environment" id="file_a${areaNum}_b" onchange="previewCam(this, 'prev_a${areaNum}_b')" style="display:none;">
+                <button class="btn-cam" onclick="document.getElementById('file_a${areaNum}_b').click()">📷 Buka Kamera Before</button>
+                <img id="prev_a${areaNum}_b" class="preview-img">
+              </div>
+              <div class="cam-box">
+                <span style="font-size:11px; font-weight:bold;">Foto After</span>
+                <input type="file" accept="image/*" capture="environment" id="file_a${areaNum}_a" onchange="previewCam(this, 'prev_a${areaNum}_a')" style="display:none;">
+                <button class="btn-cam" onclick="document.getElementById('file_a${areaNum}_a').click()">📷 Buka Kamera After</button>
+                <img id="prev_a${areaNum}_a" class="preview-img">
+              </div>
+            </div>
+            <button id="btn_submit_a${areaNum}" class="btn-area-submit" onclick="kirimLaporanArea(${areaNum}, '${areaName}')">🚀 Kirim Laporan Area ${areaNum}</button>
+            <div id="status_a${areaNum}" class="area-status-badge"></div>
+          </div>
+        `;
+      });
+
+      document.getElementById("areaCardsContainer").innerHTML = html;
     }
 
     function handleLogout() {
@@ -783,7 +810,7 @@
 
     function renderUI(data) {
       if (!data) return;
-      latestData = data; // Simpan data global
+      latestData = data;
 
       // 1. DATA PENJUALAN
       if (data.sales) {
@@ -924,11 +951,13 @@
 
         // --- SINKRONISASI KARTU AREA BERDASARKAN LAPORAN HARI INI ---
         const todayDate = new Date();
+        const activeAreaList = MAPPING_AREA_DIVISI[currentDivisiCode] || MAPPING_AREA_DIVISI["DEFAULT"];
 
-        [1, 2, 3, 4].forEach(idx => {
+        activeAreaList.forEach((areaFullName, idx) => {
+          let areaNum = idx + 1;
           let todayReport = filteredRiwayat.find(r => {
             let isUser = currentUser && String(r.nama).trim().toUpperCase() === String(currentUser.nama).trim().toUpperCase();
-            let isAreaMatch = String(r.area).startsWith(String(idx));
+            let isAreaMatch = String(r.area).startsWith(String(areaNum)) || String(r.area).trim().toUpperCase() === String(areaFullName).trim().toUpperCase();
             
             let isToday = false;
             if (r.tgl) {
@@ -946,19 +975,17 @@
             return isUser && isAreaMatch && isToday;
           });
 
-          const btn = document.getElementById(`btn_submit_a${idx}`);
-          const statusDiv = document.getElementById(`status_a${idx}`);
-          const imgB = document.getElementById(`prev_a${idx}_b`);
-          const imgA = document.getElementById(`prev_a${idx}_a`);
+          const btn = document.getElementById(`btn_submit_a${areaNum}`);
+          const statusDiv = document.getElementById(`status_a${areaNum}`);
+          const imgB = document.getElementById(`prev_a${areaNum}_b`);
+          const imgA = document.getElementById(`prev_a${areaNum}_a`);
 
           if (todayReport) {
             if (todayReport.urlBefore && String(todayReport.urlBefore).trim().toLowerCase().startsWith('http')) {
-              imgB.src = todayReport.urlBefore;
-              imgB.style.display = 'block';
+              if (imgB) { imgB.src = todayReport.urlBefore; imgB.style.display = 'block'; }
             }
             if (todayReport.urlAfter && String(todayReport.urlAfter).trim().toLowerCase().startsWith('http')) {
-              imgA.src = todayReport.urlAfter;
-              imgA.style.display = 'block';
+              if (imgA) { imgA.src = todayReport.urlAfter; imgA.style.display = 'block'; }
             }
 
             if (statusDiv) {
@@ -973,7 +1000,7 @@
             }
 
             if (btn) {
-              btn.innerText = `✓ Area ${idx} Sudah Dikirim Hari Ini`;
+              btn.innerText = `✓ Area ${areaNum} Sudah Dikirim Hari Ini`;
             }
           }
         });
@@ -1024,7 +1051,6 @@
       }
     }
 
-    // Helper untuk mengambil HTML riwayat kebersihan per staf pada dropdown Leaderboard
     function getStaffRiwayatHtml(namaStaf) {
       if (!latestData || !latestData.kebersihan || !latestData.kebersihan.riwayat) {
         return '<tr><td colspan="5" style="text-align:center;">Tidak ada data riwayat.</td></tr>';
@@ -1128,15 +1154,10 @@
       }
     }
 
-    // Fungsi Toggle Buka / Tutup Dropdown Riwayat Per Staf
     function toggleStaffDetail(idx) {
       const row = document.getElementById(`detail-row-${idx}`);
       if (row) {
-        if (row.style.display === "none" || row.style.display === "") {
-          row.style.display = "table-row";
-        } else {
-          row.style.display = "none";
-        }
+        row.style.display = (row.style.display === "none" || row.style.display === "") ? "table-row" : "none";
       }
     }
 
