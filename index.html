@@ -157,6 +157,14 @@
     .badge-yellow { background: #fef9c3; color: #a16207; }
     .badge-red { background: #fee2e2; color: #b91c1c; }
 
+    /* SELECT DISABLED STYLE */
+    select:disabled {
+      background-color: #f1f5f9 !important;
+      color: #94a3b8 !important;
+      border-color: #cbd5e1 !important;
+      cursor: not-allowed !important;
+    }
+
     @media (max-width: 768px) {
       header { padding: 10px 14px; }
       .container { flex-direction: column; }
@@ -281,7 +289,7 @@
 
         <!-- CONTAINER AREA CARDS DINAMIS -->
         <div id="areaCardsContainer">
-          <!-- Area Cards akan di-generate otomatis oleh JavaScript berdasarkan divisi -->
+          <!-- Area Cards di-generate otomatis -->
         </div>
 
         <div style="margin-top:24px;">
@@ -630,7 +638,7 @@
       document.getElementById("nav-kebersihan").style.display = currentUser.akses.kebersihan ? "flex" : "none";
       document.getElementById("nav-kpi-kebersihan").style.display = currentUser.akses.kpiKebersihan ? "flex" : "none";
 
-      // Set Divisi Default sesuai role/user
+      // Otomatis tentukan divisi berdasarkan Role User
       let roleUpper = String(currentUser.role || "").toUpperCase();
       if (roleUpper.includes("TEKNISI")) currentDivisiCode = "TEKNISI";
       else if (roleUpper.includes("KASIR")) currentDivisiCode = "KASIR";
@@ -639,7 +647,16 @@
       else if (roleUpper.includes("GUDANG")) currentDivisiCode = "GUDANG";
       else currentDivisiCode = "DEFAULT";
 
-      document.getElementById("selDivisiArea").value = currentDivisiCode;
+      const selDiv = document.getElementById("selDivisiArea");
+      selDiv.value = currentDivisiCode;
+
+      // ⚠️ ATURAN AKSES: HANYA ADMIN YANG BISA MENGUBAH DROPDOWN DIVISI AREA
+      if (roleUpper === "ADMIN") {
+        selDiv.disabled = false; // Admin bebas memilih/mengatur divisi
+      } else {
+        selDiv.disabled = true;  // Terkunci rapat untuk staf biasa
+      }
+
       renderAreaCards(currentDivisiCode);
 
       if (currentUser.akses.kebersihan) {
@@ -653,9 +670,12 @@
     }
 
     function changeDivisiArea(divisiCode) {
-      currentDivisiCode = divisiCode;
-      renderAreaCards(divisiCode);
-      if (latestData) renderUI(latestData);
+      // Hanya berjalan jika Admin yang mengubahnya
+      if (currentUser && String(currentUser.role).toUpperCase() === "ADMIN") {
+        currentDivisiCode = divisiCode;
+        renderAreaCards(divisiCode);
+        if (latestData) renderUI(latestData);
+      }
     }
 
     function renderAreaCards(divisiCode) {
