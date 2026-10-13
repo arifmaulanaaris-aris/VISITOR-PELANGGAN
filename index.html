@@ -142,7 +142,7 @@
     .btn-cam { background: #dc2626; color: white; border: none; padding: 8px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 6px; }
     .preview-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-top: 8px; display: none; }
 
-    /* FORM STYLES UNTUK AUDIT */
+    /* FORM STYLES AUDIT */
     .form-group { margin-bottom: 12px; }
     .form-label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; text-transform: uppercase; }
     .form-control { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; background: #fff; }
@@ -258,11 +258,11 @@
           <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
         </button>
         <div class="submenu">
-          <button class="menu-item" onclick="switchTab('keuangan-mtk-tab', this)">
+          <button id="btnSubKeuanganMtk" class="menu-item" onclick="switchTab('keuangan-mtk-tab', this)">
             <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
             Keuangan MTK
           </button>
-          <button class="menu-item" onclick="switchTab('keuangan-service-tab', this)">
+          <button id="btnSubKeuanganService" class="menu-item" onclick="switchTab('keuangan-service-tab', this)">
             <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.6C.4 7 1 10 2.9 12c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.3z"/></svg>
             Keuangan Service
           </button>
@@ -282,7 +282,7 @@
 
     <div class="content">
 
-      <!-- TAB 1: FORM KEBERSIHAN TOKO (LAPORAN STAF) -->
+      <!-- TAB 1: FORM KEBERSIHAN TOKO (STAF) -->
       <div id="kebersihan" class="tab-page active">
         <div style="background:#fef2f2; border:1px solid #fecaca; padding:12px; border-radius:8px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
           <div>
@@ -290,7 +290,6 @@
             <p style="font-size:11px; color:#7f1d1d; margin-top:2px;">Area disesuaikan dengan divisi Anda. Pengiriman tanpa foto lengkap dikenakan denda Rp 15.000 per area.</p>
           </div>
           
-          <!-- PILIHAN DIVISI -->
           <div style="display:flex; align-items:center; gap:8px;">
             <label style="font-size:12px; font-weight:bold; color:#dc2626;">Divisi Area:</label>
             <select id="selDivisiArea" onchange="changeDivisiArea(this.value)" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #dc2626; font-size: 12px; font-weight: bold; background: white; color: #dc2626; outline: none; cursor: pointer;">
@@ -332,7 +331,6 @@
               </table>
             </div>
             
-            <!-- FORM TAMBAH / UPDATE STAF -->
             <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
               <input type="text" id="newStaffName" placeholder="Username / Nama Staf (contoh: wiki)" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:4px; font-size:11px; flex:1; min-width:140px;">
               <select id="newStaffDivisi" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:4px; font-size:11px;">
@@ -353,7 +351,6 @@
           </div>
         </div>
 
-        <!-- CONTAINER AREA CARDS DINAMIS -->
         <div id="areaCardsContainer">
           <!-- Area Cards di-generate otomatis -->
         </div>
@@ -380,7 +377,7 @@
         </div>
       </div>
 
-      <!-- TAB BARU: AUDIT KEBERSIHAN TOKO (KHUSUS INSPEKSI/AUDITOR) -->
+      <!-- TAB AUDIT KEBERSIHAN TOKO -->
       <div id="audit-kebersihan-tab" class="tab-page">
         <div class="box-panel full-width" style="margin-bottom:16px; border-top:4px solid #dc2626;">
           <div class="panel-header">
@@ -440,7 +437,6 @@
           </button>
         </div>
 
-        <!-- TABEL RIWAYAT AUDIT KEBERSIHAN TOKO -->
         <div class="box-panel full-width">
           <div class="panel-header"><span>Riwayat Hasil Audit Kebersihan Toko</span></div>
           <div class="table-container" style="height: 320px;">
@@ -841,12 +837,20 @@
     function applyUserAccess() {
       document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
       
+      // KONTROL AKSES NAVIGASI SIDEBAR HAK AKSES BARU
       document.getElementById("nav-penjualan").style.display = currentUser.akses.penjualan ? "flex" : "none";
-      document.getElementById("nav-keuangan-mtk").style.display = currentUser.akses.keuangan ? "flex" : "none";
       document.getElementById("nav-marketing").style.display = currentUser.akses.penjualan ? "flex" : "none";
       document.getElementById("nav-siplah").style.display = currentUser.akses.siplah ? "flex" : "none";
       document.getElementById("nav-kebersihan").style.display = currentUser.akses.kebersihan ? "flex" : "none";
       document.getElementById("nav-kpi-kebersihan").style.display = currentUser.akses.kpiKebersihan ? "flex" : "none";
+      document.getElementById("nav-audit-kebersihan").style.display = currentUser.akses.auditKebersihan ? "flex" : "none";
+
+      const hasKeuanganMtk = currentUser.akses.keuanganMtk || currentUser.akses.keuangan;
+      const hasKeuanganService = currentUser.akses.keuanganService;
+
+      document.getElementById("keuanganDropdown").style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
+      document.getElementById("btnSubKeuanganMtk").style.display = hasKeuanganMtk ? "flex" : "none";
+      document.getElementById("btnSubKeuanganService").style.display = hasKeuanganService ? "flex" : "none";
 
       const staffMap = getStaffMapping();
       let userKey = String(currentUser.username || currentUser.nama || "").toLowerCase();
@@ -881,6 +885,8 @@
 
       if (currentUser.akses.kebersihan) {
         switchTab('kebersihan', document.getElementById("nav-kebersihan"));
+      } else if (currentUser.akses.auditKebersihan) {
+        switchTab('audit-kebersihan-tab', document.getElementById("nav-audit-kebersihan"));
       } else if (currentUser.akses.kpiKebersihan) {
         switchTab('kpi-kebersihan-tab', document.getElementById("nav-kpi-kebersihan"));
       } else if (currentUser.akses.penjualan) {
