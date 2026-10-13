@@ -209,7 +209,7 @@
         <span class="brand-name">mahadewa.id</span>
         <span class="brand-sub">Cab. Palopo</span>
       </div>
-      <div class="page-title-badge" id="headerPageTitle">Kebersihan Toko</div>
+      <div class="page-title-badge" id="headerPageTitle">Tugas Kebersihan</div>
     </div>
     <div class="header-user">
       <span class="user-name" id="userBadge">Guest</span>
@@ -224,12 +224,12 @@
     <div class="sidebar" id="sidebarMenu">
       <button id="nav-kebersihan" class="menu-item active" onclick="switchTab('kebersihan', this)">
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-        Kebersihan Toko
+        Tugas Kebersihan
       </button>
 
       <button id="nav-kpi-kebersihan" class="menu-item" onclick="switchTab('kpi-kebersihan-tab', this)">
         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-        Dashboard KPI Kebersihan
+        Progres Area Kebersihan
       </button>
 
       <button id="nav-penjualan" class="menu-item" onclick="switchTab('penjualan', this)">
@@ -359,7 +359,7 @@
         </div>
       </div>
 
-      <!-- TAB 2: DASHBOARD KPI KEBERSIHAN -->
+      <!-- TAB 2: Progres Area Kebersihan -->
       <div id="kpi-kebersihan-tab" class="tab-page">
         <div class="top-cards" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 20px;">
           <div class="card main-card">
@@ -873,8 +873,8 @@
       if(btn) btn.classList.add('active');
 
       const titleMap = { 
-        'kebersihan': 'Kebersihan Toko',
-        'kpi-kebersihan-tab': 'Dashboard KPI Kebersihan',
+        'kebersihan': 'Tugas Kebersihan',
+        'kpi-kebersihan-tab': 'Progres Area Kebersihan',
         'penjualan': 'Penjualan', 
         'keuangan-mtk-tab': 'Keuangan MTK', 
         'keuangan-service-tab': 'Keuangan Service', 
@@ -1210,7 +1210,7 @@
         }
       }
 
-      // 5. DASHBOARD KPI KEBERSIHAN
+      // 5. Progres Area Kebersihan
       if (data.kpiKebersihan) {
         renderKpiKebersihan(data.kpiKebersihan);
       }
