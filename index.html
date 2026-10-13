@@ -169,7 +169,6 @@
     .badge-yellow { background: #fef9c3; color: #a16207; }
     .badge-red { background: #fee2e2; color: #b91c1c; }
 
-    /* SELECT DISABLED STYLE */
     select:disabled {
       background-color: #f1f5f9 !important;
       color: #94a3b8 !important;
@@ -692,99 +691,31 @@
     const PALETTE_RED = '#dc2626';
     const PALETTE_PIE = ['#dc2626', '#475569', '#cbd5e1', '#0f172a', '#94a3b8', '#64748b', '#e2e8f0'];
 
-    // 1. PEMETAAN AREA KEBERSIHAN PER DIVISI
     const MAPPING_AREA_DIVISI = {
-      "TEKNISI": [
-        "1. Ruangan Teknisi & Alat Kerja",
-        "2. Meja Kerja Teknisi",
-        "3. Rak Sparepart & Unit Customer",
-        "4. Lantai Area Service & Tempat Sampah"
-      ],
-      "KASIR": [
-        "1. Area Kasir & Counter Utama",
-        "2. Meja Kasir, Perangkat & EDC",
-        "3. Lemari Display gimmick Depan",
-        "4. Lemari Rak Logo Mahadewa"
-      ],
-      "ADMIN 01": [
-        "1. Meja Kerja Admin & Laptop",
-        "2. Lemari Display aksesoris kiri",
-        "3. laci Meja admin",
-        "4. Lantai Toko"
-      ],
-      "ADMIN 02": [
-        "1. Meja Kerja Admin & Laptop",
-        "2. Lemari Display aksesoris kanan",
-        "3. laci Meja admin",
-        "4. Lantai Toko"
-      ],
-      "MARKETING 01": [
-        "1. Meja Kerja Marketing",
-        "2. Meja Display Axioo",
-        "3. Meja Aktifasi user & Tempat Sampah",
-        "4. Lemari Display Epson"
-      ],
-      "MARKETING 02": [
-        "1. Meja Kerja Marketing",
-        "2. Meja Display ASUS",
-        "3. Display aktif",
-        "4. Lemari Dibagian belakang Marketing"
-      ],
-      "MARKETING 03": [
-        "1. Meja Kerja Marketing",
-        "2. Meja Display Acer",
-        "3. Display aktif",
-        "4. Meja Display ASUS Business"
-      ],
-      "GUDANG": [
-        "1. Area Rak Stok",
-        "2. Depan Gudang",
-        "3. Transisi Barang Masuk/Keluar",
-        "4. Lantai Gudang"
-      ],
-      "Promotor Pembiayaan": [
-        "1. Sampah dibawah Tangga",
-        "2. Area Depan Toko",
-        "3. Kaca Pintu Depan",
-        "4. Toilet"
-      ],
-      "Promotor HP": [
-        "1. Meja Display HP",
-        "2. Meja Display APPLE",
-        "3. Lemari iPhone",
-        "4. Lemari Canon"
-      ],
-      "Promotor INFINIX": [
-        "1. Meja Display INFINIX",
-        "2. Lemari Brother",
-        "3. Lemari Monitor",
-        "4. Meja Aktifasi user"
-      ]
+      "TEKNISI": ["1. Ruangan Teknisi & Alat Kerja", "2. Meja Kerja Teknisi", "3. Rak Sparepart & Unit Customer", "4. Lantai Area Service & Tempat Sampah"],
+      "KASIR": ["1. Area Kasir & Counter Utama", "2. Meja Kasir, Perangkat & EDC", "3. Lemari Display gimmick Depan", "4. Lemari Rak Logo Mahadewa"],
+      "ADMIN 01": ["1. Meja Kerja Admin & Laptop", "2. Lemari Display aksesoris kiri", "3. laci Meja admin", "4. Lantai Toko"],
+      "ADMIN 02": ["1. Meja Kerja Admin & Laptop", "2. Lemari Display aksesoris kanan", "3. laci Meja admin", "4. Lantai Toko"],
+      "MARKETING 01": ["1. Meja Kerja Marketing", "2. Meja Display Axioo", "3. Meja Aktifasi user & Tempat Sampah", "4. Lemari Display Epson"],
+      "MARKETING 02": ["1. Meja Kerja Marketing", "2. Meja Display ASUS", "3. Display aktif", "4. Lemari Dibagian belakang Marketing"],
+      "MARKETING 03": ["1. Meja Kerja Marketing", "2. Meja Display Acer", "3. Display aktif", "4. Meja Display ASUS Business"],
+      "GUDANG": ["1. Area Rak Stok", "2. Depan Gudang", "3. Transisi Barang Masuk/Keluar", "4. Lantai Gudang"],
+      "Promotor Pembiayaan": ["1. Sampah dibawah Tangga", "2. Area Depan Toko", "3. Kaca Pintu Depan", "4. Toilet"],
+      "Promotor HP": ["1. Meja Display HP", "2. Meja Display APPLE", "3. Lemari iPhone", "4. Lemari Canon"],
+      "Promotor INFINIX": ["1. Meja Display INFINIX", "2. Lemari Brother", "3. Lemari Monitor", "4. Meja Aktifasi user"]
     };
 
-    // 2. DATA PEMETAAN USER / STAF KE DIVISI
     const DEFAULT_STAFF_MAP = {
-      "wiki": "TEKNISI",
-      "suci": "KASIR",
-      "ansar": "TEKNISI",
-      "rio": "GUDANG",
-      "rahmi": "ADMIN 01",
-      "yiska": "ADMIN 02",
-      "amaluddin": "MARKETING 01",
-      "yuni": "MARKETING 02",
-      "nuraeni": "MARKETING 03",
-      "hci01": "Promotor Pembiayaan",
-      "hci02": "Promotor Pembiayaan",
-      "hp": "Promotor HP",
-      "infinix": "Promotor INFINIX",
+      "wiki": "TEKNISI", "suci": "KASIR", "ansar": "TEKNISI", "rio": "GUDANG",
+      "rahmi": "ADMIN 01", "yiska": "ADMIN 02", "amaluddin": "MARKETING 01",
+      "yuni": "MARKETING 02", "nuraeni": "MARKETING 03", "hci01": "Promotor Pembiayaan",
+      "hci02": "Promotor Pembiayaan", "hp": "Promotor HP", "infinix": "Promotor INFINIX",
       "indodana": "Promotor Pembiayaan"
     };
 
     function getStaffMapping() {
       const saved = localStorage.getItem("STAFF_DIVISI_MAP");
-      if (saved) {
-        try { return JSON.parse(saved); } catch(e) {}
-      }
+      if (saved) { try { return JSON.parse(saved); } catch(e) {} }
       return DEFAULT_STAFF_MAP;
     }
 
@@ -837,50 +768,52 @@
     function applyUserAccess() {
       if (!currentUser) return;
 
+      const roleUpper = String(currentUser.role || "").toUpperCase();
+      const isAdmin = (roleUpper === "ADMIN");
+
       document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
       
-      // 1. AKSES SIDEBAR MENU UTAMA
-      const navPenjualan = document.getElementById("nav-penjualan");
-      if (navPenjualan) navPenjualan.style.display = (currentUser.akses && currentUser.akses.penjualan) ? "flex" : "none";
+      // FALLBACK OTOMATIS: JIKA ADMIN, BUKA SELURUH AKSES
+      const hasPenjualan = isAdmin || (currentUser.akses && currentUser.akses.penjualan);
+      const hasKeuanganMtk = isAdmin || (currentUser.akses && (currentUser.akses.keuanganMtk || currentUser.akses.keuangan));
+      const hasKeuanganService = isAdmin || (currentUser.akses && currentUser.akses.keuanganService);
+      const hasSiplah = isAdmin || (currentUser.akses && currentUser.akses.siplah);
+      const hasKebersihan = isAdmin || (currentUser.akses && currentUser.akses.kebersihan);
+      const hasKpiKebersihan = isAdmin || (currentUser.akses && currentUser.akses.kpiKebersihan);
+      const hasAuditKebersihan = isAdmin || (currentUser.akses && currentUser.akses.auditKebersihan);
 
-      const navMarketing = document.getElementById("nav-marketing");
-      if (navMarketing) navMarketing.style.display = (currentUser.akses && currentUser.akses.penjualan) ? "flex" : "none";
+      // KONTROL SIDEBAR
+      const elPenjualan = document.getElementById("nav-penjualan");
+      if (elPenjualan) elPenjualan.style.display = hasPenjualan ? "flex" : "none";
 
-      const navSiplah = document.getElementById("nav-siplah");
-      if (navSiplah) navSiplah.style.display = (currentUser.akses && currentUser.akses.siplah) ? "flex" : "none";
+      const elMarketing = document.getElementById("nav-marketing");
+      if (elMarketing) elMarketing.style.display = hasPenjualan ? "flex" : "none";
 
-      const navKebersihan = document.getElementById("nav-kebersihan");
-      if (navKebersihan) navKebersihan.style.display = (currentUser.akses && currentUser.akses.kebersihan) ? "flex" : "none";
+      const elSiplah = document.getElementById("nav-siplah");
+      if (elSiplah) elSiplah.style.display = hasSiplah ? "flex" : "none";
 
-      const navKpiKebersihan = document.getElementById("nav-kpi-kebersihan");
-      if (navKpiKebersihan) navKpiKebersihan.style.display = (currentUser.akses && currentUser.akses.kpiKebersihan) ? "flex" : "none";
+      const elKebersihan = document.getElementById("nav-kebersihan");
+      if (elKebersihan) elKebersihan.style.display = hasKebersihan ? "flex" : "none";
 
-      const navAuditKebersihan = document.getElementById("nav-audit-kebersihan");
-      if (navAuditKebersihan) navAuditKebersihan.style.display = (currentUser.akses && currentUser.akses.auditKebersihan) ? "flex" : "none";
+      const elKpi = document.getElementById("nav-kpi-kebersihan");
+      if (elKpi) elKpi.style.display = hasKpiKebersihan ? "flex" : "none";
 
-      // 2. AKSES KEUANGAN (MTK & SERVICE)
-      const hasKeuanganMtk = currentUser.akses ? (currentUser.akses.keuanganMtk || currentUser.akses.keuangan) : false;
-      const hasKeuanganService = currentUser.akses ? currentUser.akses.keuanganService : false;
+      const elAudit = document.getElementById("nav-audit-kebersihan");
+      if (elAudit) elAudit.style.display = hasAuditKebersihan ? "flex" : "none";
 
-      const keuanganDropdown = document.getElementById("keuanganDropdown");
-      if (keuanganDropdown) {
-        keuanganDropdown.style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
-      }
-      
-      const btnSubMtk = document.getElementById("btnSubKeuanganMtk");
-      if (btnSubMtk) {
-        btnSubMtk.style.display = hasKeuanganMtk ? "flex" : "none";
-      }
+      // DROPDOWN KEUANGAN
+      const elKeuanganDrop = document.getElementById("keuanganDropdown");
+      if (elKeuanganDrop) elKeuanganDrop.style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
 
-      const btnSubService = document.getElementById("btnSubKeuanganService");
-      if (btnSubService) {
-        btnSubService.style.display = hasKeuanganService ? "flex" : "none";
-      }
+      const elSubMtk = document.getElementById("btnSubKeuanganMtk");
+      if (elSubMtk) elSubMtk.style.display = hasKeuanganMtk ? "flex" : "none";
 
-      // 3. PEMETAAN DIVISI
+      const elSubService = document.getElementById("btnSubKeuanganService");
+      if (elSubService) elSubService.style.display = hasKeuanganService ? "flex" : "none";
+
+      // PEMETAAN STAF
       const staffMap = getStaffMapping();
       let userKey = String(currentUser.username || currentUser.nama || "").toLowerCase();
-      let roleUpper = String(currentUser.role || "").toUpperCase();
 
       if (staffMap[userKey]) {
         currentDivisiCode = staffMap[userKey];
@@ -898,7 +831,7 @@
 
       const adminPanel = document.getElementById("adminMappingPanel");
       if (adminPanel) {
-        if (roleUpper === "ADMIN") {
+        if (isAdmin) {
           if (selDiv) selDiv.disabled = false;
           adminPanel.style.display = "block";
           renderAdminStaffTable();
@@ -911,14 +844,13 @@
       renderAreaCards(currentDivisiCode);
       initAuditFormOptions();
 
-      // DIRECT KE TAB PERTAMA YANG DIIZINKAN
-      if (currentUser.akses && currentUser.akses.kebersihan) {
+      if (hasKebersihan) {
         switchTab('kebersihan', document.getElementById("nav-kebersihan"));
-      } else if (currentUser.akses && currentUser.akses.auditKebersihan) {
+      } else if (hasAuditKebersihan) {
         switchTab('audit-kebersihan-tab', document.getElementById("nav-audit-kebersihan"));
-      } else if (currentUser.akses && currentUser.akses.kpiKebersihan) {
+      } else if (hasKpiKebersihan) {
         switchTab('kpi-kebersihan-tab', document.getElementById("nav-kpi-kebersihan"));
-      } else if (currentUser.akses && currentUser.akses.penjualan) {
+      } else if (hasPenjualan) {
         switchTab('penjualan', document.getElementById("nav-penjualan"));
       } else if (hasKeuanganMtk) {
         switchTab('keuangan-mtk-tab', document.getElementById("btnSubKeuanganMtk"));
@@ -928,7 +860,6 @@
       fetchStats();
     }
 
-    // AUDIT FORM LOGIC
     function initAuditFormOptions() {
       if (currentUser) {
         const auditorEl = document.getElementById("auditAuditorName");
@@ -1252,7 +1183,6 @@
       if (!data) return;
       latestData = data;
 
-      // 1. DATA PENJUALAN
       if (data.sales) {
         const s = data.sales;
         if (s.kpi) {
@@ -1303,7 +1233,6 @@
         }
       }
 
-      // 2A. DATA KEUANGAN MTK
       if (data.keuangan) {
         const k = data.keuangan;
         document.getElementById("kTotalPenjualan").innerText = formatRupiah(k.totalPenjualan);
@@ -1332,7 +1261,6 @@
         }
       }
 
-      // 2B. DATA KEUANGAN SERVICE
       if (data.keuanganService) {
         const ks = data.keuanganService;
         document.getElementById("ksTotalPenjualan").innerText = formatRupiah(ks.totalPenjualan);
@@ -1359,7 +1287,6 @@
         }
       }
 
-      // 3. SIPLAH TERTUNDA
       if (data.siplah) {
         const sp = data.siplah;
         document.getElementById("sipTotalNilai").innerText = formatRupiah(sp.totalKeseluruhan);
@@ -1379,7 +1306,6 @@
         }
       }
 
-      // 4. RIWAYAT KEBERSIHAN STAF
       if (data.kebersihan && data.kebersihan.riwayat) {
         let filteredRiwayat = data.kebersihan.riwayat;
 
@@ -1484,12 +1410,10 @@
         }
       }
 
-      // 5. RIWAYAT AUDIT KEBERSIHAN
       if (data.kebersihan && data.kebersihan.audit) {
         renderAuditHistoryTable(data.kebersihan.audit);
       }
 
-      // 6. Progres Area Kebersihan
       if (data.kpiKebersihan) {
         renderKpiKebersihan(data.kpiKebersihan);
       }
