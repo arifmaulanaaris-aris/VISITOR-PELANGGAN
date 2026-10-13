@@ -835,23 +835,49 @@
     }
 
     function applyUserAccess() {
+      if (!currentUser) return;
+
       document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
       
-      // KONTROL AKSES NAVIGASI SIDEBAR HAK AKSES BARU
-      document.getElementById("nav-penjualan").style.display = currentUser.akses.penjualan ? "flex" : "none";
-      document.getElementById("nav-marketing").style.display = currentUser.akses.penjualan ? "flex" : "none";
-      document.getElementById("nav-siplah").style.display = currentUser.akses.siplah ? "flex" : "none";
-      document.getElementById("nav-kebersihan").style.display = currentUser.akses.kebersihan ? "flex" : "none";
-      document.getElementById("nav-kpi-kebersihan").style.display = currentUser.akses.kpiKebersihan ? "flex" : "none";
-      document.getElementById("nav-audit-kebersihan").style.display = currentUser.akses.auditKebersihan ? "flex" : "none";
+      // 1. AKSES SIDEBAR MENU UTAMA
+      const navPenjualan = document.getElementById("nav-penjualan");
+      if (navPenjualan) navPenjualan.style.display = (currentUser.akses && currentUser.akses.penjualan) ? "flex" : "none";
 
-      const hasKeuanganMtk = currentUser.akses.keuanganMtk || currentUser.akses.keuangan;
-      const hasKeuanganService = currentUser.akses.keuanganService;
+      const navMarketing = document.getElementById("nav-marketing");
+      if (navMarketing) navMarketing.style.display = (currentUser.akses && currentUser.akses.penjualan) ? "flex" : "none";
 
-      document.getElementById("keuanganDropdown").style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
-      document.getElementById("btnSubKeuanganMtk").style.display = hasKeuanganMtk ? "flex" : "none";
-      document.getElementById("btnSubKeuanganService").style.display = hasKeuanganService ? "flex" : "none";
+      const navSiplah = document.getElementById("nav-siplah");
+      if (navSiplah) navSiplah.style.display = (currentUser.akses && currentUser.akses.siplah) ? "flex" : "none";
 
+      const navKebersihan = document.getElementById("nav-kebersihan");
+      if (navKebersihan) navKebersihan.style.display = (currentUser.akses && currentUser.akses.kebersihan) ? "flex" : "none";
+
+      const navKpiKebersihan = document.getElementById("nav-kpi-kebersihan");
+      if (navKpiKebersihan) navKpiKebersihan.style.display = (currentUser.akses && currentUser.akses.kpiKebersihan) ? "flex" : "none";
+
+      const navAuditKebersihan = document.getElementById("nav-audit-kebersihan");
+      if (navAuditKebersihan) navAuditKebersihan.style.display = (currentUser.akses && currentUser.akses.auditKebersihan) ? "flex" : "none";
+
+      // 2. AKSES KEUANGAN (MTK & SERVICE)
+      const hasKeuanganMtk = currentUser.akses ? (currentUser.akses.keuanganMtk || currentUser.akses.keuangan) : false;
+      const hasKeuanganService = currentUser.akses ? currentUser.akses.keuanganService : false;
+
+      const keuanganDropdown = document.getElementById("keuanganDropdown");
+      if (keuanganDropdown) {
+        keuanganDropdown.style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
+      }
+      
+      const btnSubMtk = document.getElementById("btnSubKeuanganMtk");
+      if (btnSubMtk) {
+        btnSubMtk.style.display = hasKeuanganMtk ? "flex" : "none";
+      }
+
+      const btnSubService = document.getElementById("btnSubKeuanganService");
+      if (btnSubService) {
+        btnSubService.style.display = hasKeuanganService ? "flex" : "none";
+      }
+
+      // 3. PEMETAAN DIVISI
       const staffMap = getStaffMapping();
       let userKey = String(currentUser.username || currentUser.nama || "").toLowerCase();
       let roleUpper = String(currentUser.role || "").toUpperCase();
@@ -868,29 +894,36 @@
       }
 
       const selDiv = document.getElementById("selDivisiArea");
-      selDiv.value = currentDivisiCode;
+      if (selDiv) selDiv.value = currentDivisiCode;
 
       const adminPanel = document.getElementById("adminMappingPanel");
-      if (roleUpper === "ADMIN") {
-        selDiv.disabled = false;
-        adminPanel.style.display = "block";
-        renderAdminStaffTable();
-      } else {
-        selDiv.disabled = true;
-        adminPanel.style.display = "none";
+      if (adminPanel) {
+        if (roleUpper === "ADMIN") {
+          if (selDiv) selDiv.disabled = false;
+          adminPanel.style.display = "block";
+          renderAdminStaffTable();
+        } else {
+          if (selDiv) selDiv.disabled = true;
+          adminPanel.style.display = "none";
+        }
       }
 
       renderAreaCards(currentDivisiCode);
       initAuditFormOptions();
 
-      if (currentUser.akses.kebersihan) {
+      // DIRECT KE TAB PERTAMA YANG DIIZINKAN
+      if (currentUser.akses && currentUser.akses.kebersihan) {
         switchTab('kebersihan', document.getElementById("nav-kebersihan"));
-      } else if (currentUser.akses.auditKebersihan) {
+      } else if (currentUser.akses && currentUser.akses.auditKebersihan) {
         switchTab('audit-kebersihan-tab', document.getElementById("nav-audit-kebersihan"));
-      } else if (currentUser.akses.kpiKebersihan) {
+      } else if (currentUser.akses && currentUser.akses.kpiKebersihan) {
         switchTab('kpi-kebersihan-tab', document.getElementById("nav-kpi-kebersihan"));
-      } else if (currentUser.akses.penjualan) {
+      } else if (currentUser.akses && currentUser.akses.penjualan) {
         switchTab('penjualan', document.getElementById("nav-penjualan"));
+      } else if (hasKeuanganMtk) {
+        switchTab('keuangan-mtk-tab', document.getElementById("btnSubKeuanganMtk"));
+      } else if (hasKeuanganService) {
+        switchTab('keuangan-service-tab', document.getElementById("btnSubKeuanganService"));
       }
       fetchStats();
     }
@@ -898,7 +931,8 @@
     // AUDIT FORM LOGIC
     function initAuditFormOptions() {
       if (currentUser) {
-        document.getElementById("auditAuditorName").value = `${currentUser.nama} (${currentUser.role})`;
+        const auditorEl = document.getElementById("auditAuditorName");
+        if (auditorEl) auditorEl.value = `${currentUser.nama} (${currentUser.role})`;
       }
       const staffMap = getStaffMapping();
       let optionsHtml = "";
@@ -917,14 +951,16 @@
     function onAuditStaffChange(uname) {
       const staffMap = getStaffMapping();
       const divCode = staffMap[uname] || "TEKNISI";
-      document.getElementById("auditDivisiDisplay").value = divCode;
+      const divDisp = document.getElementById("auditDivisiDisplay");
+      if (divDisp) divDisp.value = divCode;
 
       const areaList = MAPPING_AREA_DIVISI[divCode] || [];
       let areaHtml = "";
       areaList.forEach(a => {
         areaHtml += `<option value="${a}">${a}</option>`;
       });
-      document.getElementById("auditAreaTarget").innerHTML = areaHtml;
+      const areaTargetEl = document.getElementById("auditAreaTarget");
+      if (areaTargetEl) areaTargetEl.innerHTML = areaHtml;
     }
 
     async function simpanAuditKebersihan() {
@@ -1003,7 +1039,8 @@
           </tr>
         `;
       });
-      document.getElementById("tblStaffMapping").innerHTML = html || `<tr><td colspan="3" style="text-align:center;">Belum ada pemetaan staf.</td></tr>`;
+      const container = document.getElementById("tblStaffMapping");
+      if (container) container.innerHTML = html || `<tr><td colspan="3" style="text-align:center;">Belum ada pemetaan staf.</td></tr>`;
     }
 
     function updateStaffMapping(uname, newDivisi) {
@@ -1042,7 +1079,7 @@
 
     function toggleAdminPanelVisibility() {
       const content = document.getElementById("adminPanelContent");
-      content.style.display = content.style.display === "none" ? "block" : "none";
+      if (content) content.style.display = content.style.display === "none" ? "block" : "none";
     }
 
     function changeDivisiArea(divisiCode) {
@@ -1082,7 +1119,8 @@
         `;
       });
 
-      document.getElementById("areaCardsContainer").innerHTML = html;
+      const container = document.getElementById("areaCardsContainer");
+      if (container) container.innerHTML = html;
     }
 
     function handleLogout() {
@@ -1091,7 +1129,8 @@
     }
 
     function toggleDropdown(containerId) {
-      document.getElementById(containerId).classList.toggle('open');
+      const el = document.getElementById(containerId);
+      if (el) el.classList.toggle('open');
     }
 
     function switchTab(tabId, btn) {
@@ -1112,7 +1151,8 @@
         'marketing-perf': 'Marketing', 
         'siplah-tertunda': 'SIPLah Tertunda' 
       };
-      document.getElementById("headerPageTitle").innerText = titleMap[tabId] || 'Dashboard';
+      const titleBadge = document.getElementById("headerPageTitle");
+      if (titleBadge) titleBadge.innerText = titleMap[tabId] || 'Dashboard';
     }
 
     function previewCam(input, prevId) {
@@ -1120,8 +1160,10 @@
         const reader = new FileReader();
         reader.onload = function(e) {
           const img = document.getElementById(prevId);
-          img.src = e.target.result;
-          img.style.display = "block";
+          if (img) {
+            img.src = e.target.result;
+            img.style.display = "block";
+          }
         };
         reader.readAsDataURL(input.files[0]);
       }
@@ -1174,13 +1216,15 @@
           alert(`Laporan ${areaTitle} berhasil terkirim!`);
           
           const statusDiv = document.getElementById(`status_a${areaIdx}`);
-          statusDiv.style.display = "block";
-          if (fileB && fileA) {
-            statusDiv.className = "area-status-badge status-success";
-            statusDiv.innerText = `✓ ${areaTitle} Selesai Lengkap (Foto Before & After)`;
-          } else {
-            statusDiv.className = "area-status-badge status-warning";
-            statusDiv.innerText = `⚠️ ${areaTitle} Terkirim (Foto Tidak Lengkap - Denda Rp 15.000)`;
+          if (statusDiv) {
+            statusDiv.style.display = "block";
+            if (fileB && fileA) {
+              statusDiv.className = "area-status-badge status-success";
+              statusDiv.innerText = `✓ ${areaTitle} Selesai Lengkap (Foto Before & After)`;
+            } else {
+              statusDiv.className = "area-status-badge status-warning";
+              statusDiv.innerText = `⚠️ ${areaTitle} Terkirim (Foto Tidak Lengkap - Denda Rp 15.000)`;
+            }
           }
           btn.innerText = `✓ ${areaTitle} Sudah Dikirim`;
           
@@ -1400,42 +1444,43 @@
           }
         });
 
-        if (filteredRiwayat.length === 0) {
-          document.getElementById("tblRiwayatKebersihan").innerHTML = `
-            <tr><td colspan="6" style="text-align:center;">Belum ada riwayat laporan kebersihan untuk akun ini.</td></tr>
-          `;
-        } else {
-          document.getElementById("tblRiwayatKebersihan").innerHTML = filteredRiwayat.map(r => {
-            let displayTgl = String(r.tgl).replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
+        const tblKeb = document.getElementById("tblRiwayatKebersihan");
+        if (tblKeb) {
+          if (filteredRiwayat.length === 0) {
+            tblKeb.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada riwayat laporan kebersihan untuk akun ini.</td></tr>`;
+          } else {
+            tblKeb.innerHTML = filteredRiwayat.map(r => {
+              let displayTgl = String(r.tgl).replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
 
-            let isUrlBefore = r.urlBefore && String(r.urlBefore).trim().toLowerCase().startsWith('http');
-            let isUrlAfter = r.urlAfter && String(r.urlAfter).trim().toLowerCase().startsWith('http');
+              let isUrlBefore = r.urlBefore && String(r.urlBefore).trim().toLowerCase().startsWith('http');
+              let isUrlAfter = r.urlAfter && String(r.urlAfter).trim().toLowerCase().startsWith('http');
 
-            let linkBeforeBtn = isUrlBefore 
-              ? `<a href="${r.urlBefore}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Before</a>` 
-              : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
+              let linkBeforeBtn = isUrlBefore 
+                ? `<a href="${r.urlBefore}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Before</a>` 
+                : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
 
-            let linkAfterBtn = isUrlAfter 
-              ? `<a href="${r.urlAfter}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#dcfce7; color:#15803d; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ After</a>` 
-              : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
+              let linkAfterBtn = isUrlAfter 
+                ? `<a href="${r.urlAfter}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#dcfce7; color:#15803d; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ After</a>` 
+                : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
 
-            return `
-              <tr>
-                <td><b>${displayTgl}</b></td>
-                <td><b>${r.nama}</b></td>
-                <td><b>${r.area}</b></td>
-                <td>${linkBeforeBtn} &nbsp; ${linkAfterBtn}</td>
-                <td>
-                  <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${r.denda > 0 ? '#fee2e2' : '#dcfce7'}; color:${r.denda > 0 ? '#dc2626' : '#15803d'};">
-                    ${r.status}
-                  </span>
-                </td>
-                <td style="color:${r.denda > 0 ? '#dc2626' : 'inherit'}; font-weight:${r.denda > 0 ? 'bold' : 'normal'};">
-                  Rp ${r.denda.toLocaleString('id-ID')}
-                </td>
-              </tr>
-            `;
-          }).join('');
+              return `
+                <tr>
+                  <td><b>${displayTgl}</b></td>
+                  <td><b>${r.nama}</b></td>
+                  <td><b>${r.area}</b></td>
+                  <td>${linkBeforeBtn} &nbsp; ${linkAfterBtn}</td>
+                  <td>
+                    <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${r.denda > 0 ? '#fee2e2' : '#dcfce7'}; color:${r.denda > 0 ? '#dc2626' : '#15803d'};">
+                      ${r.status}
+                    </span>
+                  </td>
+                  <td style="color:${r.denda > 0 ? '#dc2626' : 'inherit'}; font-weight:${r.denda > 0 ? 'bold' : 'normal'};">
+                    Rp ${r.denda.toLocaleString('id-ID')}
+                  </td>
+                </tr>
+              `;
+            }).join('');
+          }
         }
       }
 
@@ -1451,14 +1496,15 @@
     }
 
     function renderAuditHistoryTable(auditList) {
+      const tblAud = document.getElementById("tblRiwayatAudit");
+      if (!tblAud) return;
+
       if (!auditList || auditList.length === 0) {
-        document.getElementById("tblRiwayatAudit").innerHTML = `
-          <tr><td colspan="7" style="text-align:center;">Belum ada catatan hasil audit kebersihan toko.</td></tr>
-        `;
+        tblAud.innerHTML = `<tr><td colspan="7" style="text-align:center;">Belum ada catatan hasil audit kebersihan toko.</td></tr>`;
         return;
       }
 
-      document.getElementById("tblRiwayatAudit").innerHTML = auditList.map(a => {
+      tblAud.innerHTML = auditList.map(a => {
         let isFoto = a.urlFoto && String(a.urlFoto).trim().toLowerCase().startsWith('http');
         let fotoBtn = isFoto 
           ? `<a href="${a.urlFoto}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Lihat Temuan</a>` 
@@ -1581,7 +1627,8 @@
             </tr>
           `;
         });
-        document.getElementById("tblKpiStaffKebersihan").innerHTML = html;
+        const tblKpi = document.getElementById("tblKpiStaffKebersihan");
+        if (tblKpi) tblKpi.innerHTML = html;
       }
     }
 
@@ -1598,9 +1645,12 @@
       if (sortBy === 'qty') sortedList.sort((a, b) => b.qty - a.qty);
       else sortedList.sort((a, b) => b.total - a.total);
 
-      document.getElementById("tblBestSeller").innerHTML = sortedList.slice(0, 10).map((b, i) => `
-        <tr><td><b>#${i + 1}</b></td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td><b>${formatRupiah(b.total)}</b></td></tr>
-      `).join('');
+      const container = document.getElementById("tblBestSeller");
+      if (container) {
+        container.innerHTML = sortedList.slice(0, 10).map((b, i) => `
+          <tr><td><b>#${i + 1}</b></td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td><b>${formatRupiah(b.total)}</b></td></tr>
+        `).join('');
+      }
     }
 
     function changeBestSellerSort(val) { renderBestSellerTable(val); }
@@ -1624,7 +1674,8 @@
           </tr>
         `;
       });
-      document.getElementById("tblMktPerf").innerHTML = html;
+      const container = document.getElementById("tblMktPerf");
+      if (container) container.innerHTML = html;
 
       if (barMktPerfInst) {
         barMktPerfInst.data.labels = names;
