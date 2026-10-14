@@ -490,7 +490,7 @@
           </div>
           <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
             <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Denda Terkumpul</span></div>
-            <div class="card-val" id="kpiTotalDenda" style="color: #dc2626;">Rp 0</div>
+            <div class="card-val" id="kpiTotalDenda">Rp 0</div>
             <div class="card-avg">Potongan Gaji / Insentif</div>
           </div>
         </div>
@@ -737,38 +737,19 @@
       localStorage.setItem("STAFF_DIVISI_MAP", JSON.stringify(mapData));
     }
 
-    // --- HELPER SANITASI PARSING ANKGA DAN TANGGAL ---
-    function parseNum(val) {
-      if (val === null || val === undefined || val === '') return 0;
-      if (typeof val === 'number') return isNaN(val) ? 0 : val;
-      let str = String(val).replace(/[^0-9.-]/g, '');
-      let n = parseFloat(str);
-      return isNaN(n) ? 0 : n;
-    }
-
+    // FORMAT RUPIAH ASLI LAMA (DIKEMBALIKAN PERTAMA KALI)
     function formatRupiah(val) {
-      let n = parseNum(val);
-      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n);
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
     }
 
-    function formatDateClean(dStr) {
-      if (!dStr) return '-';
-      let s = String(dStr).trim();
-      s = s.replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
-      if (s.includes('GMT') || s.length > 25) {
-        let parts = s.split(' ');
-        if (parts.length >= 4) return `${parts[1]} ${parts[2]} ${parts[3]}`;
-      }
-      return s;
-    }
-
+    // SANITASI KHUSUS POP-UP KEBERSIHAN
     function sanitizeDenda(val, status) {
       if (val === null || val === undefined || val === '') {
         if (status && (String(status).toUpperCase().includes('DENDA') || String(status).includes('15000'))) return 15000;
         return 0;
       }
-      let num = parseNum(val);
-      if (num < 0 || num > 1000000) {
+      let num = Number(val);
+      if (isNaN(num) || num < 0 || num > 1000000) {
         if (String(val).includes('15000') || (status && String(status).includes('15000'))) return 15000;
         return 0;
       }
@@ -1233,7 +1214,7 @@
       document.body.removeChild(script);
     }
 
-    // --- MAIN RENDER UI DASHBOARD ---
+    // --- MAIN RENDER UI DASHBOARD (SETIAP MODUL DIISOLASI DENGAN TRY-CATCH) ---
     function renderUI(data) {
       if (!data) return;
       latestData = data;
@@ -1243,45 +1224,40 @@
         if (data.sales) {
           const s = data.sales;
           if (s.kpi) {
-            document.getElementById("pPencapaianToko").innerText = formatRupiah(s.kpi.pencapaianToko || s.kpi.pencapaian || 0);
-            document.getElementById("pPencapaianTokoAvg").innerText = `Avg: ${formatRupiah(s.kpi.avgHarian || 0)} / hari`;
-            document.getElementById("pTotalInv").innerText = s.kpi.totalInvoice || s.kpi.invoice || 0;
-            document.getElementById("pTotalInvAvg").innerText = `Avg: ${s.kpi.avgInvoice || 0} inv / hari`;
-            document.getElementById("pMktVal").innerText = formatRupiah(s.kpi.pencapaianMarketing || s.kpi.mkt || 0);
-            document.getElementById("pMktValAvg").innerText = `Avg: ${formatRupiah(s.kpi.avgMkt || 0)} / hari`;
-            document.getElementById("pAdmVal").innerText = formatRupiah(s.kpi.pencapaianAdmin || s.kpi.adm || 0);
-            document.getElementById("pAdmValAvg").innerText = `Avg: ${formatRupiah(s.kpi.avgAdm || 0)} / hari`;
-            document.getElementById("pTekVal").innerText = formatRupiah(s.kpi.pencapaianTeknisi || s.kpi.tek || 0);
-            document.getElementById("pTekValAvg").innerText = `Avg: ${formatRupiah(s.kpi.avgTek || 0)} / hari`;
+            document.getElementById("pPencapaianToko").innerText = formatRupiah(s.kpi.pencapaianToko);
+            document.getElementById("pTotalInv").innerText = s.kpi.totalInvoice || 0;
+            document.getElementById("pMktVal").innerText = formatRupiah(s.kpi.pencapaianMarketing);
+            document.getElementById("pAdmVal").innerText = formatRupiah(s.kpi.pencapaianAdmin);
+            document.getElementById("pTekVal").innerText = formatRupiah(s.kpi.pencapaianTeknisi);
           }
 
           if (s.dailyResults && barDailyInst) {
-            barDailyInst.data.labels = s.dailyResults.map(d => d.tgl || d.tanggal || d.day);
-            barDailyInst.data.datasets[0].data = s.dailyResults.map(d => parseNum(d.omzet || d.total || d.nilai));
+            barDailyInst.data.labels = s.dailyResults.map(d => d.tgl);
+            barDailyInst.data.datasets[0].data = s.dailyResults.map(d => d.omzet);
             barDailyInst.update();
           }
 
           if (s.weeklyResults && barWeeklyInst) {
-            barWeeklyInst.data.labels = s.weeklyResults.map(w => w.minggum || w.minggu || w.label || '-');
-            barWeeklyInst.data.datasets[0].data = s.weeklyResults.map(w => parseNum(w.omzet || w.total || w.nilai));
+            barWeeklyInst.data.labels = s.weeklyResults.map(w => w.minggum || w.minggu || '-');
+            barWeeklyInst.data.datasets[0].data = s.weeklyResults.map(w => w.omzet);
             barWeeklyInst.update();
           }
 
           if (s.monthlyPerformance && s.monthlyPerformance.length > 0) {
             document.getElementById("tblMonthlyPerf").innerHTML = s.monthlyPerformance.map(m => `
-              <tr><td><b>${m.bulan || m.month}</b></td><td><b>${formatRupiah(m.omzet || m.total)}</b></td></tr>
+              <tr><td><b>${m.bulan}</b></td><td><b>${formatRupiah(m.omzet)}</b></td></tr>
             `).join('');
           }
 
           if (s.byBrand && pieBrandInst) {
-            pieBrandInst.data.labels = s.byBrand.map(b => b.brand || b.nama);
-            pieBrandInst.data.datasets[0].data = s.byBrand.map(b => parseNum(b.unit || b.qty || b.omzet));
+            pieBrandInst.data.labels = s.byBrand.map(b => b.brand);
+            pieBrandInst.data.datasets[0].data = s.byBrand.map(b => b.unit);
             pieBrandInst.update();
           }
 
           if (s.byDept && barDeptInst) {
-            barDeptInst.data.labels = s.byDept.map(d => d.dept || d.department || d.nama);
-            barDeptInst.data.datasets[0].data = s.byDept.map(d => parseNum(d.nilai || d.omzet || d.total));
+            barDeptInst.data.labels = s.byDept.map(d => d.dept);
+            barDeptInst.data.datasets[0].data = s.byDept.map(d => d.nilai);
             barDeptInst.update();
           }
 
@@ -1294,113 +1270,89 @@
             renderMktPerformance(s.mktPerformance);
           }
         }
-      } catch (e) { console.error("Error sales render:", e); }
+      } catch (errSales) { console.error("Error Sales:", errSales); }
 
       // 2. KEUANGAN KASIR (MTK)
       try {
         if (data.keuangan) {
           const k = data.keuangan;
-          document.getElementById("kTotalPenjualan").innerText = formatRupiah(k.totalPenjualan || k.total);
-          document.getElementById("kTotalTransfer").innerText = formatRupiah(k.totalTransfer || k.transfer);
-          document.getElementById("kTotalQrisEdc").innerText = formatRupiah(k.totalQrisEdc || k.qris);
-          document.getElementById("kTotalPembiayaan").innerText = formatRupiah(k.totalPembiayaan || k.pembiayaan);
-          document.getElementById("kTotalTnt").innerText = formatRupiah(k.totalTnt || k.tnt);
-          document.getElementById("kTotalDpPp").innerText = formatRupiah(k.totalDpPp || k.dppp);
-          document.getElementById("kTotalTunai").innerText = formatRupiah(k.totalTunai || k.tunai);
-          document.getElementById("kTotalPiutang").innerText = formatRupiah(k.totalPiutang || k.piutang);
+          document.getElementById("kTotalPenjualan").innerText = formatRupiah(k.totalPenjualan);
+          document.getElementById("kTotalTransfer").innerText = formatRupiah(k.totalTransfer);
+          document.getElementById("kTotalQrisEdc").innerText = formatRupiah(k.totalQrisEdc);
+          document.getElementById("kTotalPembiayaan").innerText = formatRupiah(k.totalPembiayaan);
+          document.getElementById("kTotalTnt").innerText = formatRupiah(k.totalTnt || 0);
+          document.getElementById("kTotalDpPp").innerText = formatRupiah(k.totalDpPp);
+          document.getElementById("kTotalTunai").innerText = formatRupiah(k.totalTunai);
+          document.getElementById("kTotalPiutang").innerText = formatRupiah(k.totalPiutang);
 
           if (k.breakdownHarian && k.breakdownHarian.length > 0) {
-            document.getElementById("tblKeuanganHarian").innerHTML = k.breakdownHarian.map(row => {
-              let tglClean = formatDateClean(row.tanggal || row.tgl);
-              let pVal = parseNum(row.piutang);
-              return `
-                <tr>
-                  <td><b>${tglClean}</b></td>
-                  <td><b>${formatRupiah(row.totalPenjualan || row.total)}</b></td>
-                  <td>${formatRupiah(row.transfer)}</td>
-                  <td>${formatRupiah(row.qris || row.qrisEdc)}</td>
-                  <td>${formatRupiah(row.pembiayaan)}</td>
-                  <td><b>${formatRupiah(row.tnt)}</b></td>
-                  <td>${formatRupiah(row.dppp || row.dp)}</td>
-                  <td>${formatRupiah(row.tunai)}</td>
-                  <td style="color:${pVal > 0 ? '#dc2626' : 'inherit'}; font-weight:${pVal > 0 ? 'bold' : 'normal'};">${formatRupiah(pVal)}</td>
-                </tr>
-              `;
-            }).join('');
+            document.getElementById("tblKeuanganHarian").innerHTML = k.breakdownHarian.map(row => `
+              <tr>
+                <td><b>${row.tanggal}</b></td>
+                <td><b>${formatRupiah(row.total)}</b></td>
+                <td>${formatRupiah(row.transfer)}</td>
+                <td>${formatRupiah(row.qris)}</td>
+                <td>${formatRupiah(row.pembiayaan)}</td>
+                <td><b>${formatRupiah(row.tnt || 0)}</b></td>
+                <td>${formatRupiah(row.dppp)}</td>
+                <td>${formatRupiah(row.tunai)}</td>
+                <td style="color:${row.piutang > 0 ? '#dc2626' : 'inherit'}; font-weight:${row.piutang > 0 ? 'bold' : 'normal'};">${formatRupiah(row.piutang)}</td>
+              </tr>
+            `).join('');
           }
         }
-      } catch (e) { console.error("Error keuangan MTK render:", e); }
+      } catch (errKeu) { console.error("Error Keuangan MTK:", errKeu); }
 
       // 3. KEUANGAN SERVICE
       try {
         if (data.keuanganService) {
           const ks = data.keuanganService;
-          document.getElementById("ksTotalPenjualan").innerText = formatRupiah(ks.totalPenjualan || ks.total);
-          document.getElementById("ksTotalTransfer").innerText = formatRupiah(ks.totalTransfer || ks.transfer);
-          document.getElementById("ksTotalQrisEdc").innerText = formatRupiah(ks.totalQrisEdc || ks.qris);
-          document.getElementById("ksTotalPembiayaan").innerText = formatRupiah(ks.totalPembiayaan || ks.pembiayaan);
-          document.getElementById("ksTotalDpPp").innerText = formatRupiah(ks.totalDpPp || ks.dppp);
-          document.getElementById("ksTotalTunai").innerText = formatRupiah(ks.totalTunai || ks.tunai);
-          document.getElementById("ksTotalPiutang").innerText = formatRupiah(ks.totalPiutang || ks.piutang);
+          document.getElementById("ksTotalPenjualan").innerText = formatRupiah(ks.totalPenjualan);
+          document.getElementById("ksTotalTransfer").innerText = formatRupiah(ks.totalTransfer);
+          document.getElementById("ksTotalQrisEdc").innerText = formatRupiah(ks.totalQrisEdc);
+          document.getElementById("ksTotalPembiayaan").innerText = formatRupiah(ks.totalPembiayaan);
+          document.getElementById("ksTotalDpPp").innerText = formatRupiah(ks.totalDpPp);
+          document.getElementById("ksTotalTunai").innerText = formatRupiah(ks.totalTunai);
+          document.getElementById("ksTotalPiutang").innerText = formatRupiah(ks.totalPiutang);
 
           if (ks.breakdownHarian && ks.breakdownHarian.length > 0) {
-            document.getElementById("tblKeuanganServiceHarian").innerHTML = ks.breakdownHarian.map(row => {
-              let tglClean = formatDateClean(row.tanggal || row.tgl);
-              let pVal = parseNum(row.piutang);
-              return `
-                <tr>
-                  <td><b>${tglClean}</b></td>
-                  <td><b>${formatRupiah(row.totalPenjualan || row.total)}</b></td>
-                  <td>${formatRupiah(row.transfer)}</td>
-                  <td>${formatRupiah(row.qris || row.qrisEdc)}</td>
-                  <td>${formatRupiah(row.pembiayaan)}</td>
-                  <td>${formatRupiah(row.dppp || row.dp)}</td>
-                  <td>${formatRupiah(row.tunai)}</td>
-                  <td style="color:${pVal > 0 ? '#dc2626' : 'inherit'}; font-weight:${pVal > 0 ? 'bold' : 'normal'};">${formatRupiah(pVal)}</td>
-                </tr>
-              `;
-            }).join('');
+            document.getElementById("tblKeuanganServiceHarian").innerHTML = ks.breakdownHarian.map(row => `
+              <tr>
+                <td><b>${row.tanggal}</b></td>
+                <td><b>${formatRupiah(row.total)}</b></td>
+                <td>${formatRupiah(row.transfer)}</td>
+                <td>${formatRupiah(row.qris)}</td>
+                <td>${formatRupiah(row.pembiayaan)}</td>
+                <td>${formatRupiah(row.dppp)}</td>
+                <td>${formatRupiah(row.tunai)}</td>
+                <td style="color:${row.piutang > 0 ? '#dc2626' : 'inherit'}; font-weight:${row.piutang > 0 ? 'bold' : 'normal'};">${formatRupiah(row.piutang)}</td>
+              </tr>
+            `).join('');
           }
         }
-      } catch (e) { console.error("Error keuangan service render:", e); }
+      } catch (errKs) { console.error("Error Keuangan Service:", errKs); }
 
       // 4. SIPLAH TERTUNDA
       try {
         if (data.siplah) {
           const sp = data.siplah;
-          document.getElementById("sipTotalNilai").innerText = formatRupiah(sp.totalKeseluruhan || sp.totalNilai || sp.total);
-          document.getElementById("sipTotalMsk").innerText = formatRupiah(sp.totalHargaMsk || sp.totalMsk);
-          document.getElementById("sipTotalTrx").innerText = (sp.totalTransaksi || sp.totalBerkas || (sp.listDetail ? sp.listDetail.length : 0)) + " Berkas";
+          document.getElementById("sipTotalNilai").innerText = formatRupiah(sp.totalKeseluruhan);
+          document.getElementById("sipTotalMsk").innerText = formatRupiah(sp.totalHargaMsk);
+          document.getElementById("sipTotalTrx").innerText = sp.totalTransaksi + " Berkas";
 
-          if (sp.byMarketing && sp.byMarketing.length > 0) {
+          if (sp.byMarketing) {
             document.getElementById("tblSiplahMkt").innerHTML = sp.byMarketing.map(m => `
-              <tr>
-                <td><b>${m.nama || m.marketing}</b></td>
-                <td>${m.count || m.jmlSekolah || 0} Sekolah</td>
-                <td><b>${formatRupiah(m.total || m.totalKeseluruhan)}</b></td>
-                <td>${formatRupiah(m.msk || m.hargaMsk)}</td>
-              </tr>
+              <tr><td><b>${m.nama}</b></td><td>${m.count} Sekolah</td><td><b>${formatRupiah(m.total)}</b></td><td>${formatRupiah(m.msk)}</td></tr>
             `).join('');
           }
 
-          if (sp.listDetail && sp.listDetail.length > 0) {
-            document.getElementById("tblSiplahDetail").innerHTML = sp.listDetail.map(d => {
-              let soMskClean = formatDateClean(d.soMsk || d.tgl);
-              return `
-                <tr>
-                  <td><b>${d.noDok || d.no || '-'}</b></td>
-                  <td><b>${soMskClean}</b></td>
-                  <td>${formatRupiah(d.hargaMsk || d.harga)}</td>
-                  <td><b>${d.user || d.namaSekolah || '-'}</b></td>
-                  <td><span class="badge-status badge-yellow">${d.catatan || d.status || '-'}</span></td>
-                  <td>${formatRupiah(d.posUang || d.posisiUang || d.nominal)}</td>
-                  <td><b>${d.marketing || '-'}</b></td>
-                </tr>
-              `;
-            }).join('');
+          if (sp.listDetail) {
+            document.getElementById("tblSiplahDetail").innerHTML = sp.listDetail.map(d => `
+              <tr><td><b>${d.noDok}</b></td><td><b>${d.soMsk}</b></td><td>${formatRupiah(d.hargaMsk)}</td><td><b>${d.user}</b></td><td><span class="badge-status badge-yellow">${d.catatan}</span></td><td>${d.posUang}</td><td><b>${d.marketing}</b></td></tr>
+            `).join('');
           }
         }
-      } catch (e) { console.error("Error siplah render:", e); }
+      } catch (errSip) { console.error("Error SIPLah:", errSip); }
 
       // 5. RIWAYAT TUGAS KEBERSIHAN
       try {
@@ -1476,7 +1428,8 @@
               tblKeb.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada riwayat laporan kebersihan untuk akun ini.</td></tr>`;
             } else {
               tblKeb.innerHTML = filteredRiwayat.map(r => {
-                let displayTgl = formatDateClean(r.tgl);
+                let displayTgl = String(r.tgl).replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
+
                 let isUrlBefore = r.urlBefore && String(r.urlBefore).trim().toLowerCase().startsWith('http');
                 let isUrlAfter = r.urlAfter && String(r.urlAfter).trim().toLowerCase().startsWith('http');
 
@@ -1511,21 +1464,21 @@
             }
           }
         }
-      } catch (e) { console.error("Error riwayat kebersihan render:", e); }
+      } catch (errKeb) { console.error("Error Riwayat Kebersihan:", errKeb); }
 
       // 6. RIWAYAT AUDIT KEBERSIHAN TOKO
       try {
         if (data.kebersihan && data.kebersihan.audit) {
           renderAuditHistoryTable(data.kebersihan.audit);
         }
-      } catch (e) { console.error("Error audit history render:", e); }
+      } catch (errAud) { console.error("Error Audit Kebersihan:", errAud); }
 
       // 7. KPI KEBERSIHAN & LEADERBOARD
       try {
         if (data.kpiKebersihan) {
           renderKpiKebersihan(data.kpiKebersihan);
         }
-      } catch (e) { console.error("Error KPI kebersihan render:", e); }
+      } catch (errKpi) { console.error("Error KPI Kebersihan:", errKpi); }
     }
 
     function renderAuditHistoryTable(auditList) {
@@ -1551,7 +1504,7 @@
 
         return `
           <tr>
-            <td><b>${formatDateClean(a.waktu || a.tgl)}</b></td>
+            <td><b>${a.waktu || '-'}</b></td>
             <td><b>${a.auditor || '-'}</b></td>
             <td><b style="color:#dc2626;">${a.stafTarget || '-'}</b></td>
             <td><b>${areaClean}</b></td>
@@ -1580,7 +1533,8 @@
       }
 
       return list.map(r => {
-        let displayTgl = formatDateClean(r.tgl);
+        let displayTgl = String(r.tgl || '-').replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
+
         let urlB = r.urlBefore;
         let urlA = r.urlAfter;
 
@@ -1655,7 +1609,7 @@
 
         return `
           <tr>
-            <td><b>${formatDateClean(a.waktu || a.tgl)}</b></td>
+            <td><b>${a.waktu || '-'}</b></td>
             <td><b>${a.auditor || '-'}</b></td>
             <td><b>${areaClean}</b></td>
             <td><span style="padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; background:${badgeBg}; color:${badgeColor};">${a.status}</span></td>
@@ -1832,13 +1786,13 @@
     function renderBestSellerTable(sortBy) {
       if (!rawBestSellerData) return;
       let sortedList = [...rawBestSellerData];
-      if (sortBy === 'qty') sortedList.sort((a, b) => parseNum(b.qty) - parseNum(a.qty));
-      else sortedList.sort((a, b) => parseNum(b.total) - parseNum(a.total));
+      if (sortBy === 'qty') sortedList.sort((a, b) => b.qty - a.qty);
+      else sortedList.sort((a, b) => b.total - a.total);
 
       const container = document.getElementById("tblBestSeller");
       if (container) {
         container.innerHTML = sortedList.slice(0, 10).map((b, i) => `
-          <tr><td><b>#${i + 1}</b></td><td><b>${b.item || b.nama}</b></td><td>${b.qty || 0} Pcs</td><td><b>${formatRupiah(b.total || b.omzet)}</b></td></tr>
+          <tr><td><b>#${i + 1}</b></td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td><b>${formatRupiah(b.total)}</b></td></tr>
         `).join('');
       }
     }
@@ -1850,34 +1804,27 @@
       var names = [], achData = [], targetData = [], runRateData = [];
 
       list.forEach(item => {
-        let nameStr = item.nama || item.mkt || '-';
-        let achVal = parseNum(item.ach || item.pencapaian);
-        let targetVal = parseNum(item.targetBln || item.target);
-        let runRateVal = parseNum(item.runRate || item.proyeksi);
-        let avgVal = parseNum(item.avgHari || item.avg);
-        let sisaVal = parseNum(item.targetHari || item.targetSisa);
+        names.push(item.nama);
+        achData.push(item.ach);
+        targetData.push(item.targetBln);
+        runRateData.push(item.runRate);
 
-        names.push(nameStr);
-        achData.push(achVal);
-        targetData.push(targetVal);
-        runRateData.push(runRateVal);
-
-        var rawPct = parseFloat(item.pctRunRate || item.pctProyeksi || 0);
+        var rawPct = parseFloat(item.pctRunRate || 0);
         var pctVal = rawPct <= 10 ? rawPct * 100 : rawPct;
         var badgeClass = pctVal < 90 ? "badge-red" : (pctVal < 100 ? "badge-yellow" : "badge-green");
 
         var pctAchVal = parseFloat(item.pctAch || 0);
-        var displayPctAch = pctAchVal <= 1 ? (pctAchVal * 100).toFixed(1) : pctAchVal.toFixed(1);
+        var displayPct = pctAchVal <= 1 ? (pctAchVal * 100).toFixed(1) : pctAchVal.toFixed(1);
 
         html += `
           <tr>
-            <td><b>${nameStr}</b></td>
-            <td>${formatRupiah(achVal)}</td>
-            <td>${formatRupiah(targetVal)}</td>
-            <td style="color:${sisaVal < 0 ? '#dc2626' : '#16a34a'}; font-weight:bold;">${formatRupiah(sisaVal)}</td>
-            <td><b>${displayPctAch}%</b></td>
-            <td>${formatRupiah(avgVal)}</td>
-            <td><b>${formatRupiah(runRateVal)}</b></td>
+            <td><b>${item.nama}</b></td>
+            <td>${formatRupiah(item.ach)}</td>
+            <td>${formatRupiah(item.targetBln)}</td>
+            <td style="color:${item.targetHari < 0 ? '#dc2626' : '#16a34a'}; font-weight:bold;">${formatRupiah(item.targetHari)}</td>
+            <td><b>${displayPct}%</b></td>
+            <td>${formatRupiah(item.avgHari)}</td>
+            <td><b>${formatRupiah(item.runRate)}</b></td>
             <td><span class="badge-status ${badgeClass}">${pctVal.toFixed(1)}%</span></td>
           </tr>
         `;
