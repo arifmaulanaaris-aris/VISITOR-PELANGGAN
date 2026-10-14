@@ -10,8 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 
-  <!-- Chart.js CDN -->
+  <!-- Chart.js & Datalabels Plugin CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
   <style>
     * { 
@@ -119,7 +120,7 @@
     .panel-header { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
     
     .chart-scroll-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .chart-wrapper { position: relative; width: 100%; height: 220px; min-width: 300px; }
+    .chart-wrapper { position: relative; width: 100%; height: 260px; min-width: 700px; }
 
     /* TABEL CLEAN UI */
     .table-container { height: 300px; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; font-size: 12px; }
@@ -555,7 +556,7 @@
           </div>
           <div class="box-panel">
             <div class="panel-header"><span>Performa Penjualan Mingguan</span></div>
-            <div class="chart-scroll-wrapper"><div class="chart-wrapper"><canvas id="barWeeklyChart"></canvas></div></div>
+            <div class="chart-scroll-wrapper"><div class="chart-wrapper" style="min-width:100%;"><canvas id="barWeeklyChart"></canvas></div></div>
           </div>
           <div class="box-panel">
             <div class="panel-header"><span>Performa Penjualan Bulanan</span></div>
@@ -568,11 +569,11 @@
           </div>
           <div class="box-panel">
             <div class="panel-header"><span>Pencapaian By Brand</span></div>
-            <div class="chart-wrapper"><canvas id="pieBrandChart"></canvas></div>
+            <div class="chart-wrapper" style="min-width:100%;"><canvas id="pieBrandChart"></canvas></div>
           </div>
           <div class="box-panel">
             <div class="panel-header"><span>Pencapaian By Department</span></div>
-            <div class="chart-wrapper"><canvas id="barDeptChart"></canvas></div>
+            <div class="chart-wrapper" style="min-width:100%;"><canvas id="barDeptChart"></canvas></div>
           </div>
           <div class="box-panel full-width">
             <div class="panel-header">
@@ -702,7 +703,7 @@
     // URL WEB APP APPS SCRIPT
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzC_FaMmWcqzY4SZSFPA3UL2xwIaqpjRU-RYGKpWmkLyC559qKL2Dnx4dSqSXuKVevgqw/exec";
     
-    const PALETTE_RED = '#dc2626';
+    const PALETTE_RED = '#8b0000';
     const PALETTE_PIE = ['#dc2626', '#475569', '#cbd5e1', '#0f172a', '#94a3b8', '#64748b', '#e2e8f0'];
 
     const MAPPING_AREA_DIVISI = {
@@ -727,7 +728,6 @@
       "indodana": "Promotor Pembiayaan"
     };
 
-    // --- FUNGSI PEMBANTU FORMAT WAKTU REALTIME SULAWESI / WITA (UTC+8) ---
     function formatDateToWITA(dateStr) {
       if (!dateStr || dateStr === '-') return '-';
       try {
@@ -841,17 +841,15 @@
 
       document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
 
-      // --- 1. MEMBATASI & KUNCI DROPDOWN DIVISI AREA UNTUK STAF ---
       const selDivisi = document.getElementById("selDivisiArea");
       const isAdmin = String(currentUser.role).toUpperCase() === "ADMIN";
       
       if (selDivisi) {
-        selDivisi.disabled = !isAdmin; // Kunci dropdown untuk Non-Admin/Staf
+        selDivisi.disabled = !isAdmin;
         selDivisi.style.opacity = isAdmin ? "1" : "0.7";
         selDivisi.style.cursor = isAdmin ? "pointer" : "not-allowed";
       }
 
-      // Setel otomatis divisi area staf sesuai pemetaan
       const staffMap = getStaffMapping();
       const userStaffDivisi = staffMap[currentUser.username.toLowerCase()];
       if (userStaffDivisi) {
@@ -859,7 +857,6 @@
         if (selDivisi) selDivisi.value = userStaffDivisi;
       }
 
-      // --- 2. HAK AKSES TAMPILAN MENU ---
       const akses = currentUser.akses || {};
 
       const hasPenjualan       = !!akses.penjualan;
@@ -910,7 +907,6 @@
       renderAreaCards(currentDivisiCode);
       initAuditFormOptions();
 
-      // Menentukan Tab Default Pertama yang Dibuka sesuai Akses
       if (hasKebersihan) {
         switchTab('kebersihan', document.getElementById("nav-kebersihan"));
       } else if (hasAuditKebersihan) {
@@ -1250,35 +1246,57 @@
     }
 
     function formatRupiah(val) {
-      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
+      if (!val && val !== 0) return "Rp 0";
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
     }
 
     function renderUI(data) {
       if (!data) return;
       latestData = data;
 
-      // 1. DATA PENJUALAN
+      // 1. DATA PENJUALAN & KPI
       try {
         if (data.sales) {
           const s = data.sales;
           if (s.kpi) {
+            // RENDERING NILAI UTAMA KPI
             document.getElementById("pPencapaianToko").innerText = formatRupiah(s.kpi.pencapaianToko);
             document.getElementById("pTotalInv").innerText = s.kpi.totalInvoice || 0;
             document.getElementById("pMktVal").innerText = formatRupiah(s.kpi.pencapaianMarketing);
             document.getElementById("pAdmVal").innerText = formatRupiah(s.kpi.pencapaianAdmin);
             document.getElementById("pTekVal").innerText = formatRupiah(s.kpi.pencapaianTeknisi);
+
+            // RENDERING RATA-RATA HARIAN (AVG)
+            let avgToko = s.kpi.pencapaianTokoAvg || s.kpi.avgToko || s.kpi.pencapaianToko_avg || 0;
+            let avgInv = s.kpi.totalInvoiceAvg || s.kpi.avgInvoice || s.kpi.totalInvoice_avg || 0;
+            let avgMkt = s.kpi.pencapaianMarketingAvg || s.kpi.avgMarketing || s.kpi.pencapaianMarketing_avg || 0;
+            let avgAdm = s.kpi.pencapaianAdminAvg || s.kpi.avgAdmin || s.kpi.pencapaianAdmin_avg || 0;
+            let avgTek = s.kpi.pencapaianTeknisiAvg || s.kpi.avgTeknisi || s.kpi.pencapaianTeknisi_avg || 0;
+
+            document.getElementById("pPencapaianTokoAvg").innerText = `Avg: ${formatRupiah(avgToko)} / hari`;
+            document.getElementById("pTotalInvAvg").innerText = `Avg: ${avgInv} inv / hari`;
+            document.getElementById("pMktValAvg").innerText = `Avg: ${formatRupiah(avgMkt)} / hari`;
+            document.getElementById("pAdmValAvg").innerText = `Avg: ${formatRupiah(avgAdm)} / hari`;
+            document.getElementById("pTekValAvg").innerText = `Avg: ${formatRupiah(avgTek)} / hari`;
           }
 
+          // GRAFIK DAILY RESULTS (1 - 31)
           if (s.dailyResults && barDailyInst) {
-            let sortedDaily = [...s.dailyResults].sort((a, b) => {
-              let pA = String(a.tgl).split('/'), pB = String(b.tgl).split('/');
-              if(pA.length === 3 && pB.length === 3) {
-                return new Date(pA[2], pA[1]-1, pA[0]) - new Date(pB[2], pB[1]-1, pB[0]);
+            let full31Days = Array.from({ length: 31 }, (_, i) => String(i + 1));
+            let dataMap = {};
+
+            s.dailyResults.forEach(d => {
+              let tglKey = String(d.tgl || d.day || d.label || '').replace(/[^0-9]/g, '');
+              let dayNum = parseInt(tglKey, 10);
+              if (dayNum >= 1 && dayNum <= 31) {
+                dataMap[dayNum] = d.omzet || d.total || 0;
               }
-              return 0;
             });
-            barDailyInst.data.labels = sortedDaily.map(d => d.tgl);
-            barDailyInst.data.datasets[0].data = sortedDaily.map(d => d.omzet);
+
+            let datasetOmzet = full31Days.map((_, idx) => dataMap[idx + 1] || 0);
+
+            barDailyInst.data.labels = full31Days;
+            barDailyInst.data.datasets[0].data = datasetOmzet;
             barDailyInst.update();
           }
 
@@ -1469,7 +1487,6 @@
               tblKeb.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada riwayat laporan kebersihan untuk akun ini.</td></tr>`;
             } else {
               tblKeb.innerHTML = filteredRiwayat.map(r => {
-                // FORMAT WAKTU REALTIME WITA (UTC+8)
                 let displayTgl = formatDateToWITA(r.tgl);
 
                 let isUrlBefore = r.urlBefore && String(r.urlBefore).trim().toLowerCase().startsWith('http');
@@ -1870,10 +1887,50 @@
     function initCharts() {
       Chart.defaults.font.family = 'Roboto';
 
+      // INISIALISASI GRAFIK DAILY RESULTS LENGKAP TANGGAL 1 - 31
       barDailyInst = new Chart(document.getElementById('barDailyChart').getContext('2d'), {
         type: 'bar',
-        data: { labels: Array.from({length: 31}, (_, i) => i + 1), datasets: [{ data: [], backgroundColor: PALETTE_RED, borderRadius: 3 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        plugins: [ChartDataLabels],
+        data: {
+          labels: Array.from({length: 31}, (_, i) => String(i + 1)),
+          datasets: [{
+            label: 'Omzet Harian',
+            data: Array(31).fill(0),
+            backgroundColor: '#8b0000',
+            borderRadius: 4,
+            barPercentage: 0.65
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            datalabels: {
+              anchor: 'end',
+              align: 'top',
+              color: '#000000',
+              font: { weight: 'bold', size: 9 },
+              formatter: function(value) {
+                if (!value || value === 0) return '';
+                return (value / 1000000).toFixed(1).replace('.', ',') + 'M';
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return (value / 1000000).toFixed(0) + ' Jt';
+                }
+              }
+            },
+            x: {
+              grid: { display: false }
+            }
+          }
+        }
       });
 
       barWeeklyInst = new Chart(document.getElementById('barWeeklyChart').getContext('2d'), {
