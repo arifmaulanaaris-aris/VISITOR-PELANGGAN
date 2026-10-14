@@ -727,6 +727,27 @@
       "indodana": "Promotor Pembiayaan"
     };
 
+    // --- FUNGSI PEMBANTU FORMAT WAKTU REALTIME SULAWESI / WITA (UTC+8) ---
+    function formatDateToWITA(dateStr) {
+      if (!dateStr || dateStr === '-') return '-';
+      try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+
+        return new Intl.DateTimeFormat('id-ID', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        }).format(d) + ' WITA';
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
     function getStaffMapping() {
       const saved = localStorage.getItem("STAFF_DIVISI_MAP");
       if (saved) { try { return JSON.parse(saved); } catch(e) {} }
@@ -825,7 +846,7 @@
       const isAdmin = String(currentUser.role).toUpperCase() === "ADMIN";
       
       if (selDivisi) {
-        selDivisi.disabled = !isAdmin; // Dropdown mati/dikunci jika bukan ADMIN
+        selDivisi.disabled = !isAdmin; // Kunci dropdown untuk Non-Admin/Staf
         selDivisi.style.opacity = isAdmin ? "1" : "0.7";
         selDivisi.style.cursor = isAdmin ? "pointer" : "not-allowed";
       }
@@ -889,7 +910,7 @@
       renderAreaCards(currentDivisiCode);
       initAuditFormOptions();
 
-      // Menentukan Tab Default Pertama yang Dibuka sesuai Akses Sheet
+      // Menentukan Tab Default Pertama yang Dibuka sesuai Akses
       if (hasKebersihan) {
         switchTab('kebersihan', document.getElementById("nav-kebersihan"));
       } else if (hasAuditKebersihan) {
@@ -1400,15 +1421,11 @@
               
               let isToday = false;
               if (r.tgl) {
-                let datePart = String(r.tgl).split(' ')[0];
-                let parts = datePart.split('/');
-                if (parts.length === 3) {
-                  let day = parseInt(parts[0], 10);
-                  let month = parseInt(parts[1], 10) - 1;
-                  let year = parseInt(parts[2], 10);
-                  isToday = (day === todayDate.getDate() && 
-                             month === todayDate.getMonth() && 
-                             year === todayDate.getFullYear());
+                let d = new Date(r.tgl);
+                if (!isNaN(d.getTime())) {
+                  isToday = (d.getDate() === todayDate.getDate() && 
+                             d.getMonth() === todayDate.getMonth() && 
+                             d.getFullYear() === todayDate.getFullYear());
                 }
               }
               return isUser && isAreaMatch && isToday;
@@ -1452,7 +1469,8 @@
               tblKeb.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada riwayat laporan kebersihan untuk akun ini.</td></tr>`;
             } else {
               tblKeb.innerHTML = filteredRiwayat.map(r => {
-                let displayTgl = String(r.tgl).replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
+                // FORMAT WAKTU REALTIME WITA (UTC+8)
+                let displayTgl = formatDateToWITA(r.tgl);
 
                 let isUrlBefore = r.urlBefore && String(r.urlBefore).trim().toLowerCase().startsWith('http');
                 let isUrlAfter = r.urlAfter && String(r.urlAfter).trim().toLowerCase().startsWith('http');
@@ -1528,7 +1546,7 @@
 
         return `
           <tr>
-            <td><b>${a.waktu || '-'}</b></td>
+            <td><b>${formatDateToWITA(a.waktu)}</b></td>
             <td><b>${a.auditor || '-'}</b></td>
             <td><b style="color:#dc2626;">${a.stafTarget || '-'}</b></td>
             <td><b>${areaClean}</b></td>
@@ -1556,7 +1574,7 @@
       }
 
       return list.map(r => {
-        let displayTgl = String(r.tgl || '-').replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
+        let displayTgl = formatDateToWITA(r.tgl);
 
         let urlB = r.urlBefore;
         let urlA = r.urlAfter;
@@ -1631,7 +1649,7 @@
 
         return `
           <tr>
-            <td><b>${a.waktu || '-'}</b></td>
+            <td><b>${formatDateToWITA(a.waktu)}</b></td>
             <td><b>${a.auditor || '-'}</b></td>
             <td><b>${areaClean}</b></td>
             <td><span style="padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; background:${badgeBg}; color:${badgeColor};">${a.status}</span></td>
