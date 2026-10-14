@@ -169,6 +169,14 @@
     .badge-yellow { background: #fef9c3; color: #a16207; }
     .badge-red { background: #fee2e2; color: #b91c1c; }
 
+    /* STYLE DROPDOWN DISABLED */
+    select:disabled {
+      background-color: #f1f5f9 !important;
+      color: #94a3b8 !important;
+      border-color: #cbd5e1 !important;
+      cursor: not-allowed !important;
+    }
+
     @media (max-width: 768px) {
       header { padding: 10px 14px; }
       .container { flex-direction: column; }
@@ -812,6 +820,25 @@
 
       document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
 
+      // --- 1. MEMBATASI & KUNCI DROPDOWN DIVISI AREA UNTUK STAF ---
+      const selDivisi = document.getElementById("selDivisiArea");
+      const isAdmin = String(currentUser.role).toUpperCase() === "ADMIN";
+      
+      if (selDivisi) {
+        selDivisi.disabled = !isAdmin; // Dropdown mati/dikunci jika bukan ADMIN
+        selDivisi.style.opacity = isAdmin ? "1" : "0.7";
+        selDivisi.style.cursor = isAdmin ? "pointer" : "not-allowed";
+      }
+
+      // Setel otomatis divisi area staf sesuai pemetaan
+      const staffMap = getStaffMapping();
+      const userStaffDivisi = staffMap[currentUser.username.toLowerCase()];
+      if (userStaffDivisi) {
+        currentDivisiCode = userStaffDivisi;
+        if (selDivisi) selDivisi.value = userStaffDivisi;
+      }
+
+      // --- 2. HAK AKSES TAMPILAN MENU ---
       const akses = currentUser.akses || {};
 
       const hasPenjualan       = !!akses.penjualan;
@@ -851,7 +878,7 @@
 
       const adminPanel = document.getElementById("adminMappingPanel");
       if (adminPanel) {
-        if (currentUser.role === "ADMIN") {
+        if (isAdmin) {
           adminPanel.style.display = "block";
           renderAdminStaffTable();
         } else {
@@ -862,6 +889,7 @@
       renderAreaCards(currentDivisiCode);
       initAuditFormOptions();
 
+      // Menentukan Tab Default Pertama yang Dibuka sesuai Akses Sheet
       if (hasKebersihan) {
         switchTab('kebersihan', document.getElementById("nav-kebersihan"));
       } else if (hasAuditKebersihan) {
@@ -877,6 +905,19 @@
       }
 
       fetchStats();
+    }
+
+    function changeDivisiArea(divisiCode) {
+      if (currentUser && String(currentUser.role).toUpperCase() === "ADMIN") {
+        currentDivisiCode = divisiCode;
+        renderAreaCards(divisiCode);
+        if (latestData) renderUI(latestData);
+      } else {
+        alert("Akses ditolak: Hanya Admin yang dapat mengubah Divisi Area.");
+        const staffMap = getStaffMapping();
+        const userStaffDivisi = staffMap[currentUser ? currentUser.username.toLowerCase() : ""] || "TEKNISI";
+        document.getElementById("selDivisiArea").value = userStaffDivisi;
+      }
     }
 
     function initAuditFormOptions() {
@@ -1031,14 +1072,6 @@
     function toggleAdminPanelVisibility() {
       const content = document.getElementById("adminPanelContent");
       if (content) content.style.display = content.style.display === "none" ? "block" : "none";
-    }
-
-    function changeDivisiArea(divisiCode) {
-      if (currentUser && String(currentUser.role).toUpperCase() === "ADMIN") {
-        currentDivisiCode = divisiCode;
-        renderAreaCards(divisiCode);
-        if (latestData) renderUI(latestData);
-      }
     }
 
     function renderAreaCards(divisiCode) {
