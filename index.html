@@ -1280,16 +1280,20 @@
             document.getElementById("pTekValAvg").innerText = `Avg: ${formatRupiah(avgTek)} / hari`;
           }
 
-          // GRAFIK DAILY RESULTS (1 - 31)
+          // GRAFIK DAILY RESULTS (1 - 31) - PEMBACAAN DATA PRESISI BANYAK PROPERTI
           if (s.dailyResults && barDailyInst) {
             let full31Days = Array.from({ length: 31 }, (_, i) => String(i + 1));
             let dataMap = {};
 
             s.dailyResults.forEach(d => {
-              let tglKey = String(d.tgl || d.day || d.label || '').replace(/[^0-9]/g, '');
+              let rawTgl = d.tgl || d.tanggal || d.TGL || d.day || d.label || d.date || '';
+              let tglKey = String(rawTgl).replace(/[^0-9]/g, '');
               let dayNum = parseInt(tglKey, 10);
+
+              let rawOmzet = d.omzet || d.total || d.nominal || d.penjualan || d.jumlah || 0;
+              
               if (dayNum >= 1 && dayNum <= 31) {
-                dataMap[dayNum] = d.omzet || d.total || 0;
+                dataMap[dayNum] = Number(rawOmzet) || 0;
               }
             });
 
