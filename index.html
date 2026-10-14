@@ -448,7 +448,7 @@
                   <th>Nama Area</th>
                   <th>Status Audit</th>
                   <th>Foto Temuan</th>
-                  <th>Catatan Audit</th>
+                  <th>Catatan Auditor</th>
                 </tr>
               </thead>
               <tbody id="tblRiwayatAudit">
@@ -735,6 +735,29 @@
 
     function saveStaffMapping(mapData) {
       localStorage.setItem("STAFF_DIVISI_MAP", JSON.stringify(mapData));
+    }
+
+    // --- FUNGSI SANITASI TAMBAHAN ---
+    function sanitizeDenda(val, status) {
+      if (val === null || val === undefined || val === '') {
+        if (status && (String(status).toUpperCase().includes('DENDA') || String(status).includes('15000'))) return 15000;
+        return 0;
+      }
+      let num = Number(val);
+      if (isNaN(num) || num < 0 || num > 1000000) {
+        if (String(val).includes('15000') || (status && String(status).includes('15000'))) return 15000;
+        return 0;
+      }
+      return num;
+    }
+
+    function cleanAreaName(areaStr, defaultName) {
+      if (!areaStr || typeof areaStr !== 'string') return defaultName || 'Area Kebersihan';
+      let trimmed = areaStr.trim();
+      if (trimmed.toLowerCase().startsWith('http://') || trimmed.toLowerCase().startsWith('https://')) {
+        return defaultName || 'Area Kebersihan';
+      }
+      return trimmed;
     }
 
     let currentUser = null;
@@ -1378,9 +1401,11 @@
                 if (imgA) { imgA.src = todayReport.urlAfter; imgA.style.display = 'block'; }
               }
 
+              let dVal = sanitizeDenda(todayReport.denda, todayReport.status);
+
               if (statusDiv) {
                 statusDiv.style.display = "block";
-                if (todayReport.denda > 0) {
+                if (dVal > 0) {
                   statusDiv.className = "area-status-badge status-warning";
                   statusDiv.innerText = `⚠️ ${todayReport.area} Terkirim (Foto Tidak Lengkap - Denda Rp 15.000)`;
                 } else {
@@ -1414,19 +1439,22 @@
                   ? `<a href="${r.urlAfter}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#dcfce7; color:#15803d; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ After</a>` 
                   : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
 
+                let dVal = sanitizeDenda(r.denda, r.status);
+                let areaClean = cleanAreaName(r.area, 'Area Kebersihan');
+
                 return `
                   <tr>
                     <td><b>${displayTgl}</b></td>
                     <td><b>${r.nama}</b></td>
-                    <td><b>${r.area}</b></td>
+                    <td><b>${areaClean}</b></td>
                     <td>${linkBeforeBtn} &nbsp; ${linkAfterBtn}</td>
                     <td>
-                      <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${r.denda > 0 ? '#fee2e2' : '#dcfce7'}; color:${r.denda > 0 ? '#dc2626' : '#15803d'};">
-                        ${r.status}
+                      <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${dVal > 0 ? '#fee2e2' : '#dcfce7'}; color:${dVal > 0 ? '#dc2626' : '#15803d'};">
+                        ${dVal > 0 ? 'TIDAK LENGKAP' : 'LENGKAP'}
                       </span>
                     </td>
-                    <td style="color:${r.denda > 0 ? '#dc2626' : 'inherit'}; font-weight:${r.denda > 0 ? 'bold' : 'normal'};">
-                      Rp ${(r.denda || 0).toLocaleString('id-ID')}
+                    <td style="color:${dVal > 0 ? '#dc2626' : 'inherit'}; font-weight:${dVal > 0 ? 'bold' : 'normal'};">
+                      Rp ${dVal.toLocaleString('id-ID')}
                     </td>
                   </tr>
                 `;
@@ -1470,12 +1498,14 @@
         if (a.status === 'TEGURAN') { badgeBg = '#fef9c3'; badgeColor = '#a16207'; }
         else if (a.status === 'DENDA') { badgeBg = '#fee2e2'; badgeColor = '#dc2626'; }
 
+        let areaClean = cleanAreaName(a.areaTarget, 'Area Audit');
+
         return `
           <tr>
             <td><b>${a.waktu || '-'}</b></td>
             <td><b>${a.auditor || '-'}</b></td>
             <td><b style="color:#dc2626;">${a.stafTarget || '-'}</b></td>
-            <td><b>${a.areaTarget || '-'}</b></td>
+            <td><b>${areaClean}</b></td>
             <td><span style="padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; background:${badgeBg}; color:${badgeColor};">${a.status}</span></td>
             <td>${fotoBtn}</td>
             <td>${a.catatan || '-'}</td>
@@ -1484,59 +1514,81 @@
       }).join('');
     }
 
+    // --- REVISI POP-UP TABEL LAPORAN KEBERSIHAN HARIAN STAF ---
     function getStaffRiwayatHtml(namaStaf) {
       if (!latestData || !latestData.kebersihan || !latestData.kebersihan.riwayat) {
         return '<tr><td colspan="5" style="text-align:center;">Tidak ada data riwayat.</td></tr>';
       }
 
-      let list = latestData.kebersihan.riwayat.filter(r => 
-        String(r.nama).trim().toUpperCase() === String(namaStaf).trim().toUpperCase()
-      );
+      let list = latestData.kebersihan.riwayat.filter(r => {
+        let rNama = String(r.nama || '').trim().toUpperCase();
+        let target = String(namaStaf || '').trim().toUpperCase();
+        return rNama === target || target.includes(rNama) || rNama.includes(target);
+      });
 
       if (list.length === 0) {
         return '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:12px;">Belum ada riwayat laporan harian untuk staf ini.</td></tr>';
       }
 
       return list.map(r => {
-        let displayTgl = String(r.tgl).replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
+        let displayTgl = String(r.tgl || '-').replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
 
-        let isUrlBefore = r.urlBefore && String(r.urlBefore).trim().toLowerCase().startsWith('http');
-        let isUrlAfter = r.urlAfter && String(r.urlAfter).trim().toLowerCase().startsWith('http');
+        let urlB = r.urlBefore;
+        let urlA = r.urlAfter;
+
+        // Jika r.area tergeser berisi link Drive
+        if (String(r.area).toLowerCase().startsWith('http')) {
+          if (!urlB || !String(urlB).toLowerCase().startsWith('http')) {
+            urlB = r.area;
+          }
+        }
+
+        let isUrlBefore = urlB && String(urlB).trim().toLowerCase().startsWith('http');
+        let isUrlAfter = urlA && String(urlA).trim().toLowerCase().startsWith('http');
 
         let linkBeforeBtn = isUrlBefore 
-          ? `<a href="${r.urlBefore}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Before</a>` 
+          ? `<a href="${urlB}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Before</a>` 
           : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
 
         let linkAfterBtn = isUrlAfter 
-          ? `<a href="${r.urlAfter}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#dcfce7; color:#15803d; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ After</a>` 
+          ? `<a href="${urlA}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#dcfce7; color:#15803d; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ After</a>` 
           : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
+
+        let areaClean = cleanAreaName(r.area, 'Area Kebersihan');
+        let dendaVal = sanitizeDenda(r.denda, r.status);
+        let statusText = (r.status && !String(r.status).toLowerCase().startsWith('http')) 
+          ? r.status 
+          : (dendaVal > 0 ? 'TIDAK LENGKAP' : 'LENGKAP');
 
         return `
           <tr>
             <td><b>${displayTgl}</b></td>
-            <td><b>${r.area}</b></td>
+            <td><b>${areaClean}</b></td>
             <td>${linkBeforeBtn} &nbsp; ${linkAfterBtn}</td>
             <td>
-              <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${r.denda > 0 ? '#fee2e2' : '#dcfce7'}; color:${r.denda > 0 ? '#dc2626' : '#15803d'};">
-                ${r.status}
+              <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${dendaVal > 0 ? '#fee2e2' : '#dcfce7'}; color:${dendaVal > 0 ? '#dc2626' : '#15803d'};">
+                ${statusText}
               </span>
             </td>
-            <td style="color:${r.denda > 0 ? '#dc2626' : 'inherit'}; font-weight:${r.denda > 0 ? 'bold' : 'normal'};">
-              Rp ${(r.denda || 0).toLocaleString('id-ID')}
+            <td style="color:${dendaVal > 0 ? '#dc2626' : 'inherit'}; font-weight:${dendaVal > 0 ? 'bold' : 'normal'};">
+              Rp ${dendaVal.toLocaleString('id-ID')}
             </td>
           </tr>
         `;
       }).join('');
     }
 
+    // --- REVISI POP-UP TABEL HASIL AUDIT KEBERSIHAN TOKO ---
     function getStaffAuditHtml(namaStaf) {
       if (!latestData || !latestData.kebersihan || !latestData.kebersihan.audit) {
         return '<tr><td colspan="6" style="text-align:center;">Tidak ada data audit.</td></tr>';
       }
 
-      let list = latestData.kebersihan.audit.filter(a => 
-        String(a.stafTarget).trim().toUpperCase() === String(namaStaf).trim().toUpperCase()
-      );
+      let list = latestData.kebersihan.audit.filter(a => {
+        let aTarget = String(a.stafTarget || '').trim().toUpperCase();
+        let target = String(namaStaf || '').trim().toUpperCase();
+        return aTarget === target || target.includes(aTarget) || aTarget.includes(target);
+      });
 
       if (list.length === 0) {
         return '<tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:12px;">Belum ada catatan audit kebersihan untuk akun ini.</td></tr>';
@@ -1552,11 +1604,13 @@
         if (a.status === 'TEGURAN') { badgeBg = '#fef9c3'; badgeColor = '#a16207'; }
         else if (a.status === 'DENDA') { badgeBg = '#fee2e2'; badgeColor = '#dc2626'; }
 
+        let areaClean = cleanAreaName(a.areaTarget, 'Area Audit');
+
         return `
           <tr>
             <td><b>${a.waktu || '-'}</b></td>
             <td><b>${a.auditor || '-'}</b></td>
-            <td><b>${a.areaTarget || '-'}</b></td>
+            <td><b>${areaClean}</b></td>
             <td><span style="padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; background:${badgeBg}; color:${badgeColor};">${a.status}</span></td>
             <td>${fotoBtn}</td>
             <td>${a.catatan || '-'}</td>
@@ -1571,9 +1625,10 @@
       document.getElementById("kpiCleanRate").innerText = data.summary.overallCleanRate || "0%";
       document.getElementById("kpiTotalLaporan").innerText = data.summary.totalLaporan || 0;
       document.getElementById("kpiAreaTerlewat").innerText = (data.summary.totalAreaTerlewat || 0) + " Area";
-      document.getElementById("kpiTotalDenda").innerText = "Rp " + (data.summary.totalDendaToko || 0).toLocaleString('id-ID');
+      
+      let totDenda = sanitizeDenda(data.summary.totalDendaToko, '');
+      document.getElementById("kpiTotalDenda").innerText = "Rp " + totDenda.toLocaleString('id-ID');
 
-      // 1. REKAP KPI AUDIT KEBERSIHAN TOKO
       if (latestData && latestData.kebersihan && latestData.kebersihan.audit) {
         let auditList = latestData.kebersihan.audit;
         let totalAudit = auditList.length;
@@ -1591,7 +1646,6 @@
         if (elAuditTemuan) elAuditTemuan.innerText = temuanAudit + " Catatan";
       }
 
-      // 2. LEADERBOARD STAF
       const tblKpi = document.getElementById("tblKpiStaffKebersihan");
       if (tblKpi) {
         if (!data.staffStats || data.staffStats.length === 0) {
@@ -1607,10 +1661,13 @@
           let auditCount = staffAuditList.length;
           let auditDendaCount = staffAuditList.filter(a => a.status === 'DENDA').length;
 
+          let staffDendaVal = sanitizeDenda(s.totalDenda, '');
+          let staffNamaClean = cleanAreaName(s.nama, 'STAF');
+
           html += `
             <tr style="cursor: pointer;" onclick="toggleStaffDetail(${idx})" title="Klik untuk membuka rincian laporan & hasil audit">
               <td><b>#${idx + 1}</b></td>
-              <td><b>${s.nama}</b></td>
+              <td><b>${staffNamaClean}</b></td>
               <td>
                 <span style="color:#dc2626; font-weight:bold; text-decoration:underline;">
                   ${s.totalLapor} Laporan ▾
@@ -1623,7 +1680,7 @@
               </td>
               <td style="color:${s.areaTerlewat > 0 ? '#dc2626' : '#15803d'}; font-weight:bold;">${s.areaTerlewat} Area</td>
               <td><span class="badge-status ${parseFloat(s.pctDisiplin) >= 90 ? 'badge-green' : 'badge-red'}">${s.pctDisiplin}</span></td>
-              <td style="color:${s.totalDenda > 0 ? '#dc2626' : 'inherit'}; font-weight:bold;">Rp ${(s.totalDenda || 0).toLocaleString('id-ID')}</td>
+              <td style="color:${staffDendaVal > 0 ? '#dc2626' : 'inherit'}; font-weight:bold;">Rp ${staffDendaVal.toLocaleString('id-ID')}</td>
             </tr>
             
             <tr id="detail-row-${idx}" style="display: none; background: #f8fafc;">
@@ -1632,7 +1689,7 @@
                   
                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom:1px solid #f1f5f9; padding-bottom:8px;">
                     <h5 style="font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase;">
-                      📊 Evaluasi Kebersihan Staf: <span style="color:#dc2626;">${s.nama}</span>
+                      📊 EVALUASI KEBERSIHAN STAF: <span style="color:#dc2626;">${staffNamaClean}</span>
                     </h5>
                     <span style="font-size:11px; color:#64748b; font-weight:bold; cursor:pointer;" onclick="toggleStaffDetail(${idx})">✖ Tutup Rincian</span>
                   </div>
