@@ -92,7 +92,7 @@
     .tab-page.active { display: block; }
 
     /* KPI CARDS */
-    .top-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+    .top-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px; }
     .finance-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
     .card { 
       background: #ffffff; border-radius: 8px; padding: 12px 14px; 
@@ -461,7 +461,8 @@
 
       <!-- TAB 2: Progres Area Kebersihan -->
       <div id="kpi-kebersihan-tab" class="tab-page">
-        <div class="top-cards" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 20px;">
+        <!-- TOP CARDS TERMASUK KPI AUDIT KEBERSIHAN -->
+        <div class="top-cards" style="margin-bottom: 20px;">
           <div class="card main-card">
             <div class="card-top-row"><span class="card-head">Clean Rate Toko</span></div>
             <div class="card-val" id="kpiCleanRate">0%</div>
@@ -472,10 +473,20 @@
             <div class="card-val" id="kpiTotalLaporan">0</div>
             <div class="card-avg">Laporan Area Masuk</div>
           </div>
+          <div class="card" style="border-color: #0284c7; background: #f0f9ff;">
+            <div class="card-top-row"><span class="card-head" style="color: #0284c7;">Total Audit Toko</span></div>
+            <div class="card-val" id="kpiTotalAuditCount" style="color: #0369a1;">0 Inspeksi</div>
+            <div class="card-avg" id="kpiAuditPassRate" style="color: #0284c7; font-weight:bold;">100% Lulus Standard</div>
+          </div>
+          <div class="card" style="border-color: #fef08a; background: #fffbeb;">
+            <div class="card-top-row"><span class="card-head" style="color: #b45309;">Temuan Audit</span></div>
+            <div class="card-val" id="kpiTotalAuditTemuan" style="color: #b45309;">0 Catatan</div>
+            <div class="card-avg">Evaluasi Kebersihan</div>
+          </div>
           <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
-            <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Area Tidak Lengkap</span></div>
+            <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Area Tidak Lengkap</span></div>
             <div class="card-val" id="kpiAreaTerlewat" style="color: #dc2626;">0 Area</div>
-            <div class="card-avg">Akumulasi Bulan Ini</div>
+            <div class="card-avg">Laporan Terlewat</div>
           </div>
           <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
             <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Denda Terkumpul</span></div>
@@ -486,20 +497,21 @@
 
         <div class="box-panel full-width">
           <div class="panel-header"><span>Leaderboard Performa & Kedisiplinan Staf Kebersihan</span></div>
-          <div class="table-container" style="height: auto; max-height: 400px;">
+          <div class="table-container" style="height: auto; max-height: 420px;">
             <table class="custom-table">
               <thead>
                 <tr>
                   <th>Rank</th>
                   <th>Nama Staf</th>
-                  <th>Area Dikirim</th>
+                  <th>Laporan Area</th>
+                  <th>Hasil Audit Toko</th>
                   <th>Area Tidak Lengkap</th>
                   <th>% Kedisiplinan</th>
                   <th>Total Denda (Rp)</th>
                 </tr>
               </thead>
               <tbody id="tblKpiStaffKebersihan">
-                <tr><td colspan="6" style="text-align:center;">Memuat data KPI...</td></tr>
+                <tr><td colspan="7" style="text-align:center;">Memuat data KPI...</td></tr>
               </tbody>
             </table>
           </div>
@@ -508,7 +520,7 @@
 
       <!-- TAB 3: PENJUALAN -->
       <div id="penjualan" class="tab-page">
-        <div class="top-cards">
+        <div class="top-cards" style="grid-template-columns: repeat(5, 1fr);">
           <div class="card main-card">
             <div class="card-top-row"><span class="card-head">Pencapaian Toko</span></div>
             <div class="card-val" id="pPencapaianToko">Rp 0</div>
@@ -773,7 +785,6 @@
 
       document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
       
-      // FALLBACK OTOMATIS: JIKA ADMIN, BUKA SELURUH AKSES
       const hasPenjualan = isAdmin || (currentUser.akses && currentUser.akses.penjualan);
       const hasKeuanganMtk = isAdmin || (currentUser.akses && (currentUser.akses.keuanganMtk || currentUser.akses.keuangan));
       const hasKeuanganService = isAdmin || (currentUser.akses && currentUser.akses.keuanganService);
@@ -782,7 +793,6 @@
       const hasKpiKebersihan = isAdmin || (currentUser.akses && currentUser.akses.kpiKebersihan);
       const hasAuditKebersihan = isAdmin || (currentUser.akses && currentUser.akses.auditKebersihan);
 
-      // KONTROL SIDEBAR
       const elPenjualan = document.getElementById("nav-penjualan");
       if (elPenjualan) elPenjualan.style.display = hasPenjualan ? "flex" : "none";
 
@@ -801,7 +811,6 @@
       const elAudit = document.getElementById("nav-audit-kebersihan");
       if (elAudit) elAudit.style.display = hasAuditKebersihan ? "flex" : "none";
 
-      // DROPDOWN KEUANGAN
       const elKeuanganDrop = document.getElementById("keuanganDropdown");
       if (elKeuanganDrop) elKeuanganDrop.style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
 
@@ -811,7 +820,6 @@
       const elSubService = document.getElementById("btnSubKeuanganService");
       if (elSubService) elSubService.style.display = hasKeuanganService ? "flex" : "none";
 
-      // PEMETAAN STAF
       const staffMap = getStaffMapping();
       let userKey = String(currentUser.username || currentUser.nama || "").toLowerCase();
 
@@ -1462,7 +1470,7 @@
       );
 
       if (list.length === 0) {
-        return '<tr><td colspan="5" style="text-align:center;">Belum ada riwayat laporan untuk staf ini.</td></tr>';
+        return '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:12px;">Belum ada riwayat laporan harian untuk staf ini.</td></tr>';
       }
 
       return list.map(r => {
@@ -1497,6 +1505,42 @@
       }).join('');
     }
 
+    function getStaffAuditHtml(namaStaf) {
+      if (!latestData || !latestData.kebersihan || !latestData.kebersihan.audit) {
+        return '<tr><td colspan="6" style="text-align:center;">Tidak ada data audit.</td></tr>';
+      }
+
+      let list = latestData.kebersihan.audit.filter(a => 
+        String(a.stafTarget).trim().toUpperCase() === String(namaStaf).trim().toUpperCase()
+      );
+
+      if (list.length === 0) {
+        return '<tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:12px;">Belum ada catatan audit kebersihan untuk akun ini.</td></tr>';
+      }
+
+      return list.map(a => {
+        let isFoto = a.urlFoto && String(a.urlFoto).trim().toLowerCase().startsWith('http');
+        let fotoBtn = isFoto 
+          ? `<a href="${a.urlFoto}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Foto Temuan</a>` 
+          : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
+
+        let badgeBg = '#dcfce7', badgeColor = '#15803d';
+        if (a.status === 'TEGURAN') { badgeBg = '#fef9c3'; badgeColor = '#a16207'; }
+        else if (a.status === 'DENDA') { badgeBg = '#fee2e2'; badgeColor = '#dc2626'; }
+
+        return `
+          <tr>
+            <td><b>${a.waktu || '-'}</b></td>
+            <td><b>${a.auditor || '-'}</b></td>
+            <td><b>${a.areaTarget || '-'}</b></td>
+            <td><span style="padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; background:${badgeBg}; color:${badgeColor};">${a.status}</span></td>
+            <td>${fotoBtn}</td>
+            <td>${a.catatan || '-'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     function renderKpiKebersihan(data) {
       if (!data || !data.summary) return;
 
@@ -1505,11 +1549,36 @@
       document.getElementById("kpiAreaTerlewat").innerText = (data.summary.totalAreaTerlewat || 0) + " Area";
       document.getElementById("kpiTotalDenda").innerText = "Rp " + (data.summary.totalDendaToko || 0).toLocaleString('id-ID');
 
+      // 1. REKAP KPI AUDIT KEBERSIHAN TOKO
+      if (latestData && latestData.kebersihan && latestData.kebersihan.audit) {
+        let auditList = latestData.kebersihan.audit;
+        let totalAudit = auditList.length;
+        let lulusAudit = auditList.filter(a => a.status === 'LULUS').length;
+        let temuanAudit = auditList.filter(a => a.status === 'TEGURAN' || a.status === 'DENDA').length;
+        let passRate = totalAudit > 0 ? ((lulusAudit / totalAudit) * 100).toFixed(1) + '%' : '100%';
+
+        const elAuditCount = document.getElementById("kpiTotalAuditCount");
+        if (elAuditCount) elAuditCount.innerText = totalAudit + " Inspeksi";
+
+        const elAuditPassRate = document.getElementById("kpiAuditPassRate");
+        if (elAuditPassRate) elAuditPassRate.innerText = passRate + " Lulus Standard";
+
+        const elAuditTemuan = document.getElementById("kpiTotalAuditTemuan");
+        if (elAuditTemuan) elAuditTemuan.innerText = temuanAudit + " Catatan";
+      }
+
+      // 2. LEADERBOARD STAF
       if (data.staffStats && data.staffStats.length > 0) {
         let html = "";
         data.staffStats.forEach((s, idx) => {
+          let staffAuditList = (latestData && latestData.kebersihan && latestData.kebersihan.audit)
+            ? latestData.kebersihan.audit.filter(a => String(a.stafTarget).trim().toUpperCase() === String(s.nama).trim().toUpperCase())
+            : [];
+          let auditCount = staffAuditList.length;
+          let auditDendaCount = staffAuditList.filter(a => a.status === 'DENDA').length;
+
           html += `
-            <tr style="cursor: pointer;" onclick="toggleStaffDetail(${idx})" title="Klik untuk membuka / menutup detail riwayat">
+            <tr style="cursor: pointer;" onclick="toggleStaffDetail(${idx})" title="Klik untuk membuka rincian laporan & hasil audit">
               <td><b>#${idx + 1}</b></td>
               <td><b>${s.nama}</b></td>
               <td>
@@ -1517,35 +1586,78 @@
                   ${s.totalLapor} Laporan ▾
                 </span>
               </td>
+              <td>
+                <span style="color:#0284c7; font-weight:bold; text-decoration:underline;">
+                  ${auditCount} Audit ${auditDendaCount > 0 ? `<span style="color:#dc2626">(${auditDendaCount} Denda)</span>` : ''} ▾
+                </span>
+              </td>
               <td style="color:${s.areaTerlewat > 0 ? '#dc2626' : '#15803d'}; font-weight:bold;">${s.areaTerlewat} Area</td>
               <td><span class="badge-status ${parseFloat(s.pctDisiplin) >= 90 ? 'badge-green' : 'badge-red'}">${s.pctDisiplin}</span></td>
               <td style="color:${s.totalDenda > 0 ? '#dc2626' : 'inherit'}; font-weight:bold;">Rp ${s.totalDenda.toLocaleString('id-ID')}</td>
             </tr>
+            
             <tr id="detail-row-${idx}" style="display: none; background: #f8fafc;">
-              <td colspan="6" style="padding: 12px 16px;">
-                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                    <h5 style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">
-                      📋 Rincian Riwayat Kebersihan Staf: <span style="color:#dc2626;">${s.nama}</span>
+              <td colspan="7" style="padding: 12px 16px;">
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                  
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom:1px solid #f1f5f9; padding-bottom:8px;">
+                    <h5 style="font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase;">
+                      📊 Evaluasi Kebersihan Staf: <span style="color:#dc2626;">${s.nama}</span>
                     </h5>
-                    <span style="font-size:10px; color:#94a3b8;">Klik baris untuk menutup ▴</span>
+                    <span style="font-size:11px; color:#64748b; font-weight:bold; cursor:pointer;" onclick="toggleStaffDetail(${idx})">✖ Tutup Rincian</span>
                   </div>
-                  <div class="table-container" style="height: auto; max-height: 220px; overflow-y: auto;">
-                    <table class="custom-table" style="font-size: 11px;">
-                      <thead>
-                        <tr>
-                          <th>Tanggal & Jam</th>
-                          <th>Nama Area</th>
-                          <th>Foto</th>
-                          <th>Status</th>
-                          <th>Denda (Rp)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        ${getStaffRiwayatHtml(s.nama)}
-                      </tbody>
-                    </table>
+
+                  <!-- TAB PILIHAN SUB PANEL -->
+                  <div style="display:flex; gap:8px; margin-bottom:12px;">
+                    <button onclick="switchStaffSubTab(${idx}, 'laporan')" id="btnStaffTabLapor-${idx}" style="padding:6px 12px; border-radius:6px; border:1px solid #dc2626; background:#dc2626; color:white; font-size:11px; font-weight:bold; cursor:pointer;">
+                      📋 Laporan Kebersihan Harian (${s.totalLapor})
+                    </button>
+                    <button onclick="switchStaffSubTab(${idx}, 'audit')" id="btnStaffTabAudit-${idx}" style="padding:6px 12px; border-radius:6px; border:1px solid #cbd5e1; background:#f8fafc; color:#475569; font-size:11px; font-weight:bold; cursor:pointer;">
+                      🔍 Hasil Audit Kebersihan Toko (${auditCount})
+                    </button>
                   </div>
+
+                  <!-- PANEL 1: LAPORAN KEBERSIHAN HARIAN -->
+                  <div id="staffSubPanelLapor-${idx}">
+                    <div class="table-container" style="height: auto; max-height: 220px; overflow-y: auto;">
+                      <table class="custom-table" style="font-size: 11px;">
+                        <thead>
+                          <tr>
+                            <th>Tanggal & Jam</th>
+                            <th>Nama Area</th>
+                            <th>Foto Before & After</th>
+                            <th>Status Laporan</th>
+                            <th>Denda (Rp)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${getStaffRiwayatHtml(s.nama)}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- PANEL 2: HASIL AUDIT KEBERSIHAN TOKO -->
+                  <div id="staffSubPanelAudit-${idx}" style="display:none;">
+                    <div class="table-container" style="height: auto; max-height: 220px; overflow-y: auto;">
+                      <table class="custom-table" style="font-size: 11px;">
+                        <thead>
+                          <tr>
+                            <th>Waktu / Tanggal</th>
+                            <th>Auditor</th>
+                            <th>Area Diaudit</th>
+                            <th>Hasil Audit</th>
+                            <th>Bukti Foto</th>
+                            <th>Catatan Auditor</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${getStaffAuditHtml(s.nama)}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
                 </div>
               </td>
             </tr>
@@ -1553,6 +1665,27 @@
         });
         const tblKpi = document.getElementById("tblKpiStaffKebersihan");
         if (tblKpi) tblKpi.innerHTML = html;
+      }
+    }
+
+    function switchStaffSubTab(idx, tabType) {
+      const panelLapor = document.getElementById(`staffSubPanelLapor-${idx}`);
+      const panelAudit = document.getElementById(`staffSubPanelAudit-${idx}`);
+      const btnLapor = document.getElementById(`btnStaffTabLapor-${idx}`);
+      const btnAudit = document.getElementById(`btnStaffTabAudit-${idx}`);
+
+      if (tabType === 'laporan') {
+        if (panelLapor) panelLapor.style.display = 'block';
+        if (panelAudit) panelAudit.style.display = 'none';
+
+        if (btnLapor) { btnLapor.style.background = '#dc2626'; btnLapor.style.color = 'white'; btnLapor.style.borderColor = '#dc2626'; }
+        if (btnAudit) { btnAudit.style.background = '#f8fafc'; btnAudit.style.color = '#475569'; btnAudit.style.borderColor = '#cbd5e1'; }
+      } else {
+        if (panelLapor) panelLapor.style.display = 'none';
+        if (panelAudit) panelAudit.style.display = 'block';
+
+        if (btnLapor) { btnLapor.style.background = '#f8fafc'; btnLapor.style.color = '#475569'; btnLapor.style.borderColor = '#cbd5e1'; }
+        if (btnAudit) { btnAudit.style.background = '#dc2626'; btnAudit.style.color = 'white'; btnAudit.style.borderColor = '#dc2626'; }
       }
     }
 
