@@ -32,7 +32,7 @@
     .login-card {
       background: #ffffff; width: 100%; max-width: 360px;
       padding: 32px 24px; border-radius: 12px;
-      border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03); text-align: center;
+      border: 1px solid #cbd5e1; box-shadow: 0 4px 20px rgba(0,0,0,0.05); text-align: center;
     }
     .login-title { font-size: 22px; font-weight: 900; color: #dc2626; line-height: 1; }
     .login-sub-brand { font-size: 11px; font-weight: 700; color: #64748b; margin-top: 2px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -169,20 +169,12 @@
     .badge-yellow { background: #fef9c3; color: #a16207; }
     .badge-red { background: #fee2e2; color: #b91c1c; }
 
-    select:disabled {
-      background-color: #f1f5f9 !important;
-      color: #94a3b8 !important;
-      border-color: #cbd5e1 !important;
-      cursor: not-allowed !important;
-    }
-
     @media (max-width: 768px) {
       header { padding: 10px 14px; }
       .container { flex-direction: column; }
       .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px; border-right: none; border-bottom: 1px solid #e2e8f0; overflow-x: auto; background: #fff; position: sticky; top: 0; z-index: 90; }
       .menu-item { margin-bottom: 0; justify-content: center; padding: 8px 12px; flex-shrink: 0; font-size: 12px; }
       .content { padding: 12px; }
-      
       .top-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .finance-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .card.main-card { grid-column: span 2; }
@@ -202,7 +194,7 @@
       <div class="login-sub-brand">Cab. Palopo</div>
       <input type="text" id="userInput" class="login-input" placeholder="Username (contoh: wiki / suci)">
       <input type="password" id="passInput" class="login-input" placeholder="Password" onkeyup="checkEnterKey(event)">
-      <button class="btn-login" onclick="performLogin()">Masuk System</button>
+      <button id="btnLoginBtn" class="btn-login" onclick="performLogin()">Masuk System</button>
       <div id="loginError" class="login-error">Username / Password Salah!</div>
     </div>
   </div>
@@ -699,7 +691,7 @@
   </div>
 
   <script>
-    // URL WEB APP APPS SCRIPT ANDA
+    // URL WEB APP APPS SCRIPT
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzC_FaMmWcqzY4SZSFPA3UL2xwIaqpjRU-RYGKpWmkLyC559qKL2Dnx4dSqSXuKVevgqw/exec";
     
     const PALETTE_RED = '#dc2626';
@@ -737,7 +729,6 @@
       localStorage.setItem("STAFF_DIVISI_MAP", JSON.stringify(mapData));
     }
 
-    // --- FUNGSI SANITASI TAMBAHAN ---
     function sanitizeDenda(val, status) {
       if (val === null || val === undefined || val === '') {
         if (status && (String(status).toUpperCase().includes('DENDA') || String(status).includes('15000'))) return 15000;
@@ -781,99 +772,92 @@
     function checkEnterKey(e) { if (e.key === "Enter") performLogin(); }
 
     function performLogin() {
-      const u = document.getElementById("userInput").value;
-      const p = document.getElementById("passInput").value;
+      const u = document.getElementById("userInput").value.trim();
+      const p = document.getElementById("passInput").value.trim();
+
+      if (!u || !p) {
+        alert("Silakan isi Username dan Password!");
+        return;
+      }
+
+      const btn = document.getElementById("btnLoginBtn");
+      btn.innerText = "Memproses...";
+      btn.disabled = true;
+      document.getElementById("loginError").style.display = "none";
 
       const script = document.createElement('script');
-      script.src = `${SCRIPT_URL}?action=login&username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}&callback=onLoginResult`;
+      script.src = `${SCRIPT_URL}?action=login&username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}&callback=onLoginResult&ts=${new Date().getTime()}`;
       document.body.appendChild(script);
       document.body.removeChild(script);
     }
 
     function onLoginResult(res) {
-      if (res.success) {
+      const btn = document.getElementById("btnLoginBtn");
+      btn.innerText = "Masuk System";
+      btn.disabled = false;
+
+      if (res && res.success) {
         currentUser = res.user;
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
         applyUserAccess();
         document.getElementById("loginOverlay").style.display = "none";
       } else {
-        document.getElementById("loginError").innerText = res.message;
+        document.getElementById("loginError").innerText = (res && res.message) ? res.message : "Username / Password Salah!";
         document.getElementById("loginError").style.display = "block";
       }
     }
 
     function applyUserAccess() {
-  if (!currentUser) return;
+      if (!currentUser) return;
 
-  document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
+      document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
 
-  const akses = currentUser.akses || {};
+      const akses = currentUser.akses || {};
 
-  // Pemetaan hak akses ke elemen menu
-  const hasPenjualan       = !!akses.penjualan;
-  const hasKeuanganMtk     = !!akses.keuanganMtk;
-  const hasKeuanganService = !!akses.keuanganService;
-  const hasSiplah          = !!akses.siplah;
-  const hasKebersihan      = !!akses.kebersihan;
-  const hasKpiKebersihan   = !!akses.kpiKebersihan;
-  const hasAuditKebersihan = !!akses.auditKebersihan;
+      const hasPenjualan       = !!akses.penjualan;
+      const hasKeuanganMtk     = !!akses.keuanganMtk;
+      const hasKeuanganService = !!akses.keuanganService;
+      const hasSiplah          = !!akses.siplah;
+      const hasKebersihan      = !!akses.kebersihan;
+      const hasKpiKebersihan   = !!akses.kpiKebersihan;
+      const hasAuditKebersihan = !!akses.auditKebersihan;
 
-  // Toggle tampilan menu berdasarkan akses sheet
-  const elPenjualan = document.getElementById("nav-penjualan");
-  if (elPenjualan) elPenjualan.style.display = hasPenjualan ? "flex" : "none";
+      const elPenjualan = document.getElementById("nav-penjualan");
+      if (elPenjualan) elPenjualan.style.display = hasPenjualan ? "flex" : "none";
 
-  const elMarketing = document.getElementById("nav-marketing");
-  if (elMarketing) elMarketing.style.display = hasPenjualan ? "flex" : "none";
+      const elMarketing = document.getElementById("nav-marketing");
+      if (elMarketing) elMarketing.style.display = hasPenjualan ? "flex" : "none";
 
-  const elSiplah = document.getElementById("nav-siplah");
-  if (elSiplah) elSiplah.style.display = hasSiplah ? "flex" : "none";
+      const elSiplah = document.getElementById("nav-siplah");
+      if (elSiplah) elSiplah.style.display = hasSiplah ? "flex" : "none";
 
-  const elKebersihan = document.getElementById("nav-kebersihan");
-  if (elKebersihan) elKebersihan.style.display = hasKebersihan ? "flex" : "none";
+      const elKebersihan = document.getElementById("nav-kebersihan");
+      if (elKebersihan) elKebersihan.style.display = hasKebersihan ? "flex" : "none";
 
-  const elKpi = document.getElementById("nav-kpi-kebersihan");
-  if (elKpi) elKpi.style.display = hasKpiKebersihan ? "flex" : "none";
+      const elKpi = document.getElementById("nav-kpi-kebersihan");
+      if (elKpi) elKpi.style.display = hasKpiKebersihan ? "flex" : "none";
 
-  const elAudit = document.getElementById("nav-audit-kebersihan");
-  if (elAudit) elAudit.style.display = hasAuditKebersihan ? "flex" : "none";
+      const elAudit = document.getElementById("nav-audit-kebersihan");
+      if (elAudit) elAudit.style.display = hasAuditKebersihan ? "flex" : "none";
 
-  const elKeuanganDrop = document.getElementById("keuanganDropdown");
-  if (elKeuanganDrop) elKeuanganDrop.style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
+      const elKeuanganDrop = document.getElementById("keuanganDropdown");
+      if (elKeuanganDrop) elKeuanganDrop.style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
 
-  const elSubMtk = document.getElementById("btnSubKeuanganMtk");
-  if (elSubMtk) elSubMtk.style.display = hasKeuanganMtk ? "flex" : "none";
+      const elSubMtk = document.getElementById("btnSubKeuanganMtk");
+      if (elSubMtk) elSubMtk.style.display = hasKeuanganMtk ? "flex" : "none";
 
-  const elSubService = document.getElementById("btnSubKeuanganService");
-  if (elSubService) elSubService.style.display = hasKeuanganService ? "flex" : "none";
+      const elSubService = document.getElementById("btnSubKeuanganService");
+      if (elSubService) elSubService.style.display = hasKeuanganService ? "flex" : "none";
 
-  // Panel Pemetaan Staf Khusus Admin
-  const adminPanel = document.getElementById("adminMappingPanel");
-  if (adminPanel) {
-    if (currentUser.role === "ADMIN") {
-      adminPanel.style.display = "block";
-      renderAdminStaffTable();
-    } else {
-      adminPanel.style.display = "none";
-    }
-  }
-
-  // Menentukan tab default yang terbuka sesuai akses pengguna
-  if (hasKebersihan) {
-    switchTab('kebersihan', document.getElementById("nav-kebersihan"));
-  } else if (hasAuditKebersihan) {
-    switchTab('audit-kebersihan-tab', document.getElementById("nav-audit-kebersihan"));
-  } else if (hasKpiKebersihan) {
-    switchTab('kpi-kebersihan-tab', document.getElementById("nav-kpi-kebersihan"));
-  } else if (hasPenjualan) {
-    switchTab('penjualan', document.getElementById("nav-penjualan"));
-  } else if (hasKeuanganMtk) {
-    switchTab('keuangan-mtk-tab', document.getElementById("btnSubKeuanganMtk"));
-  } else if (hasKeuanganService) {
-    switchTab('keuangan-service-tab', document.getElementById("btnSubKeuanganService"));
-  }
-
-  fetchStats();
-}
+      const adminPanel = document.getElementById("adminMappingPanel");
+      if (adminPanel) {
+        if (currentUser.role === "ADMIN") {
+          adminPanel.style.display = "block";
+          renderAdminStaffTable();
+        } else {
+          adminPanel.style.display = "none";
+        }
+      }
 
       renderAreaCards(currentDivisiCode);
       initAuditFormOptions();
@@ -891,6 +875,7 @@
       } else if (hasKeuanganService) {
         switchTab('keuangan-service-tab', document.getElementById("btnSubKeuanganService"));
       }
+
       fetchStats();
     }
 
@@ -1231,7 +1216,6 @@
           }
 
           if (s.dailyResults && barDailyInst) {
-            // Sort Tanggal Harian Kronologis
             let sortedDaily = [...s.dailyResults].sort((a, b) => {
               let pA = String(a.tgl).split('/'), pB = String(b.tgl).split('/');
               if(pA.length === 3 && pB.length === 3) {
@@ -1523,7 +1507,6 @@
       }).join('');
     }
 
-    // --- REVISI ACCORDION TABEL LAPORAN KEBERSIHAN HARIAN STAF ---
     function getStaffRiwayatHtml(namaStaf) {
       if (!latestData || !latestData.kebersihan || !latestData.kebersihan.riwayat) {
         return '<tr><td colspan="5" style="text-align:center;">Tidak ada data riwayat.</td></tr>';
@@ -1586,7 +1569,6 @@
       }).join('');
     }
 
-    // --- REVISI ACCORDION TABEL HASIL AUDIT KEBERSIHAN TOKO ---
     function getStaffAuditHtml(namaStaf) {
       if (!latestData || !latestData.kebersihan || !latestData.kebersihan.audit) {
         return '<tr><td colspan="6" style="text-align:center;">Tidak ada data audit.</td></tr>';
@@ -1702,7 +1684,6 @@
                     <span style="font-size:11px; color:#64748b; font-weight:bold; cursor:pointer;" onclick="toggleStaffDetail(${idx})">✖ Tutup Rincian</span>
                   </div>
 
-                  <!-- TAB PILIHAN SUB PANEL -->
                   <div style="display:flex; gap:8px; margin-bottom:12px;">
                     <button onclick="switchStaffSubTab(${idx}, 'laporan')" id="btnStaffTabLapor-${idx}" style="padding:6px 12px; border-radius:6px; border:1px solid #dc2626; background:#dc2626; color:white; font-size:11px; font-weight:bold; cursor:pointer;">
                       📋 Laporan Kebersihan Harian (${s.totalLapor})
@@ -1712,7 +1693,6 @@
                     </button>
                   </div>
 
-                  <!-- PANEL 1: LAPORAN KEBERSIHAN HARIAN -->
                   <div id="staffSubPanelLapor-${idx}">
                     <div class="table-container" style="height: auto; max-height: 220px; overflow-y: auto;">
                       <table class="custom-table" style="font-size: 11px;">
@@ -1732,7 +1712,6 @@
                     </div>
                   </div>
 
-                  <!-- PANEL 2: HASIL AUDIT KEBERSIHAN TOKO -->
                   <div id="staffSubPanelAudit-${idx}" style="display:none;">
                     <div class="table-container" style="height: auto; max-height: 220px; overflow-y: auto;">
                       <table class="custom-table" style="font-size: 11px;">
@@ -1859,9 +1838,7 @@
           responsive: true, 
           maintainAspectRatio: false, 
           cutout: '65%',
-          plugins: {
-            legend: { display: false } // Legend disembunyikan agar Donut Chart berukuran besar & presisi
-          }
+          plugins: { legend: { display: false } }
         }
       });
 
@@ -1872,9 +1849,7 @@
           responsive: true, 
           maintainAspectRatio: false, 
           cutout: '65%',
-          plugins: {
-            legend: { display: false } // Legend disembunyikan agar Donut Chart berukuran besar & presisi
-          }
+          plugins: { legend: { display: false } }
         }
       });
 
