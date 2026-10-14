@@ -5,50 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>mahadewa.id - Executive Dashboard & Kebersihan Toko</title>
   
-  <!-- Google Font: Roboto -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    * { 
-      box-sizing: border-box; 
-      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
-      margin: 0; 
-      padding: 0; 
-    }
-    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* OVERLAY LOGIN */
     #loginOverlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(248, 250, 252, 0.98); backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 9999; padding: 20px;
+      display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px;
     }
     .login-card {
-      background: #ffffff; width: 100%; max-width: 360px;
-      padding: 32px 24px; border-radius: 12px;
+      background: #ffffff; width: 100%; max-width: 360px; padding: 32px 24px; border-radius: 12px;
       border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03); text-align: center;
     }
     .login-title { font-size: 22px; font-weight: 900; color: #dc2626; line-height: 1; }
-    .login-sub-brand { font-size: 11px; font-weight: 700; color: #64748b; margin-top: 2px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .login-input {
-      width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px;
-      font-size: 14px; margin-bottom: 10px; outline: none; background: #f8fafc;
-    }
-    .login-input:focus { border-color: #dc2626; background: #fff; }
-    .btn-login {
-      width: 100%; background: #dc2626; color: white; border: none; padding: 10px;
-      font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.2s;
-    }
-    .btn-login:hover { background: #b91c1c; }
+    .login-sub-brand { font-size: 11px; font-weight: 700; color: #64748b; margin: 2px 0 16px 0; text-transform: uppercase; }
+    .login-input { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; margin-bottom: 10px; outline: none; background: #f8fafc; }
+    .btn-login { width: 100%; background: #dc2626; color: white; border: none; padding: 10px; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; }
     .login-error { color: #dc2626; font-size: 11px; margin-top: 8px; font-weight: 700; display: none; }
 
-    /* HEADER */
     header {
       background: #ffffff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;
       border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100;
@@ -63,27 +43,21 @@
     .btn-badge-red { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
     .btn-badge-gray { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
 
-    /* LAYOUT & SIDEBAR */
     .container { display: flex; flex: 1; }
-    .sidebar { width: 190px; padding: 16px 12px; background: #ffffff; border-right: 1px solid #e2e8f0; flex-shrink: 0; }
+    .sidebar { width: 210px; padding: 16px 12px; background: #ffffff; border-right: 1px solid #e2e8f0; flex-shrink: 0; }
     .menu-item {
       display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border-radius: 6px;
       border: none; background: transparent; font-size: 13px; font-weight: 700; color: #64748b; cursor: pointer; margin-bottom: 4px; text-align: left;
-      transition: all 0.2s;
     }
     .menu-item:hover { background: #f8fafc; color: #0f172a; }
     .menu-item.active { background: #dc2626; color: white; }
-    .menu-item svg { fill: currentColor; width: 16px; height: 16px; }
+    .menu-item svg { fill: currentColor; width: 16px; height: 16px; flex-shrink: 0; }
 
-    /* DROPDOWN SIDEBAR KEUANGAN */
     .dropdown-container { display: flex; flex-direction: column; }
     .dropdown-btn { justify-content: space-between; }
     .arrow-icon { width: 14px; height: 14px; transition: transform 0.3s ease; fill: currentColor; }
     .dropdown-container.open .arrow-icon { transform: rotate(180deg); }
-    .submenu {
-      max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;
-      display: flex; flex-direction: column; padding-left: 12px;
-    }
+    .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; display: flex; flex-direction: column; padding-left: 12px; }
     .dropdown-container.open .submenu { max-height: 200px; }
     .submenu .menu-item { font-size: 12px; padding: 6px 10px; margin-top: 2px; }
 
@@ -91,50 +65,35 @@
     .tab-page { display: none; }
     .tab-page.active { display: block; }
 
-    /* KPI CARDS */
     .top-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px; }
     .finance-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-    .card { 
-      background: #ffffff; border-radius: 8px; padding: 12px 14px; 
-      border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;
-    }
+    .card { background: #ffffff; border-radius: 8px; padding: 12px 14px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between; }
     .card.main-card { background: #dc2626; color: white; border: none; }
     .card-top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-    .card-head { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card-head { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; }
     .card.main-card .card-head { color: #fecaca; }
-    
     .card-val { font-size: 17px; font-weight: 900; color: #0f172a; line-height: 1.2; margin-top: 2px; }
     .card.main-card .card-val { color: #ffffff; }
-    
     .card-avg { font-size: 10px; font-weight: 500; color: #64748b; margin-top: 6px; padding-top: 4px; border-top: 1px dashed #f1f5f9; }
     .card.main-card .card-avg { color: #fee2e2; border-top-color: rgba(255,255,255,0.2); }
 
-    /* DASHBOARD PANELS */
     .sales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .box-panel { 
-      background: #ffffff; border-radius: 8px; padding: 16px; 
-      border: 1px solid #e2e8f0; display: flex; flex-direction: column; overflow: hidden;
-    }
+    .box-panel { background: #ffffff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; overflow: hidden; }
     .box-panel.full-width { grid-column: span 2; }
-    .panel-header { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
+    .panel-header { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; }
     
-    .chart-scroll-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .chart-scroll-wrapper { width: 100%; overflow-x: auto; }
     .chart-wrapper { position: relative; width: 100%; height: 220px; min-width: 300px; }
 
-    /* TABEL CLEAN UI */
-    .table-container { height: 300px; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; font-size: 12px; }
+    .table-container { height: 300px; overflow-y: auto; overflow-x: auto; font-size: 12px; }
     .custom-table { width: 100%; border-collapse: collapse; min-width: 500px; }
     .custom-table th { background: #f8fafc; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10; white-space: nowrap; }
     .custom-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; white-space: nowrap; }
     .custom-table tr:hover td { background: #f8fafc; }
 
-    /* PANEL PEMETAAN ADMIN */
-    .admin-mapping-box {
-      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 16px; display: none;
-    }
+    .admin-mapping-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 16px; display: none; }
     .admin-mapping-title { font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
 
-    /* CARD KEBERSIHAN KAMERA LIVE */
     .area-card { background: #ffffff; border-radius: 10px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 16px; }
     .area-title { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 10px; }
     .cam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -142,54 +101,28 @@
     .btn-cam { background: #dc2626; color: white; border: none; padding: 8px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 6px; }
     .preview-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-top: 8px; display: none; }
 
-    /* FORM STYLES AUDIT */
     .form-group { margin-bottom: 12px; }
     .form-label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; text-transform: uppercase; }
     .form-control { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; background: #fff; }
-    .form-control:focus { border-color: #dc2626; }
 
-    /* TOMBOL & BADGE SUBMIT PER AREA */
-    .btn-area-submit {
-      width: 100%; background: #dc2626; color: white; border: none; padding: 10px;
-      font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 12px;
-      transition: background 0.2s;
-    }
-    .btn-area-submit:hover { background: #b91c1c; }
+    .btn-area-submit { width: 100%; background: #dc2626; color: white; border: none; padding: 10px; font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 12px; }
     .btn-area-submit:disabled { background: #94a3b8; cursor: not-allowed; }
 
-    .area-status-badge {
-      margin-top: 8px; padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-align: center; display: none;
-    }
+    .area-status-badge { margin-top: 8px; padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-align: center; display: none; }
     .status-success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
     .status-warning { background: #fef9c3; color: #a16207; border: 1px solid #fef08a; }
 
-    /* BADGES */
     .badge-status { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; display: inline-block; }
     .badge-green { background: #dcfce7; color: #15803d; }
     .badge-yellow { background: #fef9c3; color: #a16207; }
     .badge-red { background: #fee2e2; color: #b91c1c; }
 
-    select:disabled {
-      background-color: #f1f5f9 !important;
-      color: #94a3b8 !important;
-      border-color: #cbd5e1 !important;
-      cursor: not-allowed !important;
-    }
-
     @media (max-width: 768px) {
-      header { padding: 10px 14px; }
       .container { flex-direction: column; }
-      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; padding: 8px; border-right: none; border-bottom: 1px solid #e2e8f0; overflow-x: auto; background: #fff; position: sticky; top: 0; z-index: 90; }
-      .menu-item { margin-bottom: 0; justify-content: center; padding: 8px 12px; flex-shrink: 0; font-size: 12px; }
-      .content { padding: 12px; }
-      
-      .top-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-      .finance-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-      .card.main-card { grid-column: span 2; }
-      .sales-grid { grid-template-columns: 1fr; gap: 12px; }
+      .sidebar { width: 100%; display: flex; flex-direction: row; gap: 6px; overflow-x: auto; background: #fff; position: sticky; top: 0; z-index: 90; }
+      .top-cards, .finance-cards { grid-template-columns: repeat(2, 1fr); }
+      .sales-grid { grid-template-columns: 1fr; }
       .box-panel.full-width { grid-column: span 1; }
-      .user-name { display: none; }
-      .cam-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -201,7 +134,7 @@
       <div class="login-title">mahadewa.id</div>
       <div class="login-sub-brand">Cab. Palopo</div>
       <input type="text" id="userInput" class="login-input" placeholder="Username (contoh: wiki / suci)">
-      <input type="password" id="passInput" class="login-input" placeholder="Password" onkeyup="checkEnterKey(event)">
+      <input type="password" id="passInput" class="login-input" placeholder="Password" onkeyup="if(event.key==='Enter')performLogin()">
       <button class="btn-login" onclick="performLogin()">Masuk System</button>
       <div id="loginError" class="login-error">Username / Password Salah!</div>
     </div>
@@ -219,13 +152,13 @@
     <div class="header-user">
       <span class="user-name" id="userBadge">Guest</span>
       <button class="btn-badge-gray" onclick="fetchStats()">🔄 Refresh</button>
-      <button class="btn-badge-red" onclick="showProfile()">Profil</button>
-      <button class="btn-badge-gray" onclick="handleLogout()">Keluar</button>
+      <button class="btn-badge-red" onclick="alert('mahadewa.id Cab. Palopo Executive Dashboard')">Profil</button>
+      <button class="btn-badge-gray" onclick="localStorage.removeItem('currentUser');location.reload()">Keluar</button>
     </div>
   </header>
 
   <div class="container">
-    <!-- SIDEBAR NAVIGATION -->
+    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebarMenu">
       <button id="nav-kebersihan" class="menu-item active" onclick="switchTab('kebersihan', this)">
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
@@ -247,9 +180,8 @@
         Penjualan
       </button>
 
-      <!-- DROPDOWN KEUANGAN -->
       <div class="dropdown-container" id="keuanganDropdown">
-        <button id="nav-keuangan-mtk" class="menu-item dropdown-btn" onclick="toggleDropdown('keuanganDropdown')">
+        <button id="nav-keuangan-mtk" class="menu-item dropdown-btn" onclick="document.getElementById('keuanganDropdown').classList.toggle('open')">
           <div style="display:flex; align-items:center; gap:10px;">
             <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
             Keuangan
@@ -257,14 +189,8 @@
           <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
         </button>
         <div class="submenu">
-          <button id="btnSubKeuanganMtk" class="menu-item" onclick="switchTab('keuangan-mtk-tab', this)">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-            Keuangan MTK
-          </button>
-          <button id="btnSubKeuanganService" class="menu-item" onclick="switchTab('keuangan-service-tab', this)">
-            <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.6C.4 7 1 10 2.9 12c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.3z"/></svg>
-            Keuangan Service
-          </button>
+          <button id="btnSubKeuanganMtk" class="menu-item" onclick="switchTab('keuangan-mtk-tab', this)">Keuangan MTK</button>
+          <button id="btnSubKeuanganService" class="menu-item" onclick="switchTab('keuangan-service-tab', this)">Keuangan Service</button>
         </div>
       </div>
 
@@ -279,19 +205,19 @@
       </button>
     </div>
 
+    <!-- CONTENT -->
     <div class="content">
 
-      <!-- TAB 1: FORM KEBERSIHAN TOKO (STAF) -->
+      <!-- 1. TUGAS KEBERSIHAN -->
       <div id="kebersihan" class="tab-page active">
         <div style="background:#fef2f2; border:1px solid #fecaca; padding:12px; border-radius:8px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
           <div>
             <h3 style="font-size:14px; color:#dc2626;">Laporan Kebersihan Harian Staf</h3>
-            <p style="font-size:11px; color:#7f1d1d; margin-top:2px;">Area disesuaikan dengan divisi Anda. Pengiriman tanpa foto lengkap dikenakan denda Rp 15.000 per area.</p>
+            <p style="font-size:11px; color:#7f1d1d; margin-top:2px;">Kirim foto Before & After area Anda. Denda Rp 15.000 jika tidak lengkap.</p>
           </div>
-          
           <div style="display:flex; align-items:center; gap:8px;">
             <label style="font-size:12px; font-weight:bold; color:#dc2626;">Divisi Area:</label>
-            <select id="selDivisiArea" onchange="changeDivisiArea(this.value)" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #dc2626; font-size: 12px; font-weight: bold; background: white; color: #dc2626; outline: none; cursor: pointer;">
+            <select id="selDivisiArea" onchange="changeDivisiArea(this.value)" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #dc2626; font-size: 12px; font-weight: bold; background: white; color: #dc2626;">
               <option value="TEKNISI">🔧 Teknisi / Service</option>
               <option value="KASIR">💳 Kasir</option>
               <option value="ADMIN 01">💻 Admin 01</option>
@@ -299,7 +225,7 @@
               <option value="MARKETING 01">📢 Marketing 01</option>
               <option value="MARKETING 02">📢 Marketing 02</option>
               <option value="MARKETING 03">📢 Marketing 03</option>
-              <option value="GUDANG">📦 Gudang / Logistik</option>
+              <option value="GUDANG">📦 Gudang</option>
               <option value="Promotor Pembiayaan">🤝 Promotor Pembiayaan</option>
               <option value="Promotor HP">📱 Promotor HP</option>
               <option value="Promotor INFINIX">📱 Promotor INFINIX</option>
@@ -307,388 +233,165 @@
           </div>
         </div>
 
-        <!-- PANEL PEMETAAN DIVISI UNTUK ADMIN -->
         <div id="adminMappingPanel" class="admin-mapping-box">
           <div class="admin-mapping-title">
-            <span>⚙️ Panel Pengaturan Pemetaan Staf Toko (Khusus Admin)</span>
-            <button onclick="toggleAdminPanelVisibility()" style="background:none; border:none; color:#dc2626; font-weight:bold; cursor:pointer; font-size:11px;">[Tutup / Buka]</button>
+            <span>⚙️ Pengaturan Pemetaan Staf (Admin)</span>
+            <button onclick="document.getElementById('adminPanelContent').style.display = document.getElementById('adminPanelContent').style.display==='none'?'block':'none'" style="background:none;border:none;color:#dc2626;font-weight:bold;cursor:pointer;">[Tutup/Buka]</button>
           </div>
           <div id="adminPanelContent">
-            <p style="font-size:11px; color:#64748b; margin-bottom:10px;">Tentukan divisi area kebersihan untuk masing-masing staf. Saat staf login, area kebersihan mereka akan otomatis disesuaikan dengan pengaturan ini.</p>
-            <div class="table-container" style="height: auto; max-height: 220px; margin-bottom:10px;">
+            <div class="table-container" style="height:auto; max-height:180px; margin-bottom:10px;">
               <table class="custom-table" style="font-size:11px;">
-                <thead>
-                  <tr>
-                    <th>Username / Nama Staf</th>
-                    <th>Divisi Kebersihan yang Diberlakukan</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="tblStaffMapping">
-                  <!-- Generated by JS -->
-                </tbody>
+                <thead><tr><th>Staf</th><th>Divisi Kebersihan</th></tr></thead>
+                <tbody id="tblStaffMapping"></tbody>
               </table>
-            </div>
-            
-            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
-              <input type="text" id="newStaffName" placeholder="Username / Nama Staf (contoh: wiki)" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:4px; font-size:11px; flex:1; min-width:140px;">
-              <select id="newStaffDivisi" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:4px; font-size:11px;">
-                <option value="TEKNISI">🔧 Teknisi / Service</option>
-                <option value="KASIR">💳 Kasir</option>
-                <option value="ADMIN 01">💻 Admin 01</option>
-                <option value="ADMIN 02">💻 Admin 02</option>
-                <option value="MARKETING 01">📢 Marketing 01</option>
-                <option value="MARKETING 02">📢 Marketing 02</option>
-                <option value="MARKETING 03">📢 Marketing 03</option>
-                <option value="GUDANG">📦 Gudang / Logistik</option>
-                <option value="Promotor Pembiayaan">🤝 Promotor Pembiayaan</option>
-                <option value="Promotor HP">📱 Promotor HP</option>
-                <option value="Promotor INFINIX">📱 Promotor INFINIX</option>
-              </select>
-              <button onclick="addNewStaffMapping()" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">+ Simpan Pemetaan Staf</button>
             </div>
           </div>
         </div>
 
-        <div id="areaCardsContainer">
-          <!-- Area Cards di-generate otomatis -->
-        </div>
+        <div id="areaCardsContainer"></div>
 
         <div style="margin-top:24px;">
-          <h4 style="font-size:13px; margin-bottom:8px;">Riwayat Kebersihan & Rekap Denda Staff</h4>
+          <h4 style="font-size:13px; margin-bottom:8px;">Riwayat Kebersihan</h4>
           <div class="table-container">
             <table class="custom-table">
-              <thead>
-                <tr>
-                  <th>Tanggal & Jam</th>
-                  <th>Nama Staff</th>
-                  <th>Nama Area</th>
-                  <th>Foto</th>
-                  <th>Status</th>
-                  <th>Denda (Rp)</th>
-                </tr>
-              </thead>
-              <tbody id="tblRiwayatKebersihan">
-                <tr><td colspan="6" style="text-align:center;">Memuat data...</td></tr>
-              </tbody>
+              <thead><tr><th>Tanggal</th><th>Staff</th><th>Area</th><th>Foto</th><th>Status</th><th>Denda</th></tr></thead>
+              <tbody id="tblRiwayatKebersihan"><tr><td colspan="6" style="text-align:center;">Memuat data...</td></tr></tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- TAB AUDIT KEBERSIHAN TOKO -->
+      <!-- 2. AUDIT KEBERSIHAN -->
       <div id="audit-kebersihan-tab" class="tab-page">
         <div class="box-panel full-width" style="margin-bottom:16px; border-top:4px solid #dc2626;">
-          <div class="panel-header">
-            <span>📋 Form Audit Kebersihan Toko Mahadewa</span>
-            <span style="font-size:11px; color:#64748b; font-weight:normal;">Pengawasan & Inspeksi Kebersihan Area Toko</span>
-          </div>
-
+          <div class="panel-header"><span>Form Audit Kebersihan Toko</span></div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div class="form-group">
-              <label class="form-label">Nama Auditor / Pengawas</label>
-              <input type="text" id="auditAuditorName" class="form-control" readonly style="background:#f1f5f9; font-weight:bold; color:#0f172a;">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Pilih Staf yang Diaudit</label>
-              <select id="auditStaffTarget" class="form-control" onchange="onAuditStaffChange(this.value)">
-                <!-- Generated by JS -->
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Divisi Area Staf</label>
-              <input type="text" id="auditDivisiDisplay" class="form-control" readonly style="background:#f1f5f9; font-weight:bold;">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Pilih Area Kebersihan yang Diaudit</label>
-              <select id="auditAreaTarget" class="form-control">
-                <!-- Generated by JS -->
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Hasil Penilaian Audit / Status</label>
-              <select id="auditStatusResult" class="form-control" style="font-weight:bold;">
-                <option value="LULUS" style="color:#15803d;">🟢 SANGAT BERSIH (Lulus Standards)</option>
-                <option value="TEGURAN" style="color:#a16207;">🟡 PERLU PERBAIKAN (Teguran / Catatan)</option>
-                <option value="DENDA" style="color:#dc2626;">🔴 TIDAK BERSIH (Dena Kebersihan Rp 15.000)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Foto Bukti Temuan Audit (Kamera Live)</label>
-              <input type="file" accept="image/*" capture="environment" id="auditFotoFile" onchange="previewCam(this, 'prev_audit_foto')" style="display:none;">
-              <button class="btn-cam" onclick="document.getElementById('auditFotoFile').click()" style="margin-top:0; height:36px;">📷 Buka Kamera Temuan Audit</button>
-              <img id="prev_audit_foto" class="preview-img" style="height:100px;">
-            </div>
-
-            <div class="form-group" style="grid-column: span 2;">
-              <label class="form-label">Catatan & Temuan Kebersihan di Lapangan</label>
-              <textarea id="auditCatatan" class="form-control" rows="3" placeholder="Tuliskan temuan audit (contoh: Masih ada debu di balik meja display laptop, tempat sampah belum dibuang, dll)..."></textarea>
-            </div>
+            <div class="form-group"><label class="form-label">Auditor</label><input type="text" id="auditAuditorName" class="form-control" readonly></div>
+            <div class="form-group"><label class="form-label">Pilih Staf</label><select id="auditStaffTarget" class="form-control" onchange="onAuditStaffChange(this.value)"></select></div>
+            <div class="form-group"><label class="form-label">Divisi</label><input type="text" id="auditDivisiDisplay" class="form-control" readonly></div>
+            <div class="form-group"><label class="form-label">Area</label><select id="auditAreaTarget" class="form-control"></select></div>
+            <div class="form-group"><label class="form-label">Hasil Audit</label><select id="auditStatusResult" class="form-control" style="font-weight:bold;"><option value="LULUS">🟢 LULUS</option><option value="TEGURAN">🟡 TEGURAN</option><option value="DENDA">🔴 DENDA (Rp 15.000)</option></select></div>
+            <div class="form-group"><label class="form-label">Foto Temuan</label><input type="file" accept="image/*" capture="environment" id="auditFotoFile" onchange="previewCam(this, 'prev_audit_foto')" style="display:none;"><button class="btn-cam" onclick="document.getElementById('auditFotoFile').click()" style="margin-top:0;height:36px;">📷 Ambil Foto</button><img id="prev_audit_foto" class="preview-img" style="height:80px;"></div>
+            <div class="form-group" style="grid-column:span 2;"><label class="form-label">Catatan</label><textarea id="auditCatatan" class="form-control" rows="2"></textarea></div>
           </div>
-
-          <button id="btnSubmitAudit" class="btn-area-submit" onclick="simpanAuditKebersihan()" style="margin-top:8px;">
-            🚀 Simpan Hasil Audit Kebersihan Toko
-          </button>
+          <button class="btn-area-submit" onclick="simpanAuditKebersihan()" style="margin-top:8px;">🚀 Simpan Audit</button>
         </div>
-
         <div class="box-panel full-width">
-          <div class="panel-header"><span>Riwayat Hasil Audit Kebersihan Toko</span></div>
-          <div class="table-container" style="height: 320px;">
+          <div class="panel-header"><span>Riwayat Audit</span></div>
+          <div class="table-container" style="height:280px;">
             <table class="custom-table">
-              <thead>
-                <tr>
-                  <th>Waktu / Tanggal</th>
-                  <th>Auditor</th>
-                  <th>Staf Diaudit</th>
-                  <th>Nama Area</th>
-                  <th>Status Audit</th>
-                  <th>Foto Temuan</th>
-                  <th>Catatan Auditor</th>
-                </tr>
-              </thead>
-              <tbody id="tblRiwayatAudit">
-                <tr><td colspan="7" style="text-align:center;">Memuat data audit...</td></tr>
-              </tbody>
+              <thead><tr><th>Waktu</th><th>Auditor</th><th>Staf</th><th>Area</th><th>Status</th><th>Foto</th><th>Catatan</th></tr></thead>
+              <tbody id="tblRiwayatAudit"><tr><td colspan="7" style="text-align:center;">Memuat...</td></tr></tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- TAB 2: Progres Area Kebersihan -->
+      <!-- 3. PROGRES AREA KEBERSIHAN -->
       <div id="kpi-kebersihan-tab" class="tab-page">
-        <!-- TOP CARDS TERMASUK KPI AUDIT KEBERSIHAN -->
-        <div class="top-cards" style="margin-bottom: 20px;">
-          <div class="card main-card">
-            <div class="card-top-row"><span class="card-head">Clean Rate Toko</span></div>
-            <div class="card-val" id="kpiCleanRate">0%</div>
-            <div class="card-avg">Persentase Kelengkapan Laporan</div>
-          </div>
-          <div class="card">
-            <div class="card-top-row"><span class="card-head">Total Area Dikirim</span></div>
-            <div class="card-val" id="kpiTotalLaporan">0</div>
-            <div class="card-avg">Laporan Area Masuk</div>
-          </div>
-          <div class="card" style="border-color: #0284c7; background: #f0f9ff;">
-            <div class="card-top-row"><span class="card-head" style="color: #0284c7;">Total Audit Toko</span></div>
-            <div class="card-val" id="kpiTotalAuditCount" style="color: #0369a1;">0 Inspeksi</div>
-            <div class="card-avg" id="kpiAuditPassRate" style="color: #0284c7; font-weight:bold;">100% Lulus Standard</div>
-          </div>
-          <div class="card" style="border-color: #fef08a; background: #fffbeb;">
-            <div class="card-top-row"><span class="card-head" style="color: #b45309;">Temuan Audit</span></div>
-            <div class="card-val" id="kpiTotalAuditTemuan" style="color: #b45309;">0 Catatan</div>
-            <div class="card-avg">Evaluasi Kebersihan</div>
-          </div>
-          <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
-            <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Area Tidak Lengkap</span></div>
-            <div class="card-val" id="kpiAreaTerlewat" style="color: #dc2626;">0 Area</div>
-            <div class="card-avg">Laporan Terlewat</div>
-          </div>
-          <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
-            <div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Denda Terkumpul</span></div>
-            <div class="card-val" id="kpiTotalDenda">Rp 0</div>
-            <div class="card-avg">Potongan Gaji / Insentif</div>
-          </div>
+        <div class="top-cards" style="margin-bottom:20px;">
+          <div class="card main-card"><div class="card-head">Clean Rate</div><div class="card-val" id="kpiCleanRate">0%</div></div>
+          <div class="card"><div class="card-head">Total Laporan</div><div class="card-val" id="kpiTotalLaporan">0</div></div>
+          <div class="card"><div class="card-head">Total Audit</div><div class="card-val" id="kpiTotalAuditCount">0</div></div>
+          <div class="card"><div class="card-head">Temuan Audit</div><div class="card-val" id="kpiTotalAuditTemuan">0</div></div>
+          <div class="card"><div class="card-head">Terlewat</div><div class="card-val" id="kpiAreaTerlewat">0</div></div>
+          <div class="card"><div class="card-head">Total Denda</div><div class="card-val" id="kpiTotalDenda">Rp 0</div></div>
         </div>
-
         <div class="box-panel full-width">
-          <div class="panel-header"><span>Leaderboard Performa & Kedisiplinan Staf Kebersihan</span></div>
-          <div class="table-container" style="height: auto; max-height: 420px;">
+          <div class="panel-header"><span>Leaderboard Kedisiplinan Staf</span></div>
+          <div class="table-container" style="height:380px;">
             <table class="custom-table">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Nama Staf</th>
-                  <th>Laporan Area</th>
-                  <th>Hasil Audit Toko</th>
-                  <th>Area Tidak Lengkap</th>
-                  <th>% Kedisiplinan</th>
-                  <th>Total Denda (Rp)</th>
-                </tr>
-              </thead>
-              <tbody id="tblKpiStaffKebersihan">
-                <tr><td colspan="7" style="text-align:center;">Memuat data KPI...</td></tr>
-              </tbody>
+              <thead><tr><th>Rank</th><th>Nama Staf</th><th>Laporan</th><th>Audit</th><th>Terlewat</th><th>% Disiplin</th><th>Denda</th></tr></thead>
+              <tbody id="tblKpiStaffKebersihan"><tr><td colspan="7" style="text-align:center;">Memuat...</td></tr></tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- TAB 3: PENJUALAN -->
+      <!-- 4. PENJUALAN -->
       <div id="penjualan" class="tab-page">
         <div class="top-cards" style="grid-template-columns: repeat(5, 1fr);">
-          <div class="card main-card">
-            <div class="card-top-row"><span class="card-head">Pencapaian Toko</span></div>
-            <div class="card-val" id="pPencapaianToko">Rp 0</div>
-            <div class="card-avg" id="pPencapaianTokoAvg">Avg: Rp 0 / hari</div>
-          </div>
-          <div class="card">
-            <div class="card-top-row"><span class="card-head">Total Invoice</span></div>
-            <div class="card-val" id="pTotalInv">0</div>
-            <div class="card-avg" id="pTotalInvAvg">Avg: 0 inv / hari</div>
-          </div>
-          <div class="card">
-            <div class="card-top-row"><span class="card-head">Marketing</span></div>
-            <div class="card-val" id="pMktVal">Rp 0</div>
-            <div class="card-avg" id="pMktValAvg">Avg: Rp 0 / hari</div>
-          </div>
-          <div class="card">
-            <div class="card-top-row"><span class="card-head">Admin</span></div>
-            <div class="card-val" id="pAdmVal">Rp 0</div>
-            <div class="card-avg" id="pAdmValAvg">Avg: Rp 0 / hari</div>
-          </div>
-          <div class="card">
-            <div class="card-top-row"><span class="card-head">Teknisi</span></div>
-            <div class="card-val" id="pTekVal">Rp 0</div>
-            <div class="card-avg" id="pTekValAvg">Avg: Rp 0 / hari</div>
-          </div>
+          <div class="card main-card"><div class="card-head">Pencapaian Toko</div><div class="card-val" id="pPencapaianToko">Rp 0</div><div class="card-avg" id="pPencapaianTokoAvg">Avg: Rp 0</div></div>
+          <div class="card"><div class="card-head">Total Invoice</div><div class="card-val" id="pTotalInv">0</div><div class="card-avg" id="pTotalInvAvg">Avg: 0 / hari</div></div>
+          <div class="card"><div class="card-head">Marketing</div><div class="card-val" id="pMktVal">Rp 0</div><div class="card-avg" id="pMktValAvg">Avg: Rp 0</div></div>
+          <div class="card"><div class="card-head">Admin</div><div class="card-val" id="pAdmVal">Rp 0</div><div class="card-avg" id="pAdmValAvg">Avg: Rp 0</div></div>
+          <div class="card"><div class="card-head">Teknisi</div><div class="card-val" id="pTekVal">Rp 0</div><div class="card-avg" id="pTekValAvg">Avg: Rp 0</div></div>
         </div>
-
         <div class="sales-grid">
+          <div class="box-panel full-width"><div class="panel-header"><span>Daily Results (Omzet Harian)</span></div><div class="chart-scroll-wrapper"><div class="chart-wrapper"><canvas id="barDailyChart"></canvas></div></div></div>
+          <div class="box-panel"><div class="panel-header"><span>Performa Mingguan</span></div><div class="chart-scroll-wrapper"><div class="chart-wrapper"><canvas id="barWeeklyChart"></canvas></div></div></div>
+          <div class="box-panel"><div class="panel-header"><span>Performa Bulanan</span></div><div class="table-container" style="height:220px;"><table class="custom-table"><thead><tr><th>Bulan</th><th>Omzet</th></tr></thead><tbody id="tblMonthlyPerf"></tbody></table></div></div>
+          <div class="box-panel"><div class="panel-header"><span>By Brand</span></div><div class="chart-wrapper"><canvas id="pieBrandChart"></canvas></div></div>
+          <div class="box-panel"><div class="panel-header"><span>By Department</span></div><div class="chart-wrapper"><canvas id="barDeptChart"></canvas></div></div>
           <div class="box-panel full-width">
-            <div class="panel-header"><span>Daily Results (Omzet Harian)</span></div>
-            <div class="chart-scroll-wrapper"><div class="chart-wrapper"><canvas id="barDailyChart"></canvas></div></div>
-          </div>
-          <div class="box-panel">
-            <div class="panel-header"><span>Performa Penjualan Mingguan</span></div>
-            <div class="chart-scroll-wrapper"><div class="chart-wrapper"><canvas id="barWeeklyChart"></canvas></div></div>
-          </div>
-          <div class="box-panel">
-            <div class="panel-header"><span>Performa Penjualan Bulanan</span></div>
-            <div class="table-container" style="height: 220px;">
-              <table class="custom-table">
-                <thead><tr><th>Bulan</th><th>Total Omzet</th></tr></thead>
-                <tbody id="tblMonthlyPerf"><tr><td colspan="2" style="text-align:center;">Memuat data...</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="box-panel">
-            <div class="panel-header"><span>Pencapaian By Brand</span></div>
-            <div class="chart-wrapper"><canvas id="pieBrandChart"></canvas></div>
-          </div>
-          <div class="box-panel">
-            <div class="panel-header"><span>Pencapaian By Department</span></div>
-            <div class="chart-wrapper"><canvas id="barDeptChart"></canvas></div>
-          </div>
-          <div class="box-panel full-width">
-            <div class="panel-header">
-              <span>Top Best Seller Product</span>
-              <select id="bestSellerFilter" onchange="changeBestSellerSort(this.value)" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 11px;">
-                <option value="omzet">By Omzet (Rp)</option>
-                <option value="qty">By Qty (Pcs)</option>
-              </select>
-            </div>
-            <div class="table-container" style="height: 320px;">
-              <table class="custom-table">
-                <thead><tr><th>Rank</th><th>Nama Produk</th><th>Qty</th><th>Total Omzet</th></tr></thead>
-                <tbody id="tblBestSeller"><tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr></tbody>
-              </table>
-            </div>
+            <div class="panel-header"><span>Top Best Seller Product</span><select id="bestSellerFilter" onchange="renderBestSellerTable(this.value)" style="padding:2px 6px;border-radius:4px;font-size:11px;"><option value="omzet">By Omzet</option><option value="qty">By Qty</option></select></div>
+            <div class="table-container" style="height:280px;"><table class="custom-table"><thead><tr><th>Rank</th><th>Produk</th><th>Qty</th><th>Omzet</th></tr></thead><tbody id="tblBestSeller"></tbody></table></div>
           </div>
         </div>
       </div>
 
-      <!-- TAB 4A: KEUANGAN MTK -->
+      <!-- 5A. KEUANGAN MTK -->
       <div id="keuangan-mtk-tab" class="tab-page">
         <div class="finance-cards" style="grid-template-columns: repeat(4, 1fr);">
-          <div class="card main-card" style="grid-column: span 2;">
-            <div class="card-top-row"><span class="card-head">Total Penjualan (KASIR)</span></div>
-            <div class="card-val" id="kTotalPenjualan">Rp 0</div>
-          </div>
-          <div class="card"><div class="card-top-row"><span class="card-head">Transfer</span></div><div class="card-val" id="kTotalTransfer">Rp 0</div></div>
-          <div class="card"><div class="card-top-row"><span class="card-head">QRIS / EDC</span></div><div class="card-val" id="kTotalQrisEdc">Rp 0</div></div>
-          <div class="card"><div class="card-top-row"><span class="card-head">Pembiayaan</span></div><div class="card-val" id="kTotalPembiayaan">Rp 0</div></div>
-          <div class="card" style="border-color: #cbd5e1; background: #f8fafc;"><div class="card-top-row"><span class="card-head" style="color: #0284c7;">Pembayaran TNT</span></div><div class="card-val" id="kTotalTnt" style="color: #0369a1;">Rp 0</div></div>
-          <div class="card"><div class="card-top-row"><span class="card-head">DP / PP</span></div><div class="card-val" id="kTotalDpPp">Rp 0</div></div>
-          <div class="card"><div class="card-top-row"><span class="card-head">Tunai</span></div><div class="card-val" id="kTotalTunai">Rp 0</div></div>
-          <div class="card" style="border-color: #fca5a5; background: #fff5f5;"><div class="card-top-row"><span class="card-head" style="color: #dc2626;">Total Piutang</span></div><div class="card-val" id="kTotalPiutang" style="color: #dc2626;">Rp 0</div></div>
+          <div class="card main-card" style="grid-column: span 2;"><div class="card-head">Total Penjualan (KASIR)</div><div class="card-val" id="kTotalPenjualan">Rp 0</div></div>
+          <div class="card"><div class="card-head">Transfer</div><div class="card-val" id="kTotalTransfer">Rp 0</div></div>
+          <div class="card"><div class="card-head">QRIS / EDC</div><div class="card-val" id="kTotalQrisEdc">Rp 0</div></div>
+          <div class="card"><div class="card-head">Pembiayaan</div><div class="card-val" id="kTotalPembiayaan">Rp 0</div></div>
+          <div class="card"><div class="card-head">TNT</div><div class="card-val" id="kTotalTnt">Rp 0</div></div>
+          <div class="card"><div class="card-head">DP / PP</div><div class="card-val" id="kTotalDpPp">Rp 0</div></div>
+          <div class="card"><div class="card-head">Tunai</div><div class="card-val" id="kTotalTunai">Rp 0</div></div>
+          <div class="card" style="background:#fff5f5;"><div class="card-head" style="color:#dc2626;">Piutang</div><div class="card-val" id="kTotalPiutang" style="color:#dc2626;">Rp 0</div></div>
         </div>
-
         <div class="box-panel full-width">
-          <div class="panel-header"><span>Breakdown Keuangan Harian MTK (Sheet KASIR)</span></div>
-          <div class="table-container" style="height: 360px;">
-            <table class="custom-table">
-              <thead><tr><th>Tanggal</th><th>Total Penjualan</th><th>Transfer</th><th>QRIS / EDC</th><th>Pembiayaan</th><th>TNT</th><th>DP / PP</th><th>Tunai</th><th>Piutang</th></tr></thead>
-              <tbody id="tblKeuanganHarian"><tr><td colspan="9" style="text-align:center;">Memuat data...</td></tr></tbody>
-            </table>
-          </div>
+          <div class="panel-header"><span>Breakdown Keuangan Harian MTK</span></div>
+          <div class="table-container" style="height:360px;"><table class="custom-table"><thead><tr><th>Tanggal</th><th>Total</th><th>Transfer</th><th>QRIS</th><th>Pembiayaan</th><th>TNT</th><th>DP/PP</th><th>Tunai</th><th>Piutang</th></tr></thead><tbody id="tblKeuanganHarian"></tbody></table></div>
         </div>
       </div>
 
-      <!-- TAB 4B: KEUANGAN SERVICE -->
+      <!-- 5B. KEUANGAN SERVICE -->
       <div id="keuangan-service-tab" class="tab-page">
         <div class="finance-cards">
-          <div class="card main-card" style="grid-column: span 2;">
-            <div class="card-top-row"><span class="card-head">Total Pendapatan Service</span></div>
-            <div class="card-val" id="ksTotalPenjualan">Rp 0</div>
-          </div>
-          <div class="card"><div class="card-top-row"><span class="card-head">Transfer Service</span></div><div class="card-val" id="ksTotalTransfer">Rp 0</div></div>
-          <div class="card"><div class="card-top-row"><span class="card-head">QRIS / EDC Service</span></div><div class="card-val" id="ksTotalQrisEdc">Rp 0</div></div>
-          <div class="card"><div class="card-top-row"><span class="card-head">Pembiayaan Service</span></div><div class="card-val" id="ksTotalPembiayaan">Rp 0</div></div>
-          <div class="card"><div class="card-top-row"><span class="card-head">DP / PP Service</span></div><div class="card-val" id="ksTotalDpPp">Rp 0</div></div>
-          <div class="card"><div class="card-top-row"><span class="card-head">Tunai Service</span></div><div class="card-val" id="ksTotalTunai">Rp 0</div></div>
-          <div class="card" style="border-color: #fca5a5; background: #fff5f5;"><div class="card-top-row"><span class="card-head" style="color: #dc2626;">Piutang Service</span></div><div class="card-val" id="ksTotalPiutang" style="color: #dc2626;">Rp 0</div></div>
+          <div class="card main-card" style="grid-column: span 2;"><div class="card-head">Total Pendapatan Service</div><div class="card-val" id="ksTotalPenjualan">Rp 0</div></div>
+          <div class="card"><div class="card-head">Transfer</div><div class="card-val" id="ksTotalTransfer">Rp 0</div></div>
+          <div class="card"><div class="card-head">QRIS / EDC</div><div class="card-val" id="ksTotalQrisEdc">Rp 0</div></div>
+          <div class="card"><div class="card-head">Pembiayaan</div><div class="card-val" id="ksTotalPembiayaan">Rp 0</div></div>
+          <div class="card"><div class="card-head">DP / PP</div><div class="card-val" id="ksTotalDpPp">Rp 0</div></div>
+          <div class="card"><div class="card-head">Tunai</div><div class="card-val" id="ksTotalTunai">Rp 0</div></div>
+          <div class="card" style="background:#fff5f5;"><div class="card-head" style="color:#dc2626;">Piutang</div><div class="card-val" id="ksTotalPiutang" style="color:#dc2626;">Rp 0</div></div>
         </div>
-
         <div class="box-panel full-width">
-          <div class="panel-header"><span>Breakdown Keuangan Harian (Sheet SERVICE)</span></div>
-          <div class="table-container" style="height: 360px;">
-            <table class="custom-table">
-              <thead><tr><th>Tanggal</th><th>Total Penjualan</th><th>Transfer</th><th>QRIS / EDC</th><th>Pembiayaan</th><th>DP / PP</th><th>Tunai</th><th>Piutang</th></tr></thead>
-              <tbody id="tblKeuanganServiceHarian"><tr><td colspan="8" style="text-align:center;">Memuat data...</td></tr></tbody>
-            </table>
-          </div>
+          <div class="panel-header"><span>Breakdown Keuangan Service</span></div>
+          <div class="table-container" style="height:360px;"><table class="custom-table"><thead><tr><th>Tanggal</th><th>Total</th><th>Transfer</th><th>QRIS</th><th>Pembiayaan</th><th>DP/PP</th><th>Tunai</th><th>Piutang</th></tr></thead><tbody id="tblKeuanganServiceHarian"></tbody></table></div>
         </div>
       </div>
 
-      <!-- TAB 5: MARKETING PERFORMANCE -->
+      <!-- 6. MARKETING -->
       <div id="marketing-perf" class="tab-page">
-        <div class="box-panel full-width" style="margin-bottom:16px;">
-          <div class="panel-header"><span>Perbandingan Revenue & Proyeksi Marketing</span></div>
-          <div class="chart-scroll-wrapper"><div class="chart-wrapper" style="height: 260px;"><canvas id="barMktPerfChart"></canvas></div></div>
-        </div>
+        <div class="box-panel full-width" style="margin-bottom:16px;"><div class="panel-header"><span>Perbandingan Revenue & Proyeksi Marketing</span></div><div class="chart-scroll-wrapper"><div class="chart-wrapper" style="height:260px;"><canvas id="barMktPerfChart"></canvas></div></div></div>
         <div class="box-panel full-width">
           <div class="panel-header"><span>Tabel Kinerja Personal Marketing</span></div>
-          <div class="table-container" style="height: 320px;">
-            <table class="custom-table">
-              <thead><tr><th>Personal</th><th>Pencapaian (ACH)</th><th>Target / Bln</th><th>Target Sisa / Hari</th><th>% ACH</th><th>Avg / Hari</th><th>Proyeksi Run Rate</th><th>% Proyeksi</th></tr></thead>
-              <tbody id="tblMktPerf"><tr><td colspan="8" style="text-align:center;">Memuat data...</td></tr></tbody>
-            </table>
-          </div>
+          <div class="table-container" style="height:320px;"><table class="custom-table"><thead><tr><th>Personal</th><th>Ach</th><th>Target/Bln</th><th>Sisa/Hari</th><th>% Ach</th><th>Avg/Hari</th><th>Proyeksi</th><th>% Proyeksi</th></tr></thead><tbody id="tblMktPerf"></tbody></table></div>
         </div>
       </div>
 
-      <!-- TAB 6: SIPLAH TERTUNDA -->
+      <!-- 7. SIPLAH TERTUNDA -->
       <div id="siplah-tertunda" class="tab-page">
         <div class="top-cards" style="grid-template-columns: repeat(3, 1fr);">
-          <div class="card main-card">
-            <div class="card-top-row"><span class="card-head">Total SIPLah Tertunda</span></div>
-            <div class="card-val" id="sipTotalNilai">Rp 0</div>
-          </div>
-          <div class="card"><div class="card-top-row"><span class="card-head">Total Harga JL MSK</span></div><div class="card-val" id="sipTotalMsk">Rp 0</div></div>
-          <div class="card"><div class="card-top-row"><span class="card-head">Total Transaksi / Sekolah</span></div><div class="card-val" id="sipTotalTrx">0</div></div>
+          <div class="card main-card"><div class="card-head">Total SIPLah Tertunda</div><div class="card-val" id="sipTotalNilai">Rp 0</div></div>
+          <div class="card"><div class="card-head">Total Harga JL MSK</div><div class="card-val" id="sipTotalMsk">Rp 0</div></div>
+          <div class="card"><div class="card-head">Total Transaksi</div><div class="card-val" id="sipTotalTrx">0 Berkas</div></div>
         </div>
-
         <div class="sales-grid">
           <div class="box-panel full-width">
             <div class="panel-header"><span>Rekap Piutang SIPLah Per Marketing</span></div>
-            <div class="table-container" style="height: 240px;">
-              <table class="custom-table">
-                <thead><tr><th>Marketing</th><th>Jml Sekolah</th><th>Total Keseluruhan</th><th>Harga JL MSK</th></tr></thead>
-                <tbody id="tblSiplahMkt"><tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr></tbody>
-              </table>
-            </div>
+            <div class="table-container" style="height:240px;"><table class="custom-table"><thead><tr><th>Marketing</th><th>Jml Sekolah</th><th>Total Keseluruhan</th><th>Harga JL MSK</th></tr></thead><tbody id="tblSiplahMkt"></tbody></table></div>
           </div>
           <div class="box-panel full-width">
-            <div class="panel-header"><span>Rincian Seluruh Transaksi SIPLah Tertunda</span></div>
-            <div class="table-container" style="height: 380px;">
+            <div class="panel-header"><span>RINCIAN SELURUH TRANSAKSI SIPLAH TERTUNDA</span></div>
+            <div class="table-container" style="height:380px;">
               <table class="custom-table">
-                <thead><tr><th>No. Dok</th><th>SO MSK</th><th>Harga JL MSK</th><th>Nama Sekolah / User</th><th>Catatan</th><th>Posisi Uang</th><th>Marketing</th></tr></thead>
-                <tbody id="tblSiplahDetail"><tr><td colspan="7" style="text-align:center;">Memuat rincian data...</td></tr></tbody>
+                <thead><tr><th>No. Dok</th><th>SO MSK</th><th>Harga JL MSK</th><th>Nama Sekolah / User</th><th>Catatan</th><th>Posisi Uang</th></tr></thead>
+                <tbody id="tblSiplahDetail"><tr><td colspan="6" style="text-align:center;">Memuat...</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -699,11 +402,9 @@
   </div>
 
   <script>
-    // URL WEB APP APPS SCRIPT
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzC_FaMmWcqzY4SZSFPA3UL2xwIaqpjRU-RYGKpWmkLyC559qKL2Dnx4dSqSXuKVevgqw/exec";
-    
     const PALETTE_RED = '#dc2626';
-    const PALETTE_PIE = ['#dc2626', '#475569', '#cbd5e1', '#0f172a', '#94a3b8', '#64748b', '#e2e8f0'];
+    const PALETTE_PIE = ['#dc2626', '#475569', '#cbd5e1', '#0f172a', '#94a3b8', '#64748b'];
 
     const MAPPING_AREA_DIVISI = {
       "TEKNISI": ["1. Ruangan Teknisi & Alat Kerja", "2. Meja Kerja Teknisi", "3. Rak Sparepart & Unit Customer", "4. Lantai Area Service & Tempat Sampah"],
@@ -723,57 +424,36 @@
       "wiki": "TEKNISI", "suci": "KASIR", "ansar": "TEKNISI", "rio": "GUDANG",
       "rahmi": "ADMIN 01", "yiska": "ADMIN 02", "amaluddin": "MARKETING 01",
       "yuni": "MARKETING 02", "nuraeni": "MARKETING 03", "hci01": "Promotor Pembiayaan",
-      "hci02": "Promotor Pembiayaan", "hp": "Promotor HP", "infinix": "Promotor INFINIX",
-      "indodana": "Promotor Pembiayaan"
+      "hp": "Promotor HP", "infinix": "Promotor INFINIX"
     };
 
     function getStaffMapping() {
-      const saved = localStorage.getItem("STAFF_DIVISI_MAP");
+      let saved = localStorage.getItem("STAFF_DIVISI_MAP");
       if (saved) { try { return JSON.parse(saved); } catch(e) {} }
       return DEFAULT_STAFF_MAP;
     }
 
-    function saveStaffMapping(mapData) {
-      localStorage.setItem("STAFF_DIVISI_MAP", JSON.stringify(mapData));
+    function safeNum(val) {
+      if (val === null || val === undefined || val === '') return 0;
+      if (typeof val === 'number') return isNaN(val) ? 0 : val;
+      let str = String(val).replace(/[^0-9.-]/g, '');
+      let n = parseFloat(str);
+      return isNaN(n) ? 0 : n;
     }
 
-    // FORMAT RUPIAH ASLI LAMA (DIKEMBALIKAN PERTAMA KALI)
     function formatRupiah(val) {
-      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
-    }
-
-    // SANITASI KHUSUS POP-UP KEBERSIHAN
-    function sanitizeDenda(val, status) {
-      if (val === null || val === undefined || val === '') {
-        if (status && (String(status).toUpperCase().includes('DENDA') || String(status).includes('15000'))) return 15000;
-        return 0;
-      }
-      let num = Number(val);
-      if (isNaN(num) || num < 0 || num > 1000000) {
-        if (String(val).includes('15000') || (status && String(status).includes('15000'))) return 15000;
-        return 0;
-      }
-      return num;
-    }
-
-    function cleanAreaName(areaStr, defaultName) {
-      if (!areaStr || typeof areaStr !== 'string') return defaultName || 'Area Kebersihan';
-      let trimmed = areaStr.trim();
-      if (trimmed.toLowerCase().startsWith('http://') || trimmed.toLowerCase().startsWith('https://')) {
-        return defaultName || 'Area Kebersihan';
-      }
-      return trimmed;
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(safeNum(val));
     }
 
     let currentUser = null;
     let latestData = null;
     let currentDivisiCode = "TEKNISI";
-    let barDailyInst = null, barWeeklyInst = null, pieBrandInst = null, barDeptInst = null, barMktPerfInst = null;
+    let barDailyInst, barWeeklyInst, pieBrandInst, barDeptInst, barMktPerfInst;
     let rawBestSellerData = [];
 
     window.addEventListener("DOMContentLoaded", () => {
       initCharts();
-      const savedUser = localStorage.getItem("currentUser");
+      let savedUser = localStorage.getItem("currentUser");
       if (savedUser) {
         currentUser = JSON.parse(savedUser);
         applyUserAccess();
@@ -783,16 +463,13 @@
       }
     });
 
-    function checkEnterKey(e) { if (e.key === "Enter") performLogin(); }
-
     function performLogin() {
-      const u = document.getElementById("userInput").value;
-      const p = document.getElementById("passInput").value;
-
-      const script = document.createElement('script');
-      script.src = `${SCRIPT_URL}?action=login&username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}&callback=onLoginResult`;
-      document.body.appendChild(script);
-      document.body.removeChild(script);
+      let u = document.getElementById("userInput").value;
+      let p = document.getElementById("passInput").value;
+      let s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=login&username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}&callback=onLoginResult`;
+      document.body.appendChild(s);
+      document.body.removeChild(s);
     }
 
     function onLoginResult(res) {
@@ -802,511 +479,121 @@
         applyUserAccess();
         document.getElementById("loginOverlay").style.display = "none";
       } else {
-        document.getElementById("loginError").innerText = res.message;
-        document.getElementById("loginError").style.display = "block";
+        let err = document.getElementById("loginError");
+        err.innerText = res.message; err.style.display = "block";
       }
     }
 
     function applyUserAccess() {
       if (!currentUser) return;
-
-      const roleUpper = String(currentUser.role || "").toUpperCase();
-      const isAdmin = (roleUpper === "ADMIN");
-
       document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
-      
-      const hasPenjualan = isAdmin || (currentUser.akses && currentUser.akses.penjualan);
-      const hasKeuanganMtk = isAdmin || (currentUser.akses && (currentUser.akses.keuanganMtk || currentUser.akses.keuangan));
-      const hasKeuanganService = isAdmin || (currentUser.akses && currentUser.akses.keuanganService);
-      const hasSiplah = isAdmin || (currentUser.akses && currentUser.akses.siplah);
-      const hasKebersihan = isAdmin || (currentUser.akses && currentUser.akses.kebersihan);
-      const hasKpiKebersihan = isAdmin || (currentUser.akses && currentUser.akses.kpiKebersihan);
-      const hasAuditKebersihan = isAdmin || (currentUser.akses && currentUser.akses.auditKebersihan);
-
-      const elPenjualan = document.getElementById("nav-penjualan");
-      if (elPenjualan) elPenjualan.style.display = hasPenjualan ? "flex" : "none";
-
-      const elMarketing = document.getElementById("nav-marketing");
-      if (elMarketing) elMarketing.style.display = hasPenjualan ? "flex" : "none";
-
-      const elSiplah = document.getElementById("nav-siplah");
-      if (elSiplah) elSiplah.style.display = hasSiplah ? "flex" : "none";
-
-      const elKebersihan = document.getElementById("nav-kebersihan");
-      if (elKebersihan) elKebersihan.style.display = hasKebersihan ? "flex" : "none";
-
-      const elKpi = document.getElementById("nav-kpi-kebersihan");
-      if (elKpi) elKpi.style.display = hasKpiKebersihan ? "flex" : "none";
-
-      const elAudit = document.getElementById("nav-audit-kebersihan");
-      if (elAudit) elAudit.style.display = hasAuditKebersihan ? "flex" : "none";
-
-      const elKeuanganDrop = document.getElementById("keuanganDropdown");
-      if (elKeuanganDrop) elKeuanganDrop.style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
-
-      const elSubMtk = document.getElementById("btnSubKeuanganMtk");
-      if (elSubMtk) elSubMtk.style.display = hasKeuanganMtk ? "flex" : "none";
-
-      const elSubService = document.getElementById("btnSubKeuanganService");
-      if (elSubService) elSubService.style.display = hasKeuanganService ? "flex" : "none";
-
-      const staffMap = getStaffMapping();
+      let staffMap = getStaffMapping();
       let userKey = String(currentUser.username || currentUser.nama || "").toLowerCase();
-
-      if (staffMap[userKey]) {
-        currentDivisiCode = staffMap[userKey];
-      } else {
-        if (roleUpper.includes("TEKNISI")) currentDivisiCode = "TEKNISI";
-        else if (roleUpper.includes("KASIR")) currentDivisiCode = "KASIR";
-        else if (roleUpper.includes("ADMIN")) currentDivisiCode = "ADMIN 01";
-        else if (roleUpper.includes("MARKETING")) currentDivisiCode = "MARKETING 01";
-        else if (roleUpper.includes("GUDANG")) currentDivisiCode = "GUDANG";
-        else currentDivisiCode = "TEKNISI";
-      }
-
-      const selDiv = document.getElementById("selDivisiArea");
-      if (selDiv) selDiv.value = currentDivisiCode;
-
-      const adminPanel = document.getElementById("adminMappingPanel");
-      if (adminPanel) {
-        if (isAdmin) {
-          if (selDiv) selDiv.disabled = false;
-          adminPanel.style.display = "block";
-          renderAdminStaffTable();
-        } else {
-          if (selDiv) selDiv.disabled = true;
-          adminPanel.style.display = "none";
-        }
-      }
-
+      currentDivisiCode = staffMap[userKey] || "TEKNISI";
+      
+      document.getElementById("selDivisiArea").value = currentDivisiCode;
       renderAreaCards(currentDivisiCode);
       initAuditFormOptions();
-
-      if (hasKebersihan) {
-        switchTab('kebersihan', document.getElementById("nav-kebersihan"));
-      } else if (hasAuditKebersihan) {
-        switchTab('audit-kebersihan-tab', document.getElementById("nav-audit-kebersihan"));
-      } else if (hasKpiKebersihan) {
-        switchTab('kpi-kebersihan-tab', document.getElementById("nav-kpi-kebersihan"));
-      } else if (hasPenjualan) {
-        switchTab('penjualan', document.getElementById("nav-penjualan"));
-      } else if (hasKeuanganMtk) {
-        switchTab('keuangan-mtk-tab', document.getElementById("btnSubKeuanganMtk"));
-      } else if (hasKeuanganService) {
-        switchTab('keuangan-service-tab', document.getElementById("btnSubKeuanganService"));
-      }
       fetchStats();
-    }
-
-    function initAuditFormOptions() {
-      if (currentUser) {
-        const auditorEl = document.getElementById("auditAuditorName");
-        if (auditorEl) auditorEl.value = `${currentUser.nama} (${currentUser.role})`;
-      }
-      const staffMap = getStaffMapping();
-      let optionsHtml = "";
-      Object.keys(staffMap).forEach(uname => {
-        optionsHtml += `<option value="${uname}">${uname.toUpperCase()} - (${staffMap[uname]})</option>`;
-      });
-      const staffSel = document.getElementById("auditStaffTarget");
-      if (staffSel) {
-        staffSel.innerHTML = optionsHtml;
-        if (Object.keys(staffMap).length > 0) {
-          onAuditStaffChange(Object.keys(staffMap)[0]);
-        }
-      }
-    }
-
-    function onAuditStaffChange(uname) {
-      const staffMap = getStaffMapping();
-      const divCode = staffMap[uname] || "TEKNISI";
-      const divDisp = document.getElementById("auditDivisiDisplay");
-      if (divDisp) divDisp.value = divCode;
-
-      const areaList = MAPPING_AREA_DIVISI[divCode] || [];
-      let areaHtml = "";
-      areaList.forEach(a => {
-        areaHtml += `<option value="${a}">${a}</option>`;
-      });
-      const areaTargetEl = document.getElementById("auditAreaTarget");
-      if (areaTargetEl) areaTargetEl.innerHTML = areaHtml;
-    }
-
-    async function simpanAuditKebersihan() {
-      if (!currentUser) return;
-      const staffTarget = document.getElementById("auditStaffTarget").value;
-      const divisiTarget = document.getElementById("auditDivisiDisplay").value;
-      const areaTarget = document.getElementById("auditAreaTarget").value;
-      const statusAudit = document.getElementById("auditStatusResult").value;
-      const catatan = document.getElementById("auditCatatan").value.trim();
-      const fotoFile = document.getElementById("auditFotoFile").files[0];
-
-      const btn = document.getElementById("btnSubmitAudit");
-      btn.disabled = true;
-      btn.innerText = "⏳ Menyimpan Hasil Audit Kebersihan...";
-
-      try {
-        const base64Foto = await fileToBase64(fotoFile);
-        const payload = {
-          action: "simpanAuditKebersihan",
-          auditor: currentUser.nama,
-          stafTarget: staffTarget.toUpperCase(),
-          divisiTarget: divisiTarget,
-          areaTarget: areaTarget,
-          statusAudit: statusAudit,
-          catatan: catatan,
-          base64Foto: base64Foto
-        };
-
-        fetch(SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }).then(() => {
-          alert(`Berhasil menyimpan Audit Kebersihan untuk ${staffTarget.toUpperCase()} pada ${areaTarget}!`);
-          document.getElementById("auditCatatan").value = "";
-          document.getElementById("auditFotoFile").value = "";
-          document.getElementById("prev_audit_foto").style.display = "none";
-          btn.disabled = false;
-          btn.innerText = "🚀 Simpan Hasil Audit Kebersihan Toko";
-          
-          setTimeout(fetchStats, 1500);
-        });
-      } catch (e) {
-        alert("Gagal menyimpan hasil audit. Silakan coba kembali.");
-        btn.disabled = false;
-        btn.innerText = "🚀 Simpan Hasil Audit Kebersihan Toko";
-      }
-    }
-
-    function renderAdminStaffTable() {
-      const staffMap = getStaffMapping();
-      let html = "";
-      Object.keys(staffMap).forEach(uname => {
-        let div = staffMap[uname];
-        html += `
-          <tr>
-            <td><b style="color:#0f172a; text-transform:uppercase;">${uname}</b></td>
-            <td>
-              <select onchange="updateStaffMapping('${uname}', this.value)" style="padding:4px 8px; border-radius:4px; border:1px solid #cbd5e1; font-size:11px; font-weight:bold;">
-                <option value="TEKNISI" ${div === 'TEKNISI' ? 'selected' : ''}>🔧 Teknisi / Service</option>
-                <option value="KASIR" ${div === 'KASIR' ? 'selected' : ''}>💳 Kasir</option>
-                <option value="ADMIN 01" ${div === 'ADMIN 01' ? 'selected' : ''}>💻 Admin 01</option>
-                <option value="ADMIN 02" ${div === 'ADMIN 02' ? 'selected' : ''}>💻 Admin 02</option>
-                <option value="MARKETING 01" ${div === 'MARKETING 01' ? 'selected' : ''}>📢 Marketing 01</option>
-                <option value="MARKETING 02" ${div === 'MARKETING 02' ? 'selected' : ''}>📢 Marketing 02</option>
-                <option value="MARKETING 03" ${div === 'MARKETING 03' ? 'selected' : ''}>📢 Marketing 03</option>
-                <option value="GUDANG" ${div === 'GUDANG' ? 'selected' : ''}>📦 Gudang / Logistik</option>
-                <option value="Promotor Pembiayaan" ${div === 'Promotor Pembiayaan' ? 'selected' : ''}>🤝 Promotor Pembiayaan</option>
-                <option value="Promotor HP" ${div === 'Promotor HP' ? 'selected' : ''}>📱 Promotor HP</option>
-                <option value="Promotor INFINIX" ${div === 'Promotor INFINIX' ? 'selected' : ''}>📱 Promotor INFINIX</option>
-              </select>
-            </td>
-            <td>
-              <button onclick="deleteStaffMapping('${uname}')" style="background:#fee2e2; color:#dc2626; border:1px solid #fecaca; padding:3px 8px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer;">Hapus</button>
-            </td>
-          </tr>
-        `;
-      });
-      const container = document.getElementById("tblStaffMapping");
-      if (container) container.innerHTML = html || `<tr><td colspan="3" style="text-align:center;">Belum ada pemetaan staf.</td></tr>`;
-    }
-
-    function updateStaffMapping(uname, newDivisi) {
-      const map = getStaffMapping();
-      map[uname.toLowerCase()] = newDivisi;
-      saveStaffMapping(map);
-      initAuditFormOptions();
-      alert(`Berhasil memperbarui divisi untuk ${uname.toUpperCase()} menjadi ${newDivisi}`);
-    }
-
-    function deleteStaffMapping(uname) {
-      if (confirm(`Hapus pemetaan divisi khusus untuk ${uname.toUpperCase()}?`)) {
-        const map = getStaffMapping();
-        delete map[uname.toLowerCase()];
-        saveStaffMapping(map);
-        renderAdminStaffTable();
-        initAuditFormOptions();
-      }
-    }
-
-    function addNewStaffMapping() {
-      const nameInput = document.getElementById("newStaffName").value.trim().toLowerCase();
-      const divInput = document.getElementById("newStaffDivisi").value;
-      if (!nameInput) {
-        alert("Harap masukkan Username / Nama Staf!");
-        return;
-      }
-      const map = getStaffMapping();
-      map[nameInput] = divInput;
-      saveStaffMapping(map);
-      document.getElementById("newStaffName").value = "";
-      renderAdminStaffTable();
-      initAuditFormOptions();
-      alert(`Pemetaan divisi untuk ${nameInput.toUpperCase()} (${divInput}) telah disimpan!`);
-    }
-
-    function toggleAdminPanelVisibility() {
-      const content = document.getElementById("adminPanelContent");
-      if (content) content.style.display = content.style.display === "none" ? "block" : "none";
-    }
-
-    function changeDivisiArea(divisiCode) {
-      if (currentUser && String(currentUser.role).toUpperCase() === "ADMIN") {
-        currentDivisiCode = divisiCode;
-        renderAreaCards(divisiCode);
-        if (latestData) renderUI(latestData);
-      }
-    }
-
-    function renderAreaCards(divisiCode) {
-      const areaList = MAPPING_AREA_DIVISI[divisiCode] || MAPPING_AREA_DIVISI["TEKNISI"];
-      let html = "";
-
-      areaList.forEach((areaName, idx) => {
-        let areaNum = idx + 1;
-        html += `
-          <div class="area-card">
-            <div class="area-title">${areaName}</div>
-            <div class="cam-grid">
-              <div class="cam-box">
-                <span style="font-size:11px; font-weight:bold;">Foto Before</span>
-                <input type="file" accept="image/*" capture="environment" id="file_a${areaNum}_b" onchange="previewCam(this, 'prev_a${areaNum}_b')" style="display:none;">
-                <button class="btn-cam" onclick="document.getElementById('file_a${areaNum}_b').click()">📷 Buka Kamera Before</button>
-                <img id="prev_a${areaNum}_b" class="preview-img">
-              </div>
-              <div class="cam-box">
-                <span style="font-size:11px; font-weight:bold;">Foto After</span>
-                <input type="file" accept="image/*" capture="environment" id="file_a${areaNum}_a" onchange="previewCam(this, 'prev_a${areaNum}_a')" style="display:none;">
-                <button class="btn-cam" onclick="document.getElementById('file_a${areaNum}_a').click()">📷 Buka Kamera After</button>
-                <img id="prev_a${areaNum}_a" class="preview-img">
-              </div>
-            </div>
-            <button id="btn_submit_a${areaNum}" class="btn-area-submit" onclick="kirimLaporanArea(${areaNum}, '${areaName}')">🚀 Kirim Laporan Area ${areaNum}</button>
-            <div id="status_a${areaNum}" class="area-status-badge"></div>
-          </div>
-        `;
-      });
-
-      const container = document.getElementById("areaCardsContainer");
-      if (container) container.innerHTML = html;
-    }
-
-    function handleLogout() {
-      localStorage.removeItem("currentUser");
-      window.location.reload();
-    }
-
-    function toggleDropdown(containerId) {
-      const el = document.getElementById(containerId);
-      if (el) el.classList.toggle('open');
+      switchTab('kebersihan', document.getElementById("nav-kebersihan"));
     }
 
     function switchTab(tabId, btn) {
       document.querySelectorAll('.tab-page').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-      
-      const targetTab = document.getElementById(tabId);
-      if(targetTab) targetTab.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
       if(btn) btn.classList.add('active');
-
-      const titleMap = { 
-        'kebersihan': 'Tugas Kebersihan',
-        'audit-kebersihan-tab': 'Audit Kebersihan Toko',
-        'kpi-kebersihan-tab': 'Progres Area Kebersihan',
-        'penjualan': 'Penjualan', 
-        'keuangan-mtk-tab': 'Keuangan MTK', 
-        'keuangan-service-tab': 'Keuangan Service', 
-        'marketing-perf': 'Marketing', 
-        'siplah-tertunda': 'SIPLah Tertunda' 
-      };
-      const titleBadge = document.getElementById("headerPageTitle");
-      if (titleBadge) titleBadge.innerText = titleMap[tabId] || 'Dashboard';
-    }
-
-    function previewCam(input, prevId) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const img = document.getElementById(prevId);
-          if (img) {
-            img.src = e.target.result;
-            img.style.display = "block";
-          }
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-    function fileToBase64(file) {
-      return new Promise((resolve, reject) => {
-        if (!file) resolve(null);
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-      });
-    }
-
-    async function kirimLaporanArea(areaIdx, areaTitle) {
-      if (!currentUser) return;
-
-      const fileB = document.getElementById(`file_a${areaIdx}_b`).files[0];
-      const fileA = document.getElementById(`file_a${areaIdx}_a`).files[0];
-
-      if (!fileB && !fileA) {
-        alert(`Harap ambil minimal 1 foto kamera (Before atau After) untuk ${areaTitle}!`);
-        return;
-      }
-
-      const btn = document.getElementById(`btn_submit_a${areaIdx}`);
-      btn.disabled = true;
-      btn.innerText = "⏳ Mengunggah Foto & Mengirim Laporan...";
-
-      try {
-        const base64B = await fileToBase64(fileB);
-        const base64A = await fileToBase64(fileA);
-
-        const payload = {
-          action: "simpanKebersihanArea",
-          username: currentUser.username,
-          namaStaf: currentUser.nama,
-          namaArea: areaTitle,
-          base64Before: base64B,
-          base64After: base64A
-        };
-
-        fetch(SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }).then(() => {
-          alert(`Laporan ${areaTitle} berhasil terkirim!`);
-          
-          const statusDiv = document.getElementById(`status_a${areaIdx}`);
-          if (statusDiv) {
-            statusDiv.style.display = "block";
-            if (fileB && fileA) {
-              statusDiv.className = "area-status-badge status-success";
-              statusDiv.innerText = `✓ ${areaTitle} Selesai Lengkap (Foto Before & After)`;
-            } else {
-              statusDiv.className = "area-status-badge status-warning";
-              statusDiv.innerText = `⚠️ ${areaTitle} Terkirim (Foto Tidak Lengkap - Denda Rp 15.000)`;
-            }
-          }
-          btn.innerText = `✓ ${areaTitle} Sudah Dikirim`;
-          
-          setTimeout(fetchStats, 1500);
-        });
-      } catch (err) {
-        alert("Gagal memproses foto. Silakan coba lagi.");
-        btn.disabled = false;
-        btn.innerText = `🚀 Kirim Laporan Area ${areaIdx}`;
-      }
+      
+      const titles = { 'kebersihan': 'Tugas Kebersihan', 'audit-kebersihan-tab': 'Audit Kebersihan', 'kpi-kebersihan-tab': 'Progres Area Kebersihan', 'penjualan': 'Penjualan', 'keuangan-mtk-tab': 'Keuangan MTK', 'keuangan-service-tab': 'Keuangan Service', 'marketing-perf': 'Marketing', 'siplah-tertunda': 'SIPLah Tertunda' };
+      document.getElementById("headerPageTitle").innerText = titles[tabId] || 'Dashboard';
     }
 
     function fetchStats() {
-      const script = document.createElement('script');
-      script.src = `${SCRIPT_URL}?callback=renderUI&ts=${new Date().getTime()}`;
-      document.body.appendChild(script);
-      document.body.removeChild(script);
+      let s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?callback=renderUI&ts=${new Date().getTime()}`;
+      document.body.appendChild(s);
+      document.body.removeChild(s);
     }
 
-    // --- MAIN RENDER UI DASHBOARD (SETIAP MODUL DIISOLASI DENGAN TRY-CATCH) ---
+    // --- RENDER UTAMA ---
     function renderUI(data) {
       if (!data) return;
       latestData = data;
 
-      // 1. DATA PENJUALAN
+      // 1. PENJUALAN
       try {
         if (data.sales) {
-          const s = data.sales;
+          let s = data.sales;
           if (s.kpi) {
             document.getElementById("pPencapaianToko").innerText = formatRupiah(s.kpi.pencapaianToko);
-            document.getElementById("pTotalInv").innerText = s.kpi.totalInvoice || 0;
+            document.getElementById("pPencapaianTokoAvg").innerText = `Avg: ${formatRupiah(s.kpi.avgHarian)} / hari`;
+            document.getElementById("pTotalInv").innerText = s.kpi.totalInvoice;
+            document.getElementById("pTotalInvAvg").innerText = `Avg: ${s.kpi.avgInvoice} inv / hari`;
             document.getElementById("pMktVal").innerText = formatRupiah(s.kpi.pencapaianMarketing);
+            document.getElementById("pMktValAvg").innerText = `Avg: ${formatRupiah(s.kpi.avgMkt)} / hari`;
             document.getElementById("pAdmVal").innerText = formatRupiah(s.kpi.pencapaianAdmin);
+            document.getElementById("pAdmValAvg").innerText = `Avg: ${formatRupiah(s.kpi.avgAdm)} / hari`;
             document.getElementById("pTekVal").innerText = formatRupiah(s.kpi.pencapaianTeknisi);
+            document.getElementById("pTekValAvg").innerText = `Avg: ${formatRupiah(s.kpi.avgTek)} / hari`;
           }
-
           if (s.dailyResults && barDailyInst) {
             barDailyInst.data.labels = s.dailyResults.map(d => d.tgl);
             barDailyInst.data.datasets[0].data = s.dailyResults.map(d => d.omzet);
             barDailyInst.update();
           }
-
           if (s.weeklyResults && barWeeklyInst) {
-            barWeeklyInst.data.labels = s.weeklyResults.map(w => w.minggum || w.minggu || '-');
+            barWeeklyInst.data.labels = s.weeklyResults.map(w => w.minggu);
             barWeeklyInst.data.datasets[0].data = s.weeklyResults.map(w => w.omzet);
             barWeeklyInst.update();
           }
-
-          if (s.monthlyPerformance && s.monthlyPerformance.length > 0) {
-            document.getElementById("tblMonthlyPerf").innerHTML = s.monthlyPerformance.map(m => `
-              <tr><td><b>${m.bulan}</b></td><td><b>${formatRupiah(m.omzet)}</b></td></tr>
-            `).join('');
+          if (s.monthlyPerformance) {
+            document.getElementById("tblMonthlyPerf").innerHTML = s.monthlyPerformance.map(m => `<tr><td><b>${m.bulan}</b></td><td><b>${formatRupiah(m.omzet)}</b></td></tr>`).join('');
           }
-
           if (s.byBrand && pieBrandInst) {
             pieBrandInst.data.labels = s.byBrand.map(b => b.brand);
             pieBrandInst.data.datasets[0].data = s.byBrand.map(b => b.unit);
             pieBrandInst.update();
           }
-
           if (s.byDept && barDeptInst) {
             barDeptInst.data.labels = s.byDept.map(d => d.dept);
             barDeptInst.data.datasets[0].data = s.byDept.map(d => d.nilai);
             barDeptInst.update();
           }
-
-          if (s.bestSeller && s.bestSeller.length > 0) {
+          if (s.bestSeller) {
             rawBestSellerData = s.bestSeller;
             renderBestSellerTable('omzet');
           }
-
-          if (s.mktPerformance && s.mktPerformance.length > 0) {
+          if (s.mktPerformance) {
             renderMktPerformance(s.mktPerformance);
           }
         }
-      } catch (errSales) { console.error("Error Sales:", errSales); }
+      } catch(e) { console.error("Sales Error:", e); }
 
-      // 2. KEUANGAN KASIR (MTK)
+      // 2. KEUANGAN MTK
       try {
         if (data.keuangan) {
-          const k = data.keuangan;
+          let k = data.keuangan;
           document.getElementById("kTotalPenjualan").innerText = formatRupiah(k.totalPenjualan);
           document.getElementById("kTotalTransfer").innerText = formatRupiah(k.totalTransfer);
           document.getElementById("kTotalQrisEdc").innerText = formatRupiah(k.totalQrisEdc);
           document.getElementById("kTotalPembiayaan").innerText = formatRupiah(k.totalPembiayaan);
-          document.getElementById("kTotalTnt").innerText = formatRupiah(k.totalTnt || 0);
+          document.getElementById("kTotalTnt").innerText = formatRupiah(k.totalTnt);
           document.getElementById("kTotalDpPp").innerText = formatRupiah(k.totalDpPp);
           document.getElementById("kTotalTunai").innerText = formatRupiah(k.totalTunai);
           document.getElementById("kTotalPiutang").innerText = formatRupiah(k.totalPiutang);
 
-          if (k.breakdownHarian && k.breakdownHarian.length > 0) {
-            document.getElementById("tblKeuanganHarian").innerHTML = k.breakdownHarian.map(row => `
-              <tr>
-                <td><b>${row.tanggal}</b></td>
-                <td><b>${formatRupiah(row.total)}</b></td>
-                <td>${formatRupiah(row.transfer)}</td>
-                <td>${formatRupiah(row.qris)}</td>
-                <td>${formatRupiah(row.pembiayaan)}</td>
-                <td><b>${formatRupiah(row.tnt || 0)}</b></td>
-                <td>${formatRupiah(row.dppp)}</td>
-                <td>${formatRupiah(row.tunai)}</td>
-                <td style="color:${row.piutang > 0 ? '#dc2626' : 'inherit'}; font-weight:${row.piutang > 0 ? 'bold' : 'normal'};">${formatRupiah(row.piutang)}</td>
-              </tr>
+          if (k.breakdownHarian) {
+            document.getElementById("tblKeuanganHarian").innerHTML = k.breakdownHarian.map(r => `
+              <tr><td><b>${r.tanggal}</b></td><td><b>${formatRupiah(r.total)}</b></td><td>${formatRupiah(r.transfer)}</td><td>${formatRupiah(r.qris)}</td><td>${formatRupiah(r.pembiayaan)}</td><td><b>${formatRupiah(r.tnt)}</b></td><td>${formatRupiah(r.dppp)}</td><td>${formatRupiah(r.tunai)}</td><td style="color:${r.piutang>0?'#dc2626':''}; font-weight:${r.piutang>0?'bold':'normal'}">${formatRupiah(r.piutang)}</td></tr>
             `).join('');
           }
         }
-      } catch (errKeu) { console.error("Error Keuangan MTK:", errKeu); }
+      } catch(e) { console.error("Keuangan MTK Error:", e); }
 
       // 3. KEUANGAN SERVICE
       try {
         if (data.keuanganService) {
-          const ks = data.keuanganService;
+          let ks = data.keuanganService;
           document.getElementById("ksTotalPenjualan").innerText = formatRupiah(ks.totalPenjualan);
           document.getElementById("ksTotalTransfer").innerText = formatRupiah(ks.totalTransfer);
           document.getElementById("ksTotalQrisEdc").innerText = formatRupiah(ks.totalQrisEdc);
@@ -1315,575 +602,169 @@
           document.getElementById("ksTotalTunai").innerText = formatRupiah(ks.totalTunai);
           document.getElementById("ksTotalPiutang").innerText = formatRupiah(ks.totalPiutang);
 
-          if (ks.breakdownHarian && ks.breakdownHarian.length > 0) {
-            document.getElementById("tblKeuanganServiceHarian").innerHTML = ks.breakdownHarian.map(row => `
-              <tr>
-                <td><b>${row.tanggal}</b></td>
-                <td><b>${formatRupiah(row.total)}</b></td>
-                <td>${formatRupiah(row.transfer)}</td>
-                <td>${formatRupiah(row.qris)}</td>
-                <td>${formatRupiah(row.pembiayaan)}</td>
-                <td>${formatRupiah(row.dppp)}</td>
-                <td>${formatRupiah(row.tunai)}</td>
-                <td style="color:${row.piutang > 0 ? '#dc2626' : 'inherit'}; font-weight:${row.piutang > 0 ? 'bold' : 'normal'};">${formatRupiah(row.piutang)}</td>
-              </tr>
+          if (ks.breakdownHarian) {
+            document.getElementById("tblKeuanganServiceHarian").innerHTML = ks.breakdownHarian.map(r => `
+              <tr><td><b>${r.tanggal}</b></td><td><b>${formatRupiah(r.total)}</b></td><td>${formatRupiah(r.transfer)}</td><td>${formatRupiah(r.qris)}</td><td>${formatRupiah(r.pembiayaan)}</td><td>${formatRupiah(r.dppp)}</td><td>${formatRupiah(r.tunai)}</td><td style="color:${r.piutang>0?'#dc2626':''}; font-weight:${r.piutang>0?'bold':'normal'}">${formatRupiah(r.piutang)}</td></tr>
             `).join('');
           }
         }
-      } catch (errKs) { console.error("Error Keuangan Service:", errKs); }
+      } catch(e) { console.error("Keuangan Service Error:", e); }
 
       // 4. SIPLAH TERTUNDA
       try {
         if (data.siplah) {
-          const sp = data.siplah;
+          let sp = data.siplah;
           document.getElementById("sipTotalNilai").innerText = formatRupiah(sp.totalKeseluruhan);
           document.getElementById("sipTotalMsk").innerText = formatRupiah(sp.totalHargaMsk);
           document.getElementById("sipTotalTrx").innerText = sp.totalTransaksi + " Berkas";
 
           if (sp.byMarketing) {
             document.getElementById("tblSiplahMkt").innerHTML = sp.byMarketing.map(m => `
-              <tr><td><b>${m.nama}</b></td><td>${m.count} Sekolah</td><td><b>${formatRupiah(m.total)}</b></td><td>${formatRupiah(m.msk)}</td></tr>
+              <tr><td><b>${m.marketing}</b></td><td>${m.count} Sekolah</td><td><b>${formatRupiah(m.total)}</b></td><td>${formatRupiah(m.msk)}</td></tr>
             `).join('');
           }
-
           if (sp.listDetail) {
             document.getElementById("tblSiplahDetail").innerHTML = sp.listDetail.map(d => `
-              <tr><td><b>${d.noDok}</b></td><td><b>${d.soMsk}</b></td><td>${formatRupiah(d.hargaMsk)}</td><td><b>${d.user}</b></td><td><span class="badge-status badge-yellow">${d.catatan}</span></td><td>${d.posUang}</td><td><b>${d.marketing}</b></td></tr>
+              <tr><td><b>${d.noDok}</b></td><td><b>${d.soMsk}</b></td><td>${formatRupiah(d.hargaMsk)}</td><td><b>${d.user}</b></td><td><span class="badge-status badge-yellow">${d.catatan}</span></td><td>${d.posUang}</td></tr>
             `).join('');
           }
         }
-      } catch (errSip) { console.error("Error SIPLah:", errSip); }
+      } catch(e) { console.error("SIPLah Error:", e); }
 
-      // 5. RIWAYAT TUGAS KEBERSIHAN
+      // 5. KEBERSIHAN & AUDIT (UTUH)
       try {
-        if (data.kebersihan && data.kebersihan.riwayat) {
-          let filteredRiwayat = data.kebersihan.riwayat;
-
+        if (data.kebersihan) {
+          let riwayat = data.kebersihan.riwayat;
           if (currentUser && currentUser.role !== "ADMIN") {
-            filteredRiwayat = filteredRiwayat.filter(r => 
-              String(r.nama).trim().toUpperCase() === String(currentUser.nama).trim().toUpperCase()
-            );
+            riwayat = riwayat.filter(r => String(r.nama).trim().toUpperCase() === String(currentUser.nama).trim().toUpperCase());
           }
+          document.getElementById("tblRiwayatKebersihan").innerHTML = riwayat.length === 0 ? `<tr><td colspan="6" style="text-align:center;">Belum ada riwayat.</td></tr>` : riwayat.map(r => `
+            <tr><td><b>${r.tgl}</b></td><td><b>${r.nama}</b></td><td><b>${r.area}</b></td><td><a href="${r.urlBefore}" target="_blank">Before</a> | <a href="${r.urlAfter}" target="_blank">After</a></td><td><span class="badge-status ${r.denda>0?'badge-red':'badge-green'}">${r.status}</span></td><td>Rp ${Number(r.denda||0).toLocaleString('id-ID')}</td></tr>
+          `).join('');
 
-          const todayDate = new Date();
-          const activeAreaList = MAPPING_AREA_DIVISI[currentDivisiCode] || MAPPING_AREA_DIVISI["TEKNISI"];
-
-          activeAreaList.forEach((areaFullName, idx) => {
-            let areaNum = idx + 1;
-            let todayReport = filteredRiwayat.find(r => {
-              let isUser = currentUser && String(r.nama).trim().toUpperCase() === String(currentUser.nama).trim().toUpperCase();
-              let isAreaMatch = String(r.area).startsWith(String(areaNum)) || String(r.area).trim().toUpperCase() === String(areaFullName).trim().toUpperCase();
-              
-              let isToday = false;
-              if (r.tgl) {
-                let datePart = String(r.tgl).split(' ')[0];
-                let parts = datePart.split('/');
-                if (parts.length === 3) {
-                  let day = parseInt(parts[0], 10);
-                  let month = parseInt(parts[1], 10) - 1;
-                  let year = parseInt(parts[2], 10);
-                  isToday = (day === todayDate.getDate() && 
-                             month === todayDate.getMonth() && 
-                             year === todayDate.getFullYear());
-                }
-              }
-              return isUser && isAreaMatch && isToday;
-            });
-
-            const btn = document.getElementById(`btn_submit_a${areaNum}`);
-            const statusDiv = document.getElementById(`status_a${areaNum}`);
-            const imgB = document.getElementById(`prev_a${areaNum}_b`);
-            const imgA = document.getElementById(`prev_a${areaNum}_a`);
-
-            if (todayReport) {
-              if (todayReport.urlBefore && String(todayReport.urlBefore).trim().toLowerCase().startsWith('http')) {
-                if (imgB) { imgB.src = todayReport.urlBefore; imgB.style.display = 'block'; }
-              }
-              if (todayReport.urlAfter && String(todayReport.urlAfter).trim().toLowerCase().startsWith('http')) {
-                if (imgA) { imgA.src = todayReport.urlAfter; imgA.style.display = 'block'; }
-              }
-
-              let dVal = sanitizeDenda(todayReport.denda, todayReport.status);
-
-              if (statusDiv) {
-                statusDiv.style.display = "block";
-                if (dVal > 0) {
-                  statusDiv.className = "area-status-badge status-warning";
-                  statusDiv.innerText = `⚠️ ${todayReport.area} Terkirim (Foto Tidak Lengkap - Denda Rp 15.000)`;
-                } else {
-                  statusDiv.className = "area-status-badge status-success";
-                  statusDiv.innerText = `✓ ${todayReport.area} Selesai Lengkap Hari Ini`;
-                }
-              }
-
-              if (btn) {
-                btn.innerText = `✓ Area ${areaNum} Sudah Dikirim Hari Ini`;
-              }
-            }
-          });
-
-          const tblKeb = document.getElementById("tblRiwayatKebersihan");
-          if (tblKeb) {
-            if (filteredRiwayat.length === 0) {
-              tblKeb.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada riwayat laporan kebersihan untuk akun ini.</td></tr>`;
-            } else {
-              tblKeb.innerHTML = filteredRiwayat.map(r => {
-                let displayTgl = String(r.tgl).replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
-
-                let isUrlBefore = r.urlBefore && String(r.urlBefore).trim().toLowerCase().startsWith('http');
-                let isUrlAfter = r.urlAfter && String(r.urlAfter).trim().toLowerCase().startsWith('http');
-
-                let linkBeforeBtn = isUrlBefore 
-                  ? `<a href="${r.urlBefore}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Before</a>` 
-                  : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
-
-                let linkAfterBtn = isUrlAfter 
-                  ? `<a href="${r.urlAfter}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#dcfce7; color:#15803d; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ After</a>` 
-                  : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
-
-                let dVal = sanitizeDenda(r.denda, r.status);
-                let areaClean = cleanAreaName(r.area, 'Area Kebersihan');
-
-                return `
-                  <tr>
-                    <td><b>${displayTgl}</b></td>
-                    <td><b>${r.nama}</b></td>
-                    <td><b>${areaClean}</b></td>
-                    <td>${linkBeforeBtn} &nbsp; ${linkAfterBtn}</td>
-                    <td>
-                      <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${dVal > 0 ? '#fee2e2' : '#dcfce7'}; color:${dVal > 0 ? '#dc2626' : '#15803d'};">
-                        ${dVal > 0 ? 'TIDAK LENGKAP' : 'LENGKAP'}
-                      </span>
-                    </td>
-                    <td style="color:${dVal > 0 ? '#dc2626' : 'inherit'}; font-weight:${dVal > 0 ? 'bold' : 'normal'};">
-                      Rp ${dVal.toLocaleString('id-ID')}
-                    </td>
-                  </tr>
-                `;
-              }).join('');
-            }
-          }
+          document.getElementById("tblRiwayatAudit").innerHTML = data.kebersihan.audit.length === 0 ? `<tr><td colspan="7" style="text-align:center;">Belum ada audit.</td></tr>` : data.kebersihan.audit.map(a => `
+            <tr><td><b>${a.waktu}</b></td><td><b>${a.auditor}</b></td><td><b>${a.stafTarget}</b></td><td><b>${a.areaTarget}</b></td><td><span class="badge-status badge-yellow">${a.status}</span></td><td><a href="${a.urlFoto}" target="_blank">Foto</a></td><td>${a.catatan}</td></tr>
+          `).join('');
         }
-      } catch (errKeb) { console.error("Error Riwayat Kebersihan:", errKeb); }
-
-      // 6. RIWAYAT AUDIT KEBERSIHAN TOKO
-      try {
-        if (data.kebersihan && data.kebersihan.audit) {
-          renderAuditHistoryTable(data.kebersihan.audit);
-        }
-      } catch (errAud) { console.error("Error Audit Kebersihan:", errAud); }
-
-      // 7. KPI KEBERSIHAN & LEADERBOARD
-      try {
         if (data.kpiKebersihan) {
-          renderKpiKebersihan(data.kpiKebersihan);
+          let k = data.kpiKebersihan;
+          document.getElementById("kpiCleanRate").innerText = k.summary.overallCleanRate;
+          document.getElementById("kpiTotalLaporan").innerText = k.summary.totalLaporan;
+          document.getElementById("kpiTotalDenda").innerText = "Rp " + Number(k.summary.totalDendaToko).toLocaleString('id-ID');
+          document.getElementById("tblKpiStaffKebersihan").innerHTML = k.staffStats.map((st, i) => `
+            <tr><td><b>#${i+1}</b></td><td><b>${st.nama}</b></td><td>${st.totalLapor} Laporan</td><td>0 Audit</td><td>0 Area</td><td><span class="badge-status badge-green">${st.pctDisiplin}</span></td><td>Rp ${Number(st.totalDenda).toLocaleString('id-ID')}</td></tr>
+          `).join('');
         }
-      } catch (errKpi) { console.error("Error KPI Kebersihan:", errKpi); }
-    }
-
-    function renderAuditHistoryTable(auditList) {
-      const tblAud = document.getElementById("tblRiwayatAudit");
-      if (!tblAud) return;
-
-      if (!auditList || auditList.length === 0) {
-        tblAud.innerHTML = `<tr><td colspan="7" style="text-align:center;">Belum ada catatan hasil audit kebersihan toko.</td></tr>`;
-        return;
-      }
-
-      tblAud.innerHTML = auditList.map(a => {
-        let isFoto = a.urlFoto && String(a.urlFoto).trim().toLowerCase().startsWith('http');
-        let fotoBtn = isFoto 
-          ? `<a href="${a.urlFoto}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Lihat Temuan</a>` 
-          : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
-
-        let badgeBg = '#dcfce7', badgeColor = '#15803d';
-        if (a.status === 'TEGURAN') { badgeBg = '#fef9c3'; badgeColor = '#a16207'; }
-        else if (a.status === 'DENDA') { badgeBg = '#fee2e2'; badgeColor = '#dc2626'; }
-
-        let areaClean = cleanAreaName(a.areaTarget, 'Area Audit');
-
-        return `
-          <tr>
-            <td><b>${a.waktu || '-'}</b></td>
-            <td><b>${a.auditor || '-'}</b></td>
-            <td><b style="color:#dc2626;">${a.stafTarget || '-'}</b></td>
-            <td><b>${areaClean}</b></td>
-            <td><span style="padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; background:${badgeBg}; color:${badgeColor};">${a.status}</span></td>
-            <td>${fotoBtn}</td>
-            <td>${a.catatan || '-'}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    // --- POP-UP TABEL LAPORAN KEBERSIHAN HARIAN STAF ---
-    function getStaffRiwayatHtml(namaStaf) {
-      if (!latestData || !latestData.kebersihan || !latestData.kebersihan.riwayat) {
-        return '<tr><td colspan="5" style="text-align:center;">Tidak ada data riwayat.</td></tr>';
-      }
-
-      let list = latestData.kebersihan.riwayat.filter(r => {
-        let rNama = String(r.nama || '').trim().toUpperCase();
-        let target = String(namaStaf || '').trim().toUpperCase();
-        return rNama === target || target.includes(rNama) || rNama.includes(target);
-      });
-
-      if (list.length === 0) {
-        return '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:12px;">Belum ada riwayat laporan harian untuk staf ini.</td></tr>';
-      }
-
-      return list.map(r => {
-        let displayTgl = String(r.tgl || '-').replace(/Sat Dec 30 1899 /g, '').replace(/\(Waktu Indonesia Tengah\)/g, 'WITA').trim();
-
-        let urlB = r.urlBefore;
-        let urlA = r.urlAfter;
-
-        if (String(r.area).toLowerCase().startsWith('http')) {
-          if (!urlB || !String(urlB).toLowerCase().startsWith('http')) {
-            urlB = r.area;
-          }
-        }
-
-        let isUrlBefore = urlB && String(urlB).trim().toLowerCase().startsWith('http');
-        let isUrlAfter = urlA && String(urlA).trim().toLowerCase().startsWith('http');
-
-        let linkBeforeBtn = isUrlBefore 
-          ? `<a href="${urlB}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Before</a>` 
-          : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
-
-        let linkAfterBtn = isUrlAfter 
-          ? `<a href="${urlA}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#dcfce7; color:#15803d; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ After</a>` 
-          : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
-
-        let areaClean = cleanAreaName(r.area, 'Area Kebersihan');
-        let dendaVal = sanitizeDenda(r.denda, r.status);
-        let statusText = (r.status && !String(r.status).toLowerCase().startsWith('http')) 
-          ? r.status 
-          : (dendaVal > 0 ? 'TIDAK LENGKAP' : 'LENGKAP');
-
-        return `
-          <tr>
-            <td><b>${displayTgl}</b></td>
-            <td><b>${areaClean}</b></td>
-            <td>${linkBeforeBtn} &nbsp; ${linkAfterBtn}</td>
-            <td>
-              <span style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; background:${dendaVal > 0 ? '#fee2e2' : '#dcfce7'}; color:${dendaVal > 0 ? '#dc2626' : '#15803d'};">
-                ${statusText}
-              </span>
-            </td>
-            <td style="color:${dendaVal > 0 ? '#dc2626' : 'inherit'}; font-weight:${dendaVal > 0 ? 'bold' : 'normal'};">
-              Rp ${dendaVal.toLocaleString('id-ID')}
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    // --- POP-UP TABEL HASIL AUDIT KEBERSIHAN TOKO ---
-    function getStaffAuditHtml(namaStaf) {
-      if (!latestData || !latestData.kebersihan || !latestData.kebersihan.audit) {
-        return '<tr><td colspan="6" style="text-align:center;">Tidak ada data audit.</td></tr>';
-      }
-
-      let list = latestData.kebersihan.audit.filter(a => {
-        let aTarget = String(a.stafTarget || '').trim().toUpperCase();
-        let target = String(namaStaf || '').trim().toUpperCase();
-        return aTarget === target || target.includes(aTarget) || aTarget.includes(target);
-      });
-
-      if (list.length === 0) {
-        return '<tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:12px;">Belum ada catatan audit kebersihan untuk akun ini.</td></tr>';
-      }
-
-      return list.map(a => {
-        let isFoto = a.urlFoto && String(a.urlFoto).trim().toLowerCase().startsWith('http');
-        let fotoBtn = isFoto 
-          ? `<a href="${a.urlFoto}" target="_blank" rel="noopener noreferrer" style="padding: 3px 8px; background:#e0f2fe; color:#0284c7; border-radius:4px; text-decoration:none; font-weight:bold; font-size:10px;">👁️ Foto Temuan</a>` 
-          : `<span style="color:#94a3b8; font-size:10px;">(Tanpa Foto)</span>`;
-
-        let badgeBg = '#dcfce7', badgeColor = '#15803d';
-        if (a.status === 'TEGURAN') { badgeBg = '#fef9c3'; badgeColor = '#a16207'; }
-        else if (a.status === 'DENDA') { badgeBg = '#fee2e2'; badgeColor = '#dc2626'; }
-
-        let areaClean = cleanAreaName(a.areaTarget, 'Area Audit');
-
-        return `
-          <tr>
-            <td><b>${a.waktu || '-'}</b></td>
-            <td><b>${a.auditor || '-'}</b></td>
-            <td><b>${areaClean}</b></td>
-            <td><span style="padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; background:${badgeBg}; color:${badgeColor};">${a.status}</span></td>
-            <td>${fotoBtn}</td>
-            <td>${a.catatan || '-'}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function renderKpiKebersihan(data) {
-      if (!data || !data.summary) return;
-
-      document.getElementById("kpiCleanRate").innerText = data.summary.overallCleanRate || "0%";
-      document.getElementById("kpiTotalLaporan").innerText = data.summary.totalLaporan || 0;
-      document.getElementById("kpiAreaTerlewat").innerText = (data.summary.totalAreaTerlewat || 0) + " Area";
-      
-      let totDenda = sanitizeDenda(data.summary.totalDendaToko, '');
-      document.getElementById("kpiTotalDenda").innerText = "Rp " + totDenda.toLocaleString('id-ID');
-
-      if (latestData && latestData.kebersihan && latestData.kebersihan.audit) {
-        let auditList = latestData.kebersihan.audit;
-        let totalAudit = auditList.length;
-        let lulusAudit = auditList.filter(a => a.status === 'LULUS').length;
-        let temuanAudit = auditList.filter(a => a.status === 'TEGURAN' || a.status === 'DENDA').length;
-        let passRate = totalAudit > 0 ? ((lulusAudit / totalAudit) * 100).toFixed(1) + '%' : '100%';
-
-        const elAuditCount = document.getElementById("kpiTotalAuditCount");
-        if (elAuditCount) elAuditCount.innerText = totalAudit + " Inspeksi";
-
-        const elAuditPassRate = document.getElementById("kpiAuditPassRate");
-        if (elAuditPassRate) elAuditPassRate.innerText = passRate + " Lulus Standard";
-
-        const elAuditTemuan = document.getElementById("kpiTotalAuditTemuan");
-        if (elAuditTemuan) elAuditTemuan.innerText = temuanAudit + " Catatan";
-      }
-
-      const tblKpi = document.getElementById("tblKpiStaffKebersihan");
-      if (tblKpi) {
-        if (!data.staffStats || data.staffStats.length === 0) {
-          tblKpi.innerHTML = `<tr><td colspan="7" style="text-align:center;">Belum ada data rekap kedisiplinan staf.</td></tr>`;
-          return;
-        }
-
-        let html = "";
-        data.staffStats.forEach((s, idx) => {
-          let staffAuditList = (latestData && latestData.kebersihan && latestData.kebersihan.audit)
-            ? latestData.kebersihan.audit.filter(a => String(a.stafTarget).trim().toUpperCase() === String(s.nama).trim().toUpperCase())
-            : [];
-          let auditCount = staffAuditList.length;
-          let auditDendaCount = staffAuditList.filter(a => a.status === 'DENDA').length;
-
-          let staffDendaVal = sanitizeDenda(s.totalDenda, '');
-          let staffNamaClean = cleanAreaName(s.nama, 'STAF');
-
-          html += `
-            <tr style="cursor: pointer;" onclick="toggleStaffDetail(${idx})" title="Klik untuk membuka rincian laporan & hasil audit">
-              <td><b>#${idx + 1}</b></td>
-              <td><b>${staffNamaClean}</b></td>
-              <td>
-                <span style="color:#dc2626; font-weight:bold; text-decoration:underline;">
-                  ${s.totalLapor} Laporan ▾
-                </span>
-              </td>
-              <td>
-                <span style="color:#0284c7; font-weight:bold; text-decoration:underline;">
-                  ${auditCount} Audit ${auditDendaCount > 0 ? `<span style="color:#dc2626">(${auditDendaCount} Denda)</span>` : ''} ▾
-                </span>
-              </td>
-              <td style="color:${s.areaTerlewat > 0 ? '#dc2626' : '#15803d'}; font-weight:bold;">${s.areaTerlewat} Area</td>
-              <td><span class="badge-status ${parseFloat(s.pctDisiplin) >= 90 ? 'badge-green' : 'badge-red'}">${s.pctDisiplin}</span></td>
-              <td style="color:${staffDendaVal > 0 ? '#dc2626' : 'inherit'}; font-weight:bold;">Rp ${staffDendaVal.toLocaleString('id-ID')}</td>
-            </tr>
-            
-            <tr id="detail-row-${idx}" style="display: none; background: #f8fafc;">
-              <td colspan="7" style="padding: 12px 16px;">
-                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
-                  
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom:1px solid #f1f5f9; padding-bottom:8px;">
-                    <h5 style="font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase;">
-                      📊 EVALUASI KEBERSIHAN STAF: <span style="color:#dc2626;">${staffNamaClean}</span>
-                    </h5>
-                    <span style="font-size:11px; color:#64748b; font-weight:bold; cursor:pointer;" onclick="toggleStaffDetail(${idx})">✖ Tutup Rincian</span>
-                  </div>
-
-                  <!-- TAB PILIHAN SUB PANEL -->
-                  <div style="display:flex; gap:8px; margin-bottom:12px;">
-                    <button onclick="switchStaffSubTab(${idx}, 'laporan')" id="btnStaffTabLapor-${idx}" style="padding:6px 12px; border-radius:6px; border:1px solid #dc2626; background:#dc2626; color:white; font-size:11px; font-weight:bold; cursor:pointer;">
-                      📋 Laporan Kebersihan Harian (${s.totalLapor})
-                    </button>
-                    <button onclick="switchStaffSubTab(${idx}, 'audit')" id="btnStaffTabAudit-${idx}" style="padding:6px 12px; border-radius:6px; border:1px solid #cbd5e1; background:#f8fafc; color:#475569; font-size:11px; font-weight:bold; cursor:pointer;">
-                      🔍 Hasil Audit Kebersihan Toko (${auditCount})
-                    </button>
-                  </div>
-
-                  <!-- PANEL 1: LAPORAN KEBERSIHAN HARIAN -->
-                  <div id="staffSubPanelLapor-${idx}">
-                    <div class="table-container" style="height: auto; max-height: 220px; overflow-y: auto;">
-                      <table class="custom-table" style="font-size: 11px;">
-                        <thead>
-                          <tr>
-                            <th>Tanggal & Jam</th>
-                            <th>Nama Area</th>
-                            <th>Foto Before & After</th>
-                            <th>Status Laporan</th>
-                            <th>Denda (Rp)</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          ${getStaffRiwayatHtml(s.nama)}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  <!-- PANEL 2: HASIL AUDIT KEBERSIHAN TOKO -->
-                  <div id="staffSubPanelAudit-${idx}" style="display:none;">
-                    <div class="table-container" style="height: auto; max-height: 220px; overflow-y: auto;">
-                      <table class="custom-table" style="font-size: 11px;">
-                        <thead>
-                          <tr>
-                            <th>Waktu / Tanggal</th>
-                            <th>Auditor</th>
-                            <th>Area Diaudit</th>
-                            <th>Hasil Audit</th>
-                            <th>Bukti Foto</th>
-                            <th>Catatan Auditor</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          ${getStaffAuditHtml(s.nama)}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                </div>
-              </td>
-            </tr>
-          `;
-        });
-        tblKpi.innerHTML = html;
-      }
-    }
-
-    function switchStaffSubTab(idx, tabType) {
-      const panelLapor = document.getElementById(`staffSubPanelLapor-${idx}`);
-      const panelAudit = document.getElementById(`staffSubPanelAudit-${idx}`);
-      const btnLapor = document.getElementById(`btnStaffTabLapor-${idx}`);
-      const btnAudit = document.getElementById(`btnStaffTabAudit-${idx}`);
-
-      if (tabType === 'laporan') {
-        if (panelLapor) panelLapor.style.display = 'block';
-        if (panelAudit) panelAudit.style.display = 'none';
-
-        if (btnLapor) { btnLapor.style.background = '#dc2626'; btnLapor.style.color = 'white'; btnLapor.style.borderColor = '#dc2626'; }
-        if (btnAudit) { btnAudit.style.background = '#f8fafc'; btnAudit.style.color = '#475569'; btnAudit.style.borderColor = '#cbd5e1'; }
-      } else {
-        if (panelLapor) panelLapor.style.display = 'none';
-        if (panelAudit) panelAudit.style.display = 'block';
-
-        if (btnLapor) { btnLapor.style.background = '#f8fafc'; btnLapor.style.color = '#475569'; btnLapor.style.borderColor = '#cbd5e1'; }
-        if (btnAudit) { btnAudit.style.background = '#dc2626'; btnAudit.style.color = 'white'; btnAudit.style.borderColor = '#dc2626'; }
-      }
-    }
-
-    function toggleStaffDetail(idx) {
-      const row = document.getElementById(`detail-row-${idx}`);
-      if (row) {
-        row.style.display = (row.style.display === "none" || row.style.display === "") ? "table-row" : "none";
-      }
+      } catch(e) { console.error("Kebersihan Error:", e); }
     }
 
     function renderBestSellerTable(sortBy) {
       if (!rawBestSellerData) return;
-      let sortedList = [...rawBestSellerData];
-      if (sortBy === 'qty') sortedList.sort((a, b) => b.qty - a.qty);
-      else sortedList.sort((a, b) => b.total - a.total);
-
-      const container = document.getElementById("tblBestSeller");
-      if (container) {
-        container.innerHTML = sortedList.slice(0, 10).map((b, i) => `
-          <tr><td><b>#${i + 1}</b></td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td><b>${formatRupiah(b.total)}</b></td></tr>
-        `).join('');
-      }
+      let sorted = [...rawBestSellerData];
+      if (sortBy === 'qty') sorted.sort((a, b) => b.qty - a.qty);
+      else sorted.sort((a, b) => b.total - a.total);
+      document.getElementById("tblBestSeller").innerHTML = sorted.slice(0, 10).map((b, i) => `
+        <tr><td><b>#${i+1}</b></td><td><b>${b.item}</b></td><td>${b.qty} Pcs</td><td><b>${formatRupiah(b.total)}</b></td></tr>
+      `).join('');
     }
 
-    function changeBestSellerSort(val) { renderBestSellerTable(val); }
-
     function renderMktPerformance(list) {
-      var html = "";
-      var names = [], achData = [], targetData = [], runRateData = [];
-
-      list.forEach(item => {
-        names.push(item.nama);
-        achData.push(item.ach);
-        targetData.push(item.targetBln);
-        runRateData.push(item.runRate);
-
-        var rawPct = parseFloat(item.pctRunRate || 0);
-        var pctVal = rawPct <= 10 ? rawPct * 100 : rawPct;
-        var badgeClass = pctVal < 90 ? "badge-red" : (pctVal < 100 ? "badge-yellow" : "badge-green");
-
-        var pctAchVal = parseFloat(item.pctAch || 0);
-        var displayPct = pctAchVal <= 1 ? (pctAchVal * 100).toFixed(1) : pctAchVal.toFixed(1);
-
-        html += `
-          <tr>
-            <td><b>${item.nama}</b></td>
-            <td>${formatRupiah(item.ach)}</td>
-            <td>${formatRupiah(item.targetBln)}</td>
-            <td style="color:${item.targetHari < 0 ? '#dc2626' : '#16a34a'}; font-weight:bold;">${formatRupiah(item.targetHari)}</td>
-            <td><b>${displayPct}%</b></td>
-            <td>${formatRupiah(item.avgHari)}</td>
-            <td><b>${formatRupiah(item.runRate)}</b></td>
-            <td><span class="badge-status ${badgeClass}">${pctVal.toFixed(1)}%</span></td>
-          </tr>
-        `;
+      let html = "", names = [], ach = [], target = [], runRate = [];
+      list.forEach(m => {
+        names.push(m.nama); ach.push(m.ach); target.push(m.targetBln); runRate.push(m.runRate);
+        html += `<tr><td><b>${m.nama}</b></td><td><b>${formatRupiah(m.ach)}</b></td><td>${formatRupiah(m.targetBln)}</td><td>${formatRupiah(m.targetHari)}</td><td><b>${m.pctAch}%</b></td><td>${formatRupiah(m.avgHari)}</td><td><b>${formatRupiah(m.runRate)}</b></td><td><span class="badge-status badge-green">${m.pctRunRate}%</span></td></tr>`;
       });
-      const container = document.getElementById("tblMktPerf");
-      if (container) container.innerHTML = html;
-
+      document.getElementById("tblMktPerf").innerHTML = html;
       if (barMktPerfInst) {
         barMktPerfInst.data.labels = names;
-        barMktPerfInst.data.datasets[0].data = achData;
-        barMktPerfInst.data.datasets[1].data = targetData;
-        barMktPerfInst.data.datasets[2].data = runRateData;
+        barMktPerfInst.data.datasets[0].data = ach;
+        barMktPerfInst.data.datasets[1].data = target;
+        barMktPerfInst.data.datasets[2].data = runRate;
         barMktPerfInst.update();
       }
     }
 
-    function initCharts() {
-      Chart.defaults.font.family = 'Roboto';
-
-      barDailyInst = new Chart(document.getElementById('barDailyChart').getContext('2d'), {
-        type: 'bar',
-        data: { labels: Array.from({length: 31}, (_, i) => i + 1), datasets: [{ data: [], backgroundColor: PALETTE_RED, borderRadius: 3 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    function renderAreaCards(divCode) {
+      let areas = MAPPING_AREA_DIVISI[divCode] || MAPPING_AREA_DIVISI["TEKNISI"];
+      let html = "";
+      areas.forEach((a, i) => {
+        let idx = i + 1;
+        html += `<div class="area-card"><div class="area-title">${a}</div><div class="cam-grid"><div class="cam-box"><span>Before</span><input type="file" accept="image/*" capture="environment" id="file_a${idx}_b" onchange="previewCam(this, 'prev_a${idx}_b')" style="display:none"><button class="btn-cam" onclick="document.getElementById('file_a${idx}_b').click()">Kamera Before</button><img id="prev_a${idx}_b" class="preview-img"></div><div class="cam-box"><span>After</span><input type="file" accept="image/*" capture="environment" id="file_a${idx}_a" onchange="previewCam(this, 'prev_a${idx}_a')" style="display:none"><button class="btn-cam" onclick="document.getElementById('file_a${idx}_a').click()">Kamera After</button><img id="prev_a${idx}_a" class="preview-img"></div></div><button class="btn-area-submit" onclick="kirimLaporanArea(${idx}, '${a}')">Kirim Laporan Area ${idx}</button></div>`;
       });
+      document.getElementById("areaCardsContainer").innerHTML = html;
+    }
 
-      barWeeklyInst = new Chart(document.getElementById('barWeeklyChart').getContext('2d'), {
-        type: 'bar',
-        data: { labels: ['W1', 'W2', 'W3', 'W4', 'W5'], datasets: [{ label: 'Omzet', data: [0, 0, 0, 0, 0], backgroundColor: '#0f172a', borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-      });
+    function previewCam(input, prevId) {
+      if (input.files && input.files[0]) {
+        let r = new FileReader();
+        r.onload = e => { let img = document.getElementById(prevId); img.src = e.target.result; img.style.display = "block"; };
+        r.readAsDataURL(input.files[0]);
+      }
+    }
 
-      pieBrandInst = new Chart(document.getElementById('pieBrandChart').getContext('2d'), {
-        type: 'doughnut',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE, borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: false, cutout: '65%' }
-      });
-
-      barDeptInst = new Chart(document.getElementById('barDeptChart').getContext('2d'), {
-        type: 'doughnut',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE, borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: false, cutout: '65%' }
-      });
-
-      barMktPerfInst = new Chart(document.getElementById('barMktPerfChart').getContext('2d'), {
-        type: 'bar',
-        data: {
-          labels: [],
-          datasets: [
-            { label: 'Pencapaian', data: [], backgroundColor: '#dc2626', borderRadius: 4 },
-            { label: 'Target', data: [], backgroundColor: '#cbd5e1', borderRadius: 4 },
-            { label: 'Proyeksi', data: [], backgroundColor: '#0f172a', borderRadius: 4 }
-          ]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
+    function fileToBase64(file) {
+      return new Promise((resolve) => {
+        if (!file) resolve(null);
+        let r = new FileReader();
+        r.onload = () => resolve(r.result);
+        r.onerror = () => resolve(null);
+        r.readAsDataURL(file);
       });
     }
 
-    function showProfile() {
-      alert(`=== PROFIL USER ===\n\nNama: ${currentUser ? currentUser.nama : '-'}\nUsername: ${currentUser ? currentUser.username : '-'}\nRole: ${currentUser ? currentUser.role : '-'}`);
+    async function kirimLaporanArea(idx, areaTitle) {
+      if (!currentUser) return;
+      let b = document.getElementById(`file_a${idx}_b`).files[0];
+      let a = document.getElementById(`file_a${idx}_a`).files[0];
+      if (!b && !a) { alert("Ambil minimal 1 foto!"); return; }
+      
+      let payload = { action: "simpanKebersihanArea", username: currentUser.username, namaStaf: currentUser.nama, namaArea: areaTitle, base64Before: await fileToBase64(b), base64After: await fileToBase64(a) };
+      fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: {"Content-Type": "application/json"}, body: JSON.stringify(payload) }).then(() => {
+        alert("Laporan berhasil dikirim!");
+        setTimeout(fetchStats, 1500);
+      });
+    }
+
+    function initAuditFormOptions() {
+      if (!currentUser) return;
+      document.getElementById("auditAuditorName").value = `${currentUser.nama} (${currentUser.role})`;
+      let staffMap = getStaffMapping();
+      let html = "";
+      Object.keys(staffMap).forEach(u => { html += `<option value="${u}">${u.toUpperCase()} - (${staffMap[u]})</option>`; });
+      document.getElementById("auditStaffTarget").innerHTML = html;
+      if (Object.keys(staffMap).length > 0) onAuditStaffChange(Object.keys(staffMap)[0]);
+    }
+
+    function onAuditStaffChange(u) {
+      let div = getStaffMapping()[u] || "TEKNISI";
+      document.getElementById("auditDivisiDisplay").value = div;
+      let areas = MAPPING_AREA_DIVISI[div] || [];
+      document.getElementById("auditAreaTarget").innerHTML = areas.map(a => `<option value="${a}">${a}</option>`).join('');
+    }
+
+    async function simpanAuditKebersihan() {
+      let payload = {
+        action: "simpanAuditKebersihan",
+        auditor: currentUser.nama,
+        stafTarget: document.getElementById("auditStaffTarget").value.toUpperCase(),
+        divisiTarget: document.getElementById("auditDivisiDisplay").value,
+        areaTarget: document.getElementById("auditAreaTarget").value,
+        statusAudit: document.getElementById("auditStatusResult").value,
+        catatan: document.getElementById("auditCatatan").value,
+        base64Foto: await fileToBase64(document.getElementById("auditFotoFile").files[0])
+      };
+      fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: {"Content-Type": "application/json"}, body: JSON.stringify(payload) }).then(() => {
+        alert("Audit berhasil disimpan!");
+        setTimeout(fetchStats, 1500);
+      });
+    }
+
+    function initCharts() {
+      barDailyInst = new Chart(document.getElementById('barDailyChart'), { type: 'bar', data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_RED }] }, options: { responsive: true, maintainAspectRatio: false, plugins: {legend:{display:false}} } });
+      barWeeklyInst = new Chart(document.getElementById('barWeeklyChart'), { type: 'bar', data: { labels: [], datasets: [{ data: [], backgroundColor: '#0f172a' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: {legend:{display:false}} } });
+      pieBrandInst = new Chart(document.getElementById('pieBrandChart'), { type: 'doughnut', data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE }] }, options: { responsive: true, maintainAspectRatio: false } });
+      barDeptInst = new Chart(document.getElementById('barDeptChart'), { type: 'doughnut', data: { labels: [], datasets: [{ data: [], backgroundColor: PALETTE_PIE }] }, options: { responsive: true, maintainAspectRatio: false } });
+      barMktPerfInst = new Chart(document.getElementById('barMktPerfChart'), { type: 'bar', data: { labels: [], datasets: [{ label: 'Ach', data: [], backgroundColor: '#dc2626' }, { label: 'Target', data: [], backgroundColor: '#cbd5e1' }, { label: 'Proyeksi', data: [], backgroundColor: '#0f172a' }] }, options: { responsive: true, maintainAspectRatio: false } });
     }
   </script>
 </body>
