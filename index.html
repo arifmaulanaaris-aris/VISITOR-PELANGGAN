@@ -1259,19 +1259,17 @@
         if (data.sales) {
           const s = data.sales;
           if (s.kpi) {
-            // RENDERING NILAI UTAMA KPI
             document.getElementById("pPencapaianToko").innerText = formatRupiah(s.kpi.pencapaianToko);
             document.getElementById("pTotalInv").innerText = s.kpi.totalInvoice || 0;
             document.getElementById("pMktVal").innerText = formatRupiah(s.kpi.pencapaianMarketing);
             document.getElementById("pAdmVal").innerText = formatRupiah(s.kpi.pencapaianAdmin);
             document.getElementById("pTekVal").innerText = formatRupiah(s.kpi.pencapaianTeknisi);
 
-            // RENDERING RATA-RATA HARIAN (AVG)
-            let avgToko = s.kpi.pencapaianTokoAvg || s.kpi.avgToko || s.kpi.pencapaianToko_avg || 0;
-            let avgInv = s.kpi.totalInvoiceAvg || s.kpi.avgInvoice || s.kpi.totalInvoice_avg || 0;
-            let avgMkt = s.kpi.pencapaianMarketingAvg || s.kpi.avgMarketing || s.kpi.pencapaianMarketing_avg || 0;
-            let avgAdm = s.kpi.pencapaianAdminAvg || s.kpi.avgAdmin || s.kpi.pencapaianAdmin_avg || 0;
-            let avgTek = s.kpi.pencapaianTeknisiAvg || s.kpi.avgTeknisi || s.kpi.pencapaianTeknisi_avg || 0;
+            let avgToko = s.kpi.pencapaianTokoAvg || 0;
+            let avgInv = s.kpi.totalInvoiceAvg || 0;
+            let avgMkt = s.kpi.pencapaianMarketingAvg || 0;
+            let avgAdm = s.kpi.pencapaianAdminAvg || 0;
+            let avgTek = s.kpi.pencapaianTeknisiAvg || 0;
 
             document.getElementById("pPencapaianTokoAvg").innerText = `Avg: ${formatRupiah(avgToko)} / hari`;
             document.getElementById("pTotalInvAvg").innerText = `Avg: ${avgInv} inv / hari`;
@@ -1280,7 +1278,7 @@
             document.getElementById("pTekValAvg").innerText = `Avg: ${formatRupiah(avgTek)} / hari`;
           }
 
-          // GRAFIK DAILY RESULTS (1 - 31) - PEMBACAAN DATA PRESISI BANYAK PROPERTI
+          // 1. GRAFIK DAILY RESULTS (SEL B4:C34 DARI SHEET PIVOT)
           if (s.dailyResults && barDailyInst) {
             let full31Days = Array.from({ length: 31 }, (_, i) => String(i + 1));
             let dataMap = {};
@@ -1289,8 +1287,7 @@
               let rawTgl = d.tgl || d.tanggal || d.TGL || d.day || d.label || d.date || '';
               let tglKey = String(rawTgl).replace(/[^0-9]/g, '');
               let dayNum = parseInt(tglKey, 10);
-
-              let rawOmzet = d.omzet || d.total || d.nominal || d.penjualan || d.jumlah || 0;
+              let rawOmzet = d.omzet || d.total || d.nominal || d.penjualan || 0;
               
               if (dayNum >= 1 && dayNum <= 31) {
                 dataMap[dayNum] = Number(rawOmzet) || 0;
@@ -1304,24 +1301,28 @@
             barDailyInst.update();
           }
 
+          // 2. GRAFIK MINGGUAN (SEL F13:G16 DARI SHEET PIVOT)
           if (s.weeklyResults && barWeeklyInst) {
-            barWeeklyInst.data.labels = s.weeklyResults.map(w => w.minggum || w.minggu || '-');
+            barWeeklyInst.data.labels = s.weeklyResults.map(w => w.minggu || '-');
             barWeeklyInst.data.datasets[0].data = s.weeklyResults.map(w => w.omzet);
             barWeeklyInst.update();
           }
 
+          // 3. TABEL BULANAN (SEL Y4:Z15 DARI SHEET PIVOT)
           if (s.monthlyPerformance && s.monthlyPerformance.length > 0) {
             document.getElementById("tblMonthlyPerf").innerHTML = s.monthlyPerformance.map(m => `
               <tr><td><b>${m.bulan}</b></td><td><b>${formatRupiah(m.omzet)}</b></td></tr>
             `).join('');
           }
 
+          // 4. GRAFIK BRAND (SEL S4:T12 DARI SHEET PIVOT)
           if (s.byBrand && pieBrandInst) {
             pieBrandInst.data.labels = s.byBrand.map(b => b.brand);
             pieBrandInst.data.datasets[0].data = s.byBrand.map(b => b.unit);
             pieBrandInst.update();
           }
 
+          // 5. GRAFIK DEPARTMENT (SEL Y22:Z45 DARI SHEET PIVOT)
           if (s.byDept && barDeptInst) {
             barDeptInst.data.labels = s.byDept.map(d => d.dept);
             barDeptInst.data.datasets[0].data = s.byDept.map(d => d.nilai);
@@ -1891,7 +1892,7 @@
     function initCharts() {
       Chart.defaults.font.family = 'Roboto';
 
-      // INISIALISASI GRAFIK DAILY RESULTS LENGKAP TANGGAL 1 - 31
+      // INIT GRAFIK DAILY RESULTS (1 - 31)
       barDailyInst = new Chart(document.getElementById('barDailyChart').getContext('2d'), {
         type: 'bar',
         plugins: [ChartDataLabels],
