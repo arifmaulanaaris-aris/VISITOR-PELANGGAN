@@ -837,92 +837,81 @@
     }
 
     function applyUserAccess() {
-      if (!currentUser) return;
+  if (!currentUser) return;
 
-      document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
+  document.getElementById("userBadge").innerText = `${currentUser.nama} (${currentUser.role})`;
 
-      const selDivisi = document.getElementById("selDivisiArea");
-      const isAdmin = String(currentUser.role).toUpperCase() === "ADMIN";
-      
-      if (selDivisi) {
-        selDivisi.disabled = !isAdmin;
-        selDivisi.style.opacity = isAdmin ? "1" : "0.7";
-        selDivisi.style.cursor = isAdmin ? "pointer" : "not-allowed";
-      }
+  const selDivisi = document.getElementById("selDivisiArea");
+  const isAdmin = String(currentUser.role).toUpperCase() === "ADMIN";
+  
+  if (selDivisi) {
+    selDivisi.disabled = !isAdmin;
+    selDivisi.style.opacity = isAdmin ? "1" : "0.7";
+    selDivisi.style.cursor = isAdmin ? "pointer" : "not-allowed";
+  }
 
-      const staffMap = getStaffMapping();
-      const userStaffDivisi = staffMap[currentUser.username.toLowerCase()];
-      if (userStaffDivisi) {
-        currentDivisiCode = userStaffDivisi;
-        if (selDivisi) selDivisi.value = userStaffDivisi;
-      }
+  const staffMap = getStaffMapping();
+  const userStaffDivisi = staffMap[currentUser.username.toLowerCase()];
+  if (userStaffDivisi && selDivisi) {
+    selDivisi.value = userStaffDivisi;
+  }
 
-      const akses = currentUser.akses || {};
+  const akses = currentUser.akses || {};
 
-      const hasPenjualan       = !!akses.penjualan;
-      const hasKeuanganMtk     = !!akses.keuanganMtk;
-      const hasKeuanganService = !!akses.keuanganService;
-      const hasSiplah          = !!akses.siplah;
-      const hasKebersihan      = !!akses.kebersihan;
-      const hasKpiKebersihan   = !!akses.kpiKebersihan;
-      const hasAuditKebersihan = !!akses.auditKebersihan;
+  // Membaca hak akses hasil respon dari sheet AKUN
+  const hasPenjualan       = !!akses.penjualan;
+  const hasKeuanganMtk     = !!akses.keuanganMtk;
+  const hasKeuanganService = !!akses.keuanganService;
+  const hasSiplah          = !!akses.siplah;
+  const hasKebersihan      = !!akses.kebersihan;
+  const hasKpiKebersihan   = !!akses.kpiKebersihan;
+  const hasAuditKebersihan = !!akses.auditKebersihan;
 
-      const elPenjualan = document.getElementById("nav-penjualan");
-      if (elPenjualan) elPenjualan.style.display = hasPenjualan ? "flex" : "none";
+  // Menyesuaikan visibilitas menu sidebar
+  const elPenjualan = document.getElementById("nav-penjualan");
+  if (elPenjualan) elPenjualan.style.display = hasPenjualan ? "flex" : "none";
 
-      const elMarketing = document.getElementById("nav-marketing");
-      if (elMarketing) elMarketing.style.display = hasPenjualan ? "flex" : "none";
+  const elMarketing = document.getElementById("nav-marketing");
+  if (elMarketing) elMarketing.style.display = hasPenjualan ? "flex" : "none";
 
-      const elSiplah = document.getElementById("nav-siplah");
-      if (elSiplah) elSiplah.style.display = hasSiplah ? "flex" : "none";
+  const elSiplah = document.getElementById("nav-siplah");
+  if (elSiplah) elSiplah.style.display = hasSiplah ? "flex" : "none";
 
-      const elKebersihan = document.getElementById("nav-kebersihan");
-      if (elKebersihan) elKebersihan.style.display = hasKebersihan ? "flex" : "none";
+  const elKebersihan = document.getElementById("nav-kebersihan");
+  if (elKebersihan) elKebersihan.style.display = hasKebersihan ? "flex" : "none";
 
-      const elKpi = document.getElementById("nav-kpi-kebersihan");
-      if (elKpi) elKpi.style.display = hasKpiKebersihan ? "flex" : "none";
+  const elKpi = document.getElementById("nav-kpi-kebersihan");
+  if (elKpi) elKpi.style.display = hasKpiKebersihan ? "flex" : "none";
 
-      const elAudit = document.getElementById("nav-audit-kebersihan");
-      if (elAudit) elAudit.style.display = hasAuditKebersihan ? "flex" : "none";
+  const elAudit = document.getElementById("nav-audit-kebersihan");
+  if (elAudit) elAudit.style.display = hasAuditKebersihan ? "flex" : "none";
 
-      const elKeuanganDrop = document.getElementById("keuanganDropdown");
-      if (elKeuanganDrop) elKeuanganDrop.style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
+  const elKeuanganDrop = document.getElementById("keuanganDropdown");
+  if (elKeuanganDrop) elKeuanganDrop.style.display = (hasKeuanganMtk || hasKeuanganService) ? "flex" : "none";
 
-      const elSubMtk = document.getElementById("btnSubKeuanganMtk");
-      if (elSubMtk) elSubMtk.style.display = hasKeuanganMtk ? "flex" : "none";
+  const elSubMtk = document.getElementById("btnSubKeuanganMtk");
+  if (elSubMtk) elSubMtk.style.display = hasKeuanganMtk ? "flex" : "none";
 
-      const elSubService = document.getElementById("btnSubKeuanganService");
-      if (elSubService) elSubService.style.display = hasKeuanganService ? "flex" : "none";
+  const elSubService = document.getElementById("btnSubKeuanganService");
+  if (elSubService) elSubService.style.display = hasKeuanganService ? "flex" : "none";
 
-      const adminPanel = document.getElementById("adminMappingPanel");
-      if (adminPanel) {
-        if (isAdmin) {
-          adminPanel.style.display = "block";
-          renderAdminStaffTable();
-        } else {
-          adminPanel.style.display = "none";
-        }
-      }
+  // Membuka tab pertama yang diizinkan untuk pengguna
+  if (hasKebersihan) {
+    switchTab('kebersihan', document.getElementById("nav-kebersihan"));
+  } else if (hasAuditKebersihan) {
+    switchTab('audit-kebersihan-tab', document.getElementById("nav-audit-kebersihan"));
+  } else if (hasKpiKebersihan) {
+    switchTab('kpi-kebersihan-tab', document.getElementById("nav-kpi-kebersihan"));
+  } else if (hasPenjualan) {
+    switchTab('penjualan', document.getElementById("nav-penjualan"));
+  } else if (hasKeuanganMtk) {
+    switchTab('keuangan-mtk-tab', document.getElementById("btnSubKeuanganMtk"));
+  } else if (hasKeuanganService) {
+    switchTab('keuangan-service-tab', document.getElementById("btnSubKeuanganService"));
+  }
 
-      renderAreaCards(currentDivisiCode);
-      initAuditFormOptions();
-
-      if (hasKebersihan) {
-        switchTab('kebersihan', document.getElementById("nav-kebersihan"));
-      } else if (hasAuditKebersihan) {
-        switchTab('audit-kebersihan-tab', document.getElementById("nav-audit-kebersihan"));
-      } else if (hasKpiKebersihan) {
-        switchTab('kpi-kebersihan-tab', document.getElementById("nav-kpi-kebersihan"));
-      } else if (hasPenjualan) {
-        switchTab('penjualan', document.getElementById("nav-penjualan"));
-      } else if (hasKeuanganMtk) {
-        switchTab('keuangan-mtk-tab', document.getElementById("btnSubKeuanganMtk"));
-      } else if (hasKeuanganService) {
-        switchTab('keuangan-service-tab', document.getElementById("btnSubKeuanganService"));
-      }
-
-      fetchStats();
-    }
+  fetchStats();
+}
 
     function changeDivisiArea(divisiCode) {
       if (currentUser && String(currentUser.role).toUpperCase() === "ADMIN") {
